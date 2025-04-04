@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giornata del {{ giornata.data }} - {{ torneo.nome }} - TorneOtto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ version }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+        }
+        
+        .container {
+            padding: 10px;
+            max-width: 100%;
+        }
+        
+        .logo img {
+            max-width: 200px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .tournament-header h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .tournament-meta {
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+        
+        .tournament-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .tournament-actions .button {
+            font-size: 15px;
+            padding: 12px;
+            width: 100%;
+        }
+        
+        .squadre-container {
+            margin-bottom: 20px;
+        }
+        
+        .squadre-container h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .squadre-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .squadra-card {
+            background-color: rgba(30, 31, 35, 0.5);
+            border-radius: 10px;
+            padding: 12px;
+        }
+        
+        .squadra-nome {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--button-color);
+        }
+        
+        .giocatore-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+        
+        .giocatore-elo {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        
+        .squadra-totale {
+            margin-top: 8px;
+            font-weight: 500;
+            text-align: right;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 8px;
+            font-size: 13px;
+        }
+        
+        .partite-container {
+            margin-top: 20px;
+        }
+        
+        .partite-container h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .turno-container {
+            margin-bottom: 20px;
+        }
+        
+        .turno-title {
+            font-size: 15px;
+            margin-bottom: 10px;
+            color: var(--button-color);
+        }
+        
+        .partite-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        
+        .partita-card {
+            background-color: rgba(30, 31, 35, 0.5);
+            border-radius: 10px;
+            padding: 12px;
+        }
+        
+        .partita-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .partita-campo {
+            font-size: 12px;
+            background-color: rgba(0, 161, 52, 0.2);
+            padding: 3px 6px;
+            border-radius: 10px;
+        }
+        
+        .partita-squadre {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .partita-squadra {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        .partita-punteggio {
+            font-size: 15px;
+            font-weight: 500;
+            width: 25px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 4px;
+            border-radius: 4px;
+        }
+        
+        .partita-vs {
+            text-align: center;
+            font-size: 12px;
+            opacity: 0.5;
+            margin: 4px 0;
+        }
+        
+        .partita-stato {
+            text-align: right;
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 8px;
+        }
+        
+        .pdf-export {
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TorneOtto Logo">
+        </div>
+
+        <div class="tournament-view">
+            <div class="tournament-header">
+                <h2>{{ torneo.nome }} - Giornata del {{ giornata.data }}</h2>
+                <div class="tournament-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>{{ torneo.circolo }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>
+                            {% if torneo.tipo_torneo == 'TORNEOTTO_30' %}
+                                TORNEOTTO 30' (tutti contro tutti)
+                            {% else %}
+                                TORNEOTTO 45' (eliminazione diretta)
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-random"></i>
+                        <span>
+                            {% if giornata.metodo_sorteggio == 'TESTE_DI_SERIE' %}
+                                Sorteggio per Teste di Serie
+                            {% elif giornata.metodo_sorteggio == 'PUNTI_E_POSIZIONE' %}
+                                Sorteggio per Punti e Posizione
+                            {% else %}
+                                Sorteggio Casuale
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tournament-actions">
+                {% if giornata.stato == 'BOZZA' %}
+                    <a href="/inserisci-risultati/{{ giornata.id }}" class="button">
+                        <i class="fas fa-edit"></i>
+                        INSERISCI RISULTATI
+                    </a>
+                {% elif giornata.stato == 'CONFERMATA' %}
+                    <a href="/visualizza-risultati/{{ giornata.id }}" class="button">
+                        <i class="fas fa-chart-bar"></i>
+                        INSERISCI RISULTATI
+                    </a>
+                {% endif %}
+                
+                <a href="/esporta-pdf/{{ giornata.id }}" class="button">
+                    <i class="fas fa-file-pdf"></i>
+                    ESPORTA IN PDF
+                </a>
+                
+                <a href="{{ url_for('visualizza_torneo', id=torneo.id) }}" class="button secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    TORNA AL TORNEO
+                </a>
+            </div>
+
+            <div class="squadre-container">
+                <h3>Riepilogo Partite della Giornata</h3>
+                
+                <div class="squadre-grid">
+                    {% if torneo.tipo_torneo == 'TORNEOTTO_30' %}
+                        <div class="squadra-card">
+                            <div class="squadra-nome">Turno 1</div>
+                            {% for partita in partite %}
+                                {% if partita.turno == 1 %}
+                                <div class="giocatore-info">
+                                    <span>{{ partita.squadra1.nome_squadra }} vs {{ partita.squadra2.nome_squadra }}</span>
+                                    <span class="giocatore-elo">{{ partita.punteggio_squadra1 }} - {{ partita.punteggio_squadra2 }}</span>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="squadra-card">
+                            <div class="squadra-nome">Turno 2</div>
+                            {% for partita in partite %}
+                                {% if partita.turno == 2 %}
+                                <div class="giocatore-info">
+                                    <span>{{ partita.squadra1.nome_squadra }} vs {{ partita.squadra2.nome_squadra }}</span>
+                                    <span class="giocatore-elo">{{ partita.punteggio_squadra1 }} - {{ partita.punteggio_squadra2 }}</span>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="squadra-card">
+                            <div class="squadra-nome">Turno 3</div>
+                            {% for partita in partite %}
+                                {% if partita.turno == 3 %}
+                                <div class="giocatore-info">
+                                    <span>{{ partita.squadra1.nome_squadra }} vs {{ partita.squadra2.nome_squadra }}</span>
+                                    <span class="giocatore-elo">{{ partita.punteggio_squadra1 }} - {{ partita.punteggio_squadra2 }}</span>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="squadra-card">
+                            <div class="squadra-nome">Semifinali</div>
+                            {% for partita in partite %}
+                                {% if partita.turno == 1 %}
+                                <div class="giocatore-info">
+                                    <span>{{ partita.squadra1.nome_squadra }} vs {{ partita.squadra2.nome_squadra }}</span>
+                                    <span class="giocatore-elo">{{ partita.punteggio_squadra1 }} - {{ partita.punteggio_squadra2 }}</span>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="squadra-card">
+                            <div class="squadra-nome">Finali</div>
+                            {% for partita in partite %}
+                                {% if partita.turno == 2 %}
+                                <div class="giocatore-info">
+                                    <span>{{ partita.squadra1.nome_squadra }} vs {{ partita.squadra2.nome_squadra }}</span>
+                                    <span class="giocatore-elo">{{ partita.punteggio_squadra1 }} - {{ partita.punteggio_squadra2 }}</span>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="partite-container">
+                <h3>Partite</h3>
+                
+                {% if torneo.tipo_torneo == 'TORNEOTTO_30' %}
+                    {# Raggruppiamo le partite per turno #}
+                    {% set turni = [1, 2, 3] %}
+                    {% for turno in turni %}
+                        {% set partite_turno = [] %}
+                        {% for partita in partite %}
+                            {% if partita.turno == turno %}
+                                {% set partite_turno = partite_turno + [partita] %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if partite_turno %}
+                            <div class="turno-container">
+                                <div class="turno-title">Turno {{ turno }}</div>
+                                <div class="partite-grid">
+                                    {% for partita in partite_turno %}
+                                        <div class="partita-card">
+                                            <div class="partita-header">
+                                                <span class="partita-id">#{{ partita.id }}</span>
+                                                <span class="partita-campo">Campo {{ partita.campo }}</span>
+                                            </div>
+                                            <div class="partita-squadre">
+                                                <div class="partita-squadra">
+                                                    <span>{{ partita.squadra1.nome_squadra }} ({{ partita.squadra1.giocatore1.nome }}/{{ partita.squadra1.giocatore2.nome }})</span>
+                                                    <span class="partita-punteggio">{{ partita.punteggio_squadra1 }}</span>
+                                                </div>
+                                                <div class="partita-vs">vs</div>
+                                                <div class="partita-squadra">
+                                                    <span>{{ partita.squadra2.nome_squadra }} ({{ partita.squadra2.giocatore1.nome }}/{{ partita.squadra2.giocatore2.nome }})</span>
+                                                    <span class="partita-punteggio">{{ partita.punteggio_squadra2 }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="partita-stato">
+                                                {% if partita.stato == 'DA_GIOCARE' %}
+                                                    <i class="fas fa-clock"></i> Da giocare
+                                                {% else %}
+                                                    <i class="fas fa-check-circle"></i> Completata
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {# Per i tornei TORNEOTTO_45, mostriamo prima le semifinali, poi le finali #}
+                    {% set semifinali = [] %}
+                    {% set finali = [] %}
+                    {% for partita in partite %}
+                        {% if partita.turno == 1 %}
+                            {% set semifinali = semifinali + [partita] %}
+                        {% else %}
+                            {% set finali = finali + [partita] %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if semifinali %}
+                        <div class="turno-container">
+                            <div class="turno-title">Semifinali</div>
+                            <div class="partite-grid">
+                                {% for partita in semifinali %}
+                                    <div class="partita-card">
+                                        <div class="partita-header">
+                                            <span class="partita-id">#{{ partita.id }}</span>
+                                            <span class="partita-campo">Campo {{ partita.campo }}</span>
+                                        </div>
+                                        <div class="partita-squadre">
+                                            <div class="partita-squadra">
+                                                <span>{{ partita.squadra1.nome_squadra }} ({{ partita.squadra1.giocatore1.nome }}/{{ partita.squadra1.giocatore2.nome }})</span>
+                                                <span class="partita-punteggio">{{ partita.punteggio_squadra1 }}</span>
+                                            </div>
+                                            <div class="partita-vs">vs</div>
+                                            <div class="partita-squadra">
+                                                <span>{{ partita.squadra2.nome_squadra }} ({{ partita.squadra2.giocatore1.nome }}/{{ partita.squadra2.giocatore2.nome }})</span>
+                                                <span class="partita-punteggio">{{ partita.punteggio_squadra2 }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="partita-stato">
+                                            {% if partita.stato == 'DA_GIOCARE' %}
+                                                <i class="fas fa-clock"></i> Da giocare
+                                            {% else %}
+                                                <i class="fas fa-check-circle"></i> Completata
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if finali %}
+                        <div class="turno-container">
+                            <div class="turno-title">Finali</div>
+                            <div class="partite-grid">
+                                {% for partita in finali %}
+                                    <div class="partita-card">
+                                        <div class="partita-header">
+                                            <span class="partita-id">#{{ partita.id }}</span>
+                                            <span class="partita-campo">Campo {{ partita.campo }}</span>
+                                        </div>
+                                        <div class="partita-squadre">
+                                            <div class="partita-squadra">
+                                                <span>{{ partita.squadra1.nome_squadra }} ({{ partita.squadra1.giocatore1.nome }}/{{ partita.squadra1.giocatore2.nome }})</span>
+                                                <span class="partita-punteggio">{{ partita.punteggio_squadra1 }}</span>
+                                            </div>
+                                            <div class="partita-vs">vs</div>
+                                            <div class="partita-squadra">
+                                                <span>{{ partita.squadra2.nome_squadra }} ({{ partita.squadra2.giocatore1.nome }}/{{ partita.squadra2.giocatore2.nome }})</span>
+                                                <span class="partita-punteggio">{{ partita.punteggio_squadra2 }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="partita-stato">
+                                            {% if partita.stato == 'DA_GIOCARE' %}
+                                                <i class="fas fa-clock"></i> Da giocare
+                                            {% else %}
+                                                <i class="fas fa-check-circle"></i> Completata
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <a href="/" class="nav-icon">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="/inserimento-giocatori" class="nav-icon">
+            <i class="fas fa-users"></i>
+            <span>Giocatori</span>
+        </a>
+        <a href="/gestione-tornei" class="nav-icon active">
+            <i class="fas fa-trophy"></i>
+            <span>Tornei</span>
+        </a>
+        <a href="/classifica" class="nav-icon">
+            <i class="fas fa-chart-bar"></i>
+            <span>Classifica</span>
+        </a>
+    </nav>
+</body>
+</html> 

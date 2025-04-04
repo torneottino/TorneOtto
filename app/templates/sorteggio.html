@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteggio - {{ torneo.nome }} - TorneOtto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ version }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+        }
+        
+        .container {
+            padding: 10px;
+            max-width: 100%;
+        }
+        
+        .form-container {
+            padding: 10px;
+            margin-top: 10px;
+        }
+        
+        .logo img {
+            max-width: 200px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .sorteggio-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .sorteggio-method {
+            background: rgba(30, 31, 35, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .sorteggio-method:hover {
+            background: rgba(30, 31, 35, 0.7);
+            border-color: var(--button-color);
+        }
+        
+        .sorteggio-method.selected {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: var(--button-color);
+        }
+        
+        .sorteggio-method h3 {
+            margin: 0 0 8px 0;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+        }
+        
+        .sorteggio-method p {
+            margin: 0;
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+        
+        .loading-animation {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+        }
+        
+        .loading-animation.active {
+            display: flex;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--button-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .risultati-sorteggio {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .risultati-sorteggio.active {
+            display: block;
+        }
+        
+        .squadre-container {
+            margin-bottom: 20px;
+        }
+        
+        .squadra-card {
+            background: rgba(30, 31, 35, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .squadra-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .squadra-nome {
+            font-weight: 500;
+            font-size: 1em;
+        }
+        
+        .squadra-punteggio {
+            background: var(--button-color);
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+        
+        .giocatori-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .giocatore-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85em;
+        }
+        
+        .giocatore-dettagli {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            opacity: 0.8;
+        }
+        
+        .partite-container {
+            margin-top: 20px;
+        }
+        
+        .turno-container {
+            margin-bottom: 20px;
+        }
+        
+        .turno-title {
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: var(--button-color);
+            font-size: 0.95em;
+            text-transform: uppercase;
+        }
+        
+        .partita-card {
+            background: rgba(30, 31, 35, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .campo-info {
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+        
+        .squadre-partita {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9em;
+        }
+        
+        .vs-separator {
+            opacity: 0.5;
+        }
+        
+        .form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        
+        .button {
+            min-width: 140px;
+            font-size: 0.9em;
+            padding: 10px 12px;
+        }
+        
+        /* Stili specifici per schermi molto piccoli */
+        @media (max-width: 360px) {
+            .form-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TorneOtto Logo">
+        </div>
+
+        <h2>Sorteggio - {{ torneo.nome }}</h2>
+        <h3>Giornata del {{ giornata.data }}</h3>
+        
+        <div id="metodi-sorteggio" class="form-container" {% if giornata.metodo_sorteggio %}style="display: none;"{% endif %}>
+            <h3>Scegli il metodo di sorteggio</h3>
+            
+            <div class="sorteggio-methods">
+                <div class="sorteggio-method" onclick="selectMethod(event, 'PUNTI_E_POSIZIONE')">
+                    <h3><i class="fas fa-balance-scale"></i> Punti e Posizione</h3>
+                    <p>Sorteggio in base ai punti ELO dei giocatori e alla loro posizione preferita (destra/sinistra).</p>
+                </div>
+                
+                <div class="sorteggio-method" onclick="selectMethod(event, 'CASUALE')">
+                    <h3><i class="fas fa-random"></i> Totalmente Casuale</h3>
+                    <p>Sorteggio completamente casuale senza considerare punti o posizioni preferite.</p>
+                </div>
+                
+                <div class="sorteggio-method" onclick="selectMethod(event, 'TESTE_DI_SERIE')">
+                    <h3><i class="fas fa-crown"></i> Teste di Serie</h3>
+                    <p>Scegli manualmente le teste di serie che non potranno essere sorteggiate insieme nel primo turno.</p>
+                </div>
+            </div>
+            
+            <form id="sorteggio-form" action="{{ url_for('sorteggio', giornata_id=giornata.id) }}" method="post">
+                <input type="hidden" id="metodo_sorteggio" name="metodo_sorteggio" value="">
+                <input type="hidden" name="action" value="sorteggio">
+                <button type="submit" id="submit-btn" class="button" disabled>Avvia Sorteggio</button>
+            </form>
+        </div>
+
+        {% if squadre %}
+        <div id="risultati-sorteggio" class="risultati-sorteggio active">
+            <div class="squadre-container">
+                <h3>Squadre</h3>
+                {% for squadra in squadre %}
+                <div class="squadra-card">
+                    <div class="squadra-header">
+                        <span class="squadra-nome">{{ squadra.nome_squadra }}</span>
+                        <span class="squadra-punteggio">ELO: {{ "%.2f"|format(squadra.punteggio_totale) }}</span>
+                    </div>
+                    <div class="giocatori-list">
+                        <div class="giocatore-info">
+                            <span>{{ squadra.giocatore1.nome }}</span>
+                            <div class="giocatore-dettagli">
+                                <span>ELO: {{ "%.2f"|format(squadra.giocatore1.punteggio_elo) }}</span>
+                                <span>
+                                    {% if squadra.giocatore1.posizione == 'DESTRA' %}
+                                        <i class="fas fa-arrow-right"></i>
+                                    {% elif squadra.giocatore1.posizione == 'SINISTRA' %}
+                                        <i class="fas fa-arrow-left"></i>
+                                    {% else %}
+                                        <i class="fas fa-arrows-alt-h"></i>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="giocatore-info">
+                            <span>{{ squadra.giocatore2.nome }}</span>
+                            <div class="giocatore-dettagli">
+                                <span>ELO: {{ "%.2f"|format(squadra.giocatore2.punteggio_elo) }}</span>
+                                <span>
+                                    {% if squadra.giocatore2.posizione == 'DESTRA' %}
+                                        <i class="fas fa-arrow-right"></i>
+                                    {% elif squadra.giocatore2.posizione == 'SINISTRA' %}
+                                        <i class="fas fa-arrow-left"></i>
+                                    {% else %}
+                                        <i class="fas fa-arrows-alt-h"></i>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="partite-container">
+                <h3>Calendario Partite</h3>
+                {% if torneo.tipo_torneo == 'TORNEOTTO_30' %}
+                    {% for turno in [1, 2, 3] %}
+                    <div class="turno-container">
+                        <div class="turno-title">Turno {{ turno }}</div>
+                        {% for partita in partite if partita.turno == turno %}
+                        <div class="partita-card">
+                            <span class="campo-info">Campo {{ partita.campo }}</span>
+                            <div class="squadre-partita">
+                                <span>{{ partita.squadra1.nome_squadra }}</span>
+                                <span class="vs-separator">vs</span>
+                                <span>{{ partita.squadra2.nome_squadra }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                {% elif torneo.tipo_torneo == 'TORNEOTTO_45' %}
+                    <div class="turno-container">
+                        <div class="turno-title">Semifinali</div>
+                        {% for partita in partite if partita.turno == 1 %}
+                        <div class="partita-card">
+                            <span class="campo-info">Campo {{ partita.campo }}</span>
+                            <div class="squadre-partita">
+                                <span>{{ partita.squadra1.nome_squadra }}</span>
+                                <span class="vs-separator">vs</span>
+                                <span>{{ partita.squadra2.nome_squadra }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-actions">
+                <form method="POST" action="{{ url_for('sorteggio', giornata_id=giornata.id) }}" style="display: inline;">
+                    <input type="hidden" name="action" value="conferma">
+                    <button type="submit" class="button">CONFERMA GIORNATA</button>
+                </form>
+                <form method="POST" action="{{ url_for('sorteggio', giornata_id=giornata.id) }}" style="display: inline;">
+                    <input type="hidden" name="action" value="ripeti">
+                    <button type="submit" class="button secondary">RIPETI SORTEGGIO</button>
+                </form>
+                <a href="/esporta-pdf/{{ giornata.id }}" class="button" target="_blank">
+                    <i class="fas fa-file-pdf"></i> ESPORTA PDF
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <nav class="navbar">
+        <a href="/" class="nav-icon">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="/inserimento-giocatori" class="nav-icon">
+            <i class="fas fa-users"></i>
+            <span>Giocatori</span>
+        </a>
+        <a href="/gestione-tornei" class="nav-icon">
+            <i class="fas fa-trophy"></i>
+            <span>Tornei</span>
+        </a>
+        <a href="/classifica" class="nav-icon">
+            <i class="fas fa-chart-bar"></i>
+            <span>Classifica</span>
+        </a>
+    </nav>
+
+    <div class="loading-animation" id="loading-animation">
+        <div class="spinner"></div>
+        <p>Esecuzione sorteggio in corso...</p>
+    </div>
+
+    <script>
+        let selectedMethod = null;
+        const submitBtn = document.getElementById('submit-btn');
+        const loadingAnimation = document.getElementById('loading-animation');
+        const metodiSorteggio = document.getElementById('metodi-sorteggio');
+        const risultatiSorteggio = document.getElementById('risultati-sorteggio');
+        
+        function selectMethod(event, method) {
+            event.preventDefault();
+            selectedMethod = method;
+            document.getElementById('metodo_sorteggio').value = method;
+            submitBtn.disabled = false;
+            
+            // Rimuovi la classe selected da tutti i metodi
+            document.querySelectorAll('.sorteggio-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // Aggiungi la classe selected al metodo selezionato
+            event.currentTarget.classList.add('selected');
+        }
+        
+        document.getElementById('sorteggio-form').addEventListener('submit', function(e) {
+            if (selectedMethod) {
+                // Se il metodo è TESTE_DI_SERIE, non mostriamo l'animazione del sorteggio
+                // perché prima dovremo passare alla selezione delle teste di serie
+                if (selectedMethod !== 'TESTE_DI_SERIE') {
+                    loadingAnimation.classList.add('active');
+                    metodiSorteggio.style.display = 'none';
+                    
+                    // Simula l'animazione per 5 secondi
+                    setTimeout(() => {
+                        loadingAnimation.classList.remove('active');
+                        this.submit();
+                    }, 5000);
+                    
+                    e.preventDefault();
+                }
+                // In caso di TESTE_DI_SERIE, inviamo subito il form senza animazione
+            }
+        });
+    </script>
+</body>
+</html> 

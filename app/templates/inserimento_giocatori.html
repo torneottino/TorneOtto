@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inserimento Giocatori - TorneOtto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ version }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+        }
+        
+        .container {
+            padding: 10px;
+            max-width: 100%;
+        }
+        
+        .form-container {
+            padding: 15px;
+            margin-top: 10px;
+        }
+        
+        .form-container h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .form-group input, 
+        .form-group select {
+            font-size: 14px;
+            padding: 10px;
+        }
+        
+        .button {
+            font-size: 15px;
+            padding: 12px;
+        }
+        
+        .players-list h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .player-name {
+            font-size: 15px;
+        }
+        
+        .player-details {
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TorneOtto Logo">
+        </div>
+
+        <div class="form-container">
+            <h2>Inserimento Giocatore</h2>
+            <form action="/inserimento-giocatori" method="POST" class="player-form">
+                <div class="form-group">
+                    <label for="nome">Nome*</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="punteggio_elo">Punteggio Base ELO</label>
+                    <input type="number" id="punteggio_elo" name="punteggio_elo" value="1500.00" step="0.01">
+                </div>
+                
+                <div class="form-group">
+                    <label for="posizione">Posizione*</label>
+                    <select id="posizione" name="posizione" required>
+                        <option value="DESTRA">DESTRA</option>
+                        <option value="SINISTRA">SINISTRA</option>
+                        <option value="INDIFFERENTE">INDIFFERENTE</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="button">
+                    <i class="fas fa-save"></i>
+                    CONFERMA
+                </button>
+            </form>
+        </div>
+
+        <div class="players-list">
+            <h2>Giocatori Inseriti ({{ giocatori|length }})</h2>
+            {% if giocatori %}
+                <ul class="player-items">
+                    {% for giocatore in giocatori %}
+                    <li class="player-item">
+                        <div class="player-info">
+                            <div class="player-name">{{ giocatore.nome }}</div>
+                            <div class="player-details">
+                                <span class="elo">ELO: {{ giocatore.punteggio_elo }}</span>
+                                <span class="position">Posizione: {{ giocatore.posizione }}</span>
+                            </div>
+                        </div>
+                        <div class="player-actions">
+                            <a href="/modifica-giocatore/{{ giocatore.id }}" class="action-button edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="/elimina-giocatore/{{ giocatore.id }}" class="action-button delete" onclick="return confirm('Sei sicuro di voler eliminare questo giocatore?')">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="empty-list">Nessun giocatore inserito.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <a href="/" class="nav-icon">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="/inserimento-giocatori" class="nav-icon active">
+            <i class="fas fa-users"></i>
+            <span>Giocatori</span>
+        </a>
+        <a href="/gestione-tornei" class="nav-icon">
+            <i class="fas fa-trophy"></i>
+            <span>Tornei</span>
+        </a>
+        <a href="/classifica" class="nav-icon">
+            <i class="fas fa-chart-bar"></i>
+            <span>Classifica</span>
+        </a>
+    </nav>
+</body>
+</html> 

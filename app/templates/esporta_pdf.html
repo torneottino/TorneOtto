@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabellone - {{ torneo.nome }} - {{ giornata.data }} - TorneOtto</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 1cm;
+        }
+        
+        @font-face {
+            font-family: 'Arial';
+            src: local('Arial');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'Arial';
+            src: local('Arial Bold');
+            font-weight: bold;
+            font-style: normal;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: white;
+            color: black;
+            font-size: 14px;
+            width: 100%;
+            max-width: 29.7cm;
+            height: 21cm;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        
+        .logo-container {
+            flex: 0 0 200px;
+        }
+        
+        .logo-container img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .info-container {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .date-location-container {
+            flex: 0 0 200px;
+            text-align: right;
+        }
+        
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .date {
+            font-size: 14px;
+        }
+        
+        .location {
+            font-size: 14px;
+        }
+        
+        .squadre-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .squadre-container h3 {
+            width: 100%;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .squadra-card {
+            width: 23%;
+            border: 1px solid #ccc;
+            padding: 5px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .squadra-nome {
+            font-weight: bold;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+        
+        .partite-container {
+            margin-top: 10px;
+        }
+        
+        .partite-container h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .turno-container {
+            margin-bottom: 15px;
+        }
+        
+        .turno-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 4px;
+            font-size: 15px;
+        }
+        
+        .partita-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ccc;
+            padding: 5px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .partita-card span {
+            font-size: 14px;
+        }
+        
+        .risultato-box {
+            border: 1px solid #000;
+            width: 40px;
+            height: 25px;
+            display: inline-block;
+            margin-left: 8px;
+        }
+        
+        .partita-squadra {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .partita-vs {
+            margin: 0 10px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        
+        .partita-info {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .campo-info {
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .risultati-container {
+            min-width: 100px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .squadra-nome-small {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-bottom: 2px;
+            display: block;
+        }
+        
+        .giocatori-nome {
+            font-size: 21px;
+            font-weight: bold;
+            color: #0066cc;
+            display: block;
+            line-height: 1.2;
+            transform: scale(1);
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+            font-family: Arial, sans-serif !important;
+        }
+        
+        .squadre-container-inline {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 75%;
+            margin-left: 20px;
+            text-align: center;
+        }
+        
+        .squadra-box {
+            display: inline-block;
+            text-align: center;
+            margin: 0 5px;
+            width: 45%;
+        }
+        
+        .squadra-box .giocatori-nome {
+            white-space: nowrap;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+        }
+        
+        .squadra-box:first-child {
+            text-align: center;
+        }
+        
+        .squadra-box:last-child {
+            text-align: center;
+        }
+        
+        .partita-vs {
+            margin: 0 5px;
+            display: inline-block;
+            vertical-align: middle;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .partite-container h3 {
+            page-break-before: avoid;
+        }
+        
+        .turno-container {
+            page-break-inside: avoid;
+        }
+        
+        .partita-card {
+            page-break-inside: avoid;
+            margin-bottom: 5px;
+            padding: 5px;
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            
+            .partita-card, .squadra-card {
+                break-inside: avoid;
+            }
+            
+            .giocatori-nome {
+                font-size: 21px !important;
+                transform: scale(1);
+            }
+            
+            @page {
+                size: landscape;
+                margin: 1cm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="">
+        </div>
+        <div class="info-container">
+            <div class="title">TorneOtto - The Padel App</div>
+            <div class="subtitle">{{ torneo.nome }}</div>
+        </div>
+        <div class="date-location-container">
+            <div class="location">{{ torneo.circolo }}</div>
+            <div class="date">Data: {{ giornata.data }}</div>
+        </div>
+    </div>
+    
+    <div class="squadre-container">
+        <h3>Squadre</h3>
+        {% for squadra in squadre %}
+        <div class="squadra-card">
+            <div class="squadra-nome">{{ squadra.nome_squadra }}</div>
+            <div>{{ squadra.giocatore1.nome }} / {{ squadra.giocatore2.nome }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="partite-container">
+        <h3>Calendario Partite</h3>
+        {% if torneo.tipo_torneo == 'TORNEOTTO_30' %}
+            {% for turno in [1, 2, 3] %}
+            <div class="turno-container">
+                <div class="turno-title">Turno {{ turno }}</div>
+                {% for partita in partite if partita.turno == turno %}
+                <div class="partita-card">
+                    <div class="partita-info">
+                        <div class="campo-info">Campo {{ partita.campo }}</div>
+                        <div class="squadre-container-inline">
+                            <div class="squadra-box">
+                                <span class="squadra-nome-small">{{ partita.squadra1.nome_squadra }}</span>
+                                <span class="giocatori-nome">{{ partita.squadra1.giocatore1.nome }}/{{ partita.squadra1.giocatore2.nome }}</span>
+                            </div>
+                            <span class="partita-vs">vs</span>
+                            <div class="squadra-box">
+                                <span class="squadra-nome-small">{{ partita.squadra2.nome_squadra }}</span>
+                                <span class="giocatori-nome">{{ partita.squadra2.giocatore1.nome }}/{{ partita.squadra2.giocatore2.nome }}</span>
+                            </div>
+                        </div>
+                        <div class="risultati-container">
+                            <div class="risultato-box"></div>
+                            <div class="risultato-box"></div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="turno-container">
+                <div class="turno-title">Semifinali</div>
+                {% for partita in partite if partita.turno == 1 %}
+                <div class="partita-card">
+                    <div class="partita-info">
+                        <div class="campo-info">Semifinale {{ loop.index }}</div>
+                        <div class="squadre-container-inline">
+                            <div class="squadra-box">
+                                <span class="squadra-nome-small">{{ partita.squadra1.nome_squadra }}</span>
+                                <span class="giocatori-nome">{{ partita.squadra1.giocatore1.nome }}/{{ partita.squadra1.giocatore2.nome }}</span>
+                            </div>
+                            <span class="partita-vs">vs</span>
+                            <div class="squadra-box">
+                                <span class="squadra-nome-small">{{ partita.squadra2.nome_squadra }}</span>
+                                <span class="giocatori-nome">{{ partita.squadra2.giocatore1.nome }}/{{ partita.squadra2.giocatore2.nome }}</span>
+                            </div>
+                        </div>
+                        <div class="risultati-container">
+                            <div class="risultato-box"></div>
+                            <div class="risultato-box"></div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html> 

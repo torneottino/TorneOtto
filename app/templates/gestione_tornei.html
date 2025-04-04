@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Tornei Salvati - TorneOtto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ version }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+        }
+        
+        .container {
+            padding: 10px;
+            max-width: 100%;
+        }
+        
+        .tournaments-container h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .tournament-name {
+            font-size: 15px;
+        }
+        
+        .tournament-details {
+            font-size: 13px;
+        }
+        
+        .tournament-days h4 {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .day-date {
+            font-size: 13px;
+        }
+        
+        .day-action {
+            font-size: 12px;
+        }
+        
+        .small-button {
+            font-size: 12px;
+            padding: 8px 0;
+        }
+        
+        .small-button i {
+            font-size: 14px;
+        }
+        
+        .small-button span {
+            font-size: 11px;
+        }
+        
+        .empty-message {
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TorneOtto Logo">
+        </div>
+
+        <div class="tournaments-container">
+            <h2>Gestione Tornei Salvati</h2>
+            
+            {% if tornei %}
+                <ul class="tournament-items">
+                    {% for torneo in tornei %}
+                    <li class="tournament-item">
+                        <div class="tournament-info">
+                            <div class="tournament-name">{{ torneo.nome }}</div>
+                            <div class="tournament-details">
+                                <span class="club">Circolo: {{ torneo.circolo }}</span>
+                                <span class="type">
+                                    Tipo: 
+                                    {% if torneo.tipo_torneo == 'TORNEOTTO_30' %}
+                                        TORNEOTTO 30'
+                                    {% else %}
+                                        TORNEOTTO 45'
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="tournament-controls">
+                            <a href="/torneo/{{ torneo.id }}" class="small-button button">
+                                <i class="fas fa-door-open"></i>
+                                <span>Apri</span>
+                            </a>
+                            <a href="/modifica-torneo/{{ torneo.id }}" class="small-button button secondary">
+                                <i class="fas fa-edit"></i>
+                                <span>Modifica</span>
+                            </a>
+                            <a href="/elimina-torneo/{{ torneo.id }}" class="small-button button danger" onclick="return confirm('Sei sicuro di voler eliminare questo torneo?')">
+                                <i class="fas fa-trash"></i>
+                                <span>Elimina</span>
+                            </a>
+                        </div>
+                        
+                        {% if torneo.giornate %}
+                        <div class="tournament-days">
+                            <h4>Giornate salvate:</h4>
+                            <ul class="days-list">
+                                {% for giornata in torneo.giornate %}
+                                <li class="day-item">
+                                    <span class="day-date">{{ giornata.data }}</span>
+                                    <div class="day-actions">
+                                        {% if not giornata.risultati_inseriti %}
+                                        <a href="/inserisci-risultati/{{ giornata.id }}" class="day-action">
+                                            <i class="fas fa-table-tennis"></i> INSERISCI RISULTATI
+                                        </a>
+                                        {% endif %}
+                                        <a href="/elimina-giornata/{{ giornata.id }}" class="day-action delete" onclick="return confirm('Sei sicuro di voler eliminare questa giornata?')">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="empty-message">
+                    <p>Nessun torneo salvato. Vai a <a href="/inserimento-torneo">Inserimento Nuovo Torneo</a> per crearne uno.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <a href="/" class="nav-icon">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="/inserimento-giocatori" class="nav-icon">
+            <i class="fas fa-users"></i>
+            <span>Giocatori</span>
+        </a>
+        <a href="/gestione-tornei" class="nav-icon active">
+            <i class="fas fa-trophy"></i>
+            <span>Tornei</span>
+        </a>
+        <a href="/classifica" class="nav-icon">
+            <i class="fas fa-chart-bar"></i>
+            <span>Classifica</span>
+        </a>
+    </nav>
+</body>
+</html> 

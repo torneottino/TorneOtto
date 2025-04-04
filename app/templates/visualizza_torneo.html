@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ torneo.nome }} - TorneOtto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ version }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+        }
+        
+        .container {
+            padding: 10px;
+            max-width: 100%;
+        }
+        
+        .tournament-header h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .tournament-meta {
+            font-size: 13px;
+        }
+        
+        .tournament-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .tournament-actions .button {
+            font-size: 15px;
+            padding: 12px;
+            width: 100%;
+        }
+        
+        .tournament-calendar h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .day-date {
+            font-size: 15px;
+        }
+        
+        .day-status {
+            font-size: 13px;
+        }
+        
+        .day-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+        
+        .small-button {
+            font-size: 12px;
+            padding: 8px 10px;
+        }
+        
+        .day-teams h4 {
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        
+        .team-card {
+            padding: 8px;
+        }
+        
+        .player {
+            font-size: 13px;
+        }
+        
+        .team-elo {
+            font-size: 12px;
+        }
+        
+        .empty-message {
+            font-size: 14px;
+            text-align: center;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TorneOtto Logo">
+        </div>
+
+        <div class="tournament-view">
+            <div class="tournament-header">
+                <h2>{{ torneo.nome }}</h2>
+                <div class="tournament-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>{{ torneo.circolo }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>
+                            {% if torneo.tipo_torneo == 'TORNEOTTO_30' %}
+                                TORNEOTTO 30' (tutti contro tutti)
+                            {% else %}
+                                TORNEOTTO 45' (eliminazione diretta)
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tournament-actions">
+                <a href="/nuova-giornata/{{ torneo.id }}" class="button">
+                    <i class="fas fa-calendar-plus"></i>
+                    INSERISCI NUOVA GIORNATA
+                </a>
+                <a href="/gestione-tornei" class="button secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    TORNA AI TORNEI
+                </a>
+            </div>
+
+            <div class="tournament-calendar">
+                <h3>Giornate del Torneo</h3>
+                
+                {% if giornate %}
+                    <ul class="days-list-detailed">
+                        {% for giornata in giornate %}
+                        <li class="day-card">
+                            <div class="day-header">
+                                <div class="day-title">
+                                    <span class="day-date">{{ giornata.data }}</span>
+                                    <span class="day-status">
+                                        {% if giornata.risultati_inseriti %}
+                                            <i class="fas fa-check-circle"></i> Completata
+                                        {% else %}
+                                            <i class="fas fa-clock"></i> In attesa di risultati
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <div class="day-actions">
+                                    <a href="/visualizza-giornata/{{ giornata.id }}" class="button small-button">
+                                        <i class="fas fa-eye"></i> VISUALIZZA
+                                    </a>
+                                    {% if not giornata.risultati_inseriti %}
+                                    <a href="/inserisci-risultati/{{ giornata.id }}" class="button small-button">
+                                        <i class="fas fa-table-tennis"></i> INSERISCI RISULTATI
+                                    </a>
+                                    {% endif %}
+                                    <a href="/elimina-giornata/{{ giornata.id }}" class="button small-button danger" onclick="return confirm('Sei sicuro di voler eliminare questa giornata?')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            {% if giornata.squadre %}
+                            <div class="day-teams">
+                                <h4>Squadre</h4>
+                                <div class="teams-grid">
+                                    {% for squadra in giornata.squadre %}
+                                    <div class="team-card">
+                                        <div class="team-players">
+                                            <div class="player">{{ squadra.giocatore1.nome }}</div>
+                                            <div class="player">{{ squadra.giocatore2.nome }}</div>
+                                        </div>
+                                        <div class="team-elo">
+                                            ELO: {{ squadra.punteggio_elo }}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="empty-message">
+                        <p>Nessuna giornata inserita. Clicca su "INSERISCI NUOVA GIORNATA" per creare la prima giornata di torneo.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <a href="/" class="nav-icon">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="/inserimento-giocatori" class="nav-icon">
+            <i class="fas fa-users"></i>
+            <span>Giocatori</span>
+        </a>
+        <a href="/gestione-tornei" class="nav-icon active">
+            <i class="fas fa-trophy"></i>
+            <span>Tornei</span>
+        </a>
+        <a href="/classifica" class="nav-icon">
+            <i class="fas fa-chart-bar"></i>
+            <span>Classifica</span>
+        </a>
+    </nav>
+</body>
+</html> 

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuova Giornata - {{ torneo.nome }} - TorneOtto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ version }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+        }
+        
+        .container {
+            padding: 10px;
+            max-width: 100%;
+        }
+        
+        .form-container {
+            padding: 15px;
+            margin-top: 10px;
+        }
+        
+        .form-container h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .form-group input {
+            font-size: 14px;
+            padding: 10px;
+        }
+        
+        .button {
+            font-size: 15px;
+            padding: 12px;
+        }
+        
+        /* Stile del container principale */
+        .players-selector-container {
+            margin-bottom: 20px;
+        }
+        
+        /* Stile della lista giocatori */
+        .players-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+            min-height: 100px;
+            padding: 12px;
+            background: rgba(30, 31, 35, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Stile del selettore */
+        .player-picker {
+            width: 100%;
+            padding: 10px;
+            background: rgba(30, 31, 35, 0.5);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(255, 255, 255, 0.8)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 14px;
+            cursor: pointer;
+        }
+        
+        .player-picker:focus {
+            outline: none;
+            border-color: var(--button-color);
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+        
+        /* Stile delle tag dei giocatori selezionati */
+        .player-tag {
+            display: flex;
+            align-items: center;
+            background-color: var(--button-color);
+            color: white;
+            padding: 5px 8px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            position: relative;
+            margin: 3px;
+            max-width: 100%;
+        }
+        
+        .player-tag-content {
+            display: flex;
+            flex-direction: column;
+            margin-right: 18px;
+        }
+        
+        .player-tag-name {
+            font-weight: 500;
+            margin-bottom: 2px;
+            font-size: 0.85em;
+        }
+        
+        .player-tag-info {
+            font-size: 0.7em;
+            opacity: 0.85;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .player-tag-remove {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.7em;
+        }
+        
+        .player-tag-remove:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Contatore di selezione */
+        .selection-counter {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.9em;
+        }
+        
+        .counter-bubble {
+            background: var(--button-color);
+            color: white;
+            border-radius: 10px;
+            padding: 2px 8px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TorneOtto Logo">
+        </div>
+
+        <div class="form-container">
+            <h2>Nuova Giornata - {{ torneo.nome }}</h2>
+            <p class="subtitle">{{ torneo.circolo }} - 
+                {% if torneo.tipo_torneo == 'TORNEOTTO_30' %}
+                    TORNEOTTO 30' (tutti contro tutti)
+                {% else %}
+                    TORNEOTTO 45' (eliminazione diretta)
+                {% endif %}
+            </p>
+
+            <form method="POST" action="{{ url_for('nuova_giornata', torneo_id=torneo.id) }}" id="giornataForm">
+                <div class="form-group">
+                    <label for="data">Data della Giornata:</label>
+                    <input type="date" id="data" name="data" required>
+                </div>
+
+                <div class="form-group players-selector-container">
+                    <label>Seleziona 8 Giocatori:</label>
+                    
+                    <div class="selection-counter">
+                        <span>Selezionati: <span class="counter-bubble"><span id="counter">0</span>/8</span></span>
+                    </div>
+                    
+                    {% if giocatori %}
+                        <select id="player-picker" class="player-picker" aria-label="Seleziona un giocatore">
+                            <option value="" disabled selected>Seleziona un giocatore</option>
+                            {% for giocatore in giocatori %}
+                                <option value="{{ giocatore.id }}" 
+                                        data-elo="{{ giocatore.punteggio_elo }}" 
+                                        data-position="{{ giocatore.posizione }}">
+                                    {{ giocatore.nome }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        
+                        <div class="players-list" id="selected-players">
+                            <!-- I giocatori selezionati appariranno qui -->
+                        </div>
+                        
+                        <!-- Input nascosto per memorizzare gli ID dei giocatori selezionati -->
+                        <div id="hidden-inputs-container"></div>
+                    {% else %}
+                        <p class="empty-message">Non ci sono giocatori disponibili. <a href="{{ url_for('inserimento_giocatori') }}">Inserisci Giocatori</a> prima di creare una giornata.</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="button" id="submitBtn" disabled>PROCEDI AL SORTEGGIO</button>
+                    <a href="{{ url_for('visualizza_torneo', id=torneo.id) }}" class="button secondary">ANNULLA</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <a href="/" class="nav-icon">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="/inserimento-giocatori" class="nav-icon">
+            <i class="fas fa-users"></i>
+            <span>Giocatori</span>
+        </a>
+        <a href="/gestione-tornei" class="nav-icon active">
+            <i class="fas fa-trophy"></i>
+            <span>Tornei</span>
+        </a>
+        <a href="/classifica" class="nav-icon">
+            <i class="fas fa-chart-bar"></i>
+            <span>Classifica</span>
+        </a>
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const playerPicker = document.getElementById('player-picker');
+            const selectedPlayers = document.getElementById('selected-players');
+            const counter = document.getElementById('counter');
+            const submitBtn = document.getElementById('submitBtn');
+            const hiddenInputsContainer = document.getElementById('hidden-inputs-container');
+            const form = document.getElementById('giornataForm');
+            
+            let selectedPlayerIds = [];
+            const MAX_PLAYERS = 8;
+            
+            // Aggiorna il contatore e lo stato del pulsante di invio
+            function updateCounter() {
+                counter.textContent = selectedPlayerIds.length;
+                submitBtn.disabled = selectedPlayerIds.length !== MAX_PLAYERS;
+            }
+            
+            // Aggiorna gli input nascosti per l'invio del form
+            function updateHiddenInputs() {
+                hiddenInputsContainer.innerHTML = '';
+                selectedPlayerIds.forEach(playerId => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'giocatori';
+                    input.value = playerId;
+                    hiddenInputsContainer.appendChild(input);
+                });
+            }
+            
+            // Crea una tag per un giocatore selezionato
+            function createPlayerTag(playerId, playerName, playerElo, playerPosition) {
+                const tag = document.createElement('div');
+                tag.className = 'player-tag';
+                tag.dataset.id = playerId;
+                
+                // Icona per la posizione
+                let positionIcon = '';
+                if (playerPosition === 'DESTRA') {
+                    positionIcon = '<i class="fas fa-arrow-right"></i> DESTRA';
+                } else if (playerPosition === 'SINISTRA') {
+                    positionIcon = '<i class="fas fa-arrow-left"></i> SINISTRA';
+                } else {
+                    positionIcon = '<i class="fas fa-arrows-alt-h"></i> INDIFFERENTE';
+                }
+                
+                tag.innerHTML = `
+                    <div class="player-tag-content">
+                        <span class="player-tag-name">${playerName}</span>
+                        <span class="player-tag-info">
+                            <span>ELO: ${playerElo}</span>
+                            <span>${positionIcon}</span>
+                        </span>
+                    </div>
+                    <div class="player-tag-remove">
+                        <i class="fas fa-times"></i>
+                    </div>
+                `;
+                
+                // Aggiungi l'evento di rimozione
+                const removeBtn = tag.querySelector('.player-tag-remove');
+                removeBtn.addEventListener('click', function() {
+                    // Rimuovi l'ID dalla lista
+                    selectedPlayerIds = selectedPlayerIds.filter(id => id !== playerId);
+                    // Rimuovi il tag
+                    tag.remove();
+                    // Aggiungi nuovamente l'opzione al selettore
+                    const option = document.createElement('option');
+                    option.value = playerId;
+                    option.dataset.elo = playerElo;
+                    option.dataset.position = playerPosition;
+                    option.textContent = playerName;
+                    playerPicker.appendChild(option);
+                    // Aggiorna contatore e input nascosti
+                    updateCounter();
+                    updateHiddenInputs();
+                });
+                
+                return tag;
+            }
+            
+            // Gestisci la selezione di un giocatore
+            playerPicker.addEventListener('change', function() {
+                if (!this.value) return;
+                
+                // Ottieni i dati del giocatore selezionato
+                const selectedOption = this.options[this.selectedIndex];
+                const playerId = this.value;
+                const playerName = selectedOption.textContent;
+                const playerElo = selectedOption.dataset.elo;
+                const playerPosition = selectedOption.dataset.position;
+                
+                // Controlla se abbiamo già 8 giocatori
+                if (selectedPlayerIds.length >= MAX_PLAYERS) {
+                    alert('Hai già selezionato 8 giocatori!');
+                    this.value = '';
+                    return;
+                }
+                
+                // Aggiungi l'ID alla lista
+                selectedPlayerIds.push(playerId);
+                
+                // Crea e aggiungi il tag
+                const tag = createPlayerTag(playerId, playerName, playerElo, playerPosition);
+                selectedPlayers.appendChild(tag);
+                
+                // Rimuovi l'opzione dal selettore
+                this.remove(this.selectedIndex);
+                
+                // Resetta il selettore
+                this.value = '';
+                
+                // Aggiorna contatore e input nascosti
+                updateCounter();
+                updateHiddenInputs();
+            });
+            
+            // Inizializza contatore e stato pulsante
+            updateCounter();
+        });
+    </script>
+</body>
+</html> 

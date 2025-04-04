@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selezione Teste di Serie - {{ torneo.nome }} - TorneOtto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ version }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+        }
+        
+        .container {
+            padding: 10px;
+            max-width: 100%;
+        }
+        
+        .form-container {
+            padding: 10px;
+            margin-top: 10px;
+        }
+        
+        .logo img {
+            max-width: 200px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .player-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin: 10px 0;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        
+        .player-card {
+            background: rgba(30, 31, 35, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .player-card:hover {
+            background: rgba(30, 31, 35, 0.7);
+            border-color: var(--button-color);
+        }
+        
+        .player-card.selected {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: var(--button-color);
+        }
+        
+        .player-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .player-name {
+            font-weight: 500;
+            font-size: 15px;
+        }
+        
+        .player-details {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        
+        .counter-container {
+            text-align: center;
+            margin: 15px 0;
+            padding: 12px;
+            background: rgba(30, 31, 35, 0.3);
+            border-radius: 8px;
+        }
+        
+        .counter-container p {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .counter {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--button-color);
+        }
+        
+        .loading-animation {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+        }
+        
+        .loading-animation.active {
+            display: flex;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--button-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        
+        .button {
+            min-width: 140px;
+            font-size: 15px;
+            padding: 12px;
+        }
+        
+        /* Stili specifici per schermi molto piccoli */
+        @media (max-width: 360px) {
+            .form-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TorneOtto Logo">
+        </div>
+
+        <div class="form-container">
+            <h2>Selezione Teste di Serie - {{ torneo.nome }}</h2>
+            
+            <div class="counter-container">
+                <p>Seleziona 4 giocatori come teste di serie</p>
+                <div class="counter">
+                    <span id="selected-count">0</span>/4 giocatori selezionati
+                </div>
+            </div>
+            
+            <form method="POST" action="{{ url_for('selezione_teste', giornata_id=giornata.id) }}" id="teste-form">
+                <div class="player-grid">
+                    {% for giocatore in giocatori %}
+                    <div class="player-card" onclick="togglePlayer(this, {{ giocatore.id }})">
+                        <div>
+                            <div class="player-name">{{ giocatore.nome }}</div>
+                        </div>
+                        <div class="player-details">
+                            <span>ELO: {{ "%.2f"|format(giocatore.punteggio_elo) }}</span>
+                            <span>
+                                {% if giocatore.posizione == 'DESTRA' %}
+                                    <i class="fas fa-arrow-right"></i>
+                                {% elif giocatore.posizione == 'SINISTRA' %}
+                                    <i class="fas fa-arrow-left"></i>
+                                {% else %}
+                                    <i class="fas fa-arrows-alt-h"></i>
+                                {% endif %}
+                            </span>
+                        </div>
+                        <input type="checkbox" name="teste_di_serie" value="{{ giocatore.id }}" style="display: none;">
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="button" id="submit-btn" disabled>
+                        <i class="fas fa-check"></i> CONFERMA
+                    </button>
+                    <a href="{{ url_for('sorteggio', giornata_id=giornata.id) }}" class="button secondary">
+                        <i class="fas fa-times"></i> ANNULLA
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <nav class="navbar">
+        <a href="/" class="nav-icon">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="/inserimento-giocatori" class="nav-icon">
+            <i class="fas fa-users"></i>
+            <span>Giocatori</span>
+        </a>
+        <a href="/gestione-tornei" class="nav-icon active">
+            <i class="fas fa-trophy"></i>
+            <span>Tornei</span>
+        </a>
+        <a href="/classifica" class="nav-icon">
+            <i class="fas fa-chart-bar"></i>
+            <span>Classifica</span>
+        </a>
+    </nav>
+    
+    <div class="loading-animation" id="loading-animation">
+        <div class="spinner"></div>
+        <p>Esecuzione sorteggio in corso...</p>
+    </div>
+
+    <script>
+        let selectedCount = 0;
+        const maxSelection = 4;
+        const submitBtn = document.getElementById('submit-btn');
+        const loadingAnimation = document.getElementById('loading-animation');
+        const counterElement = document.getElementById('selected-count');
+        
+        // Assicuriamoci che l'animazione sia nascosta all'inizio
+        loadingAnimation.classList.remove('active');
+        
+        function togglePlayer(card, playerId) {
+            const checkbox = card.querySelector('input[type="checkbox"]');
+            
+            if (card.classList.contains('disabled')) {
+                return;
+            }
+            
+            if (card.classList.contains('selected')) {
+                card.classList.remove('selected');
+                checkbox.checked = false;
+                selectedCount--;
+            } else if (selectedCount < maxSelection) {
+                card.classList.add('selected');
+                checkbox.checked = true;
+                selectedCount++;
+            }
+            
+            counterElement.textContent = selectedCount;
+            submitBtn.disabled = selectedCount !== maxSelection;
+            
+            // Disabilita/abilita le carte non selezionate
+            document.querySelectorAll('.player-card:not(.selected)').forEach(card => {
+                if (selectedCount >= maxSelection) {
+                    card.classList.add('disabled');
+                } else {
+                    card.classList.remove('disabled');
+                }
+            });
+        }
+        
+        document.getElementById('teste-form').addEventListener('submit', function(e) {
+            if (selectedCount === maxSelection) {
+                e.preventDefault();
+                
+                // Avvia l'animazione
+                loadingAnimation.classList.add('active');
+                
+                // Invia il form dopo l'animazione
+                setTimeout(() => {
+                    this.submit();
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html> 
