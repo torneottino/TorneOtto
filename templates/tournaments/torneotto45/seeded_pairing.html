@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+    <h1 class="page-title">Teste di Serie</h1>
+    
+    <div class="tournament-info">
+        <div class="tournament-name">{{ tournament.nome }}</div>
+        <div class="tournament-date">Giornata del {{ date }}</div>
+    </div>
+    
+    <div class="instructions">
+        <p>Seleziona i 4 giocatori che saranno teste di serie. Ogni testa di serie farà parte di una coppia diversa.</p>
+    </div>
+    
+    <form action="{{ url_for('tournaments.torneotto45_seeded_pairing', tournament_id=tournament_id) }}" method="POST" class="seeded-form">
+        <input type="hidden" name="date" value="{{ date }}">
+        <input type="hidden" name="players" value="{{ players }}">
+        <input type="hidden" name="tournament_id" value="{{ tournament_id }}">
+        
+        <div class="players-container">
+            <div class="error-message-container">
+                <div class="error-message" id="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="error-text">Seleziona esattamente 4 teste di serie.</span>
+                </div>
+            </div>
+            <div class="players-list">
+                {% for player in all_players %}
+                <div class="player-item">
+                    <label class="player-checkbox-container">
+                        <input type="checkbox" name="seeded_players" value="{{ player.id }}" class="seeded-checkbox" 
+                               {% if loop.index <= 4 %}checked{% endif %}>
+                        <span class="player-name">{{ player.cognome }} {{ player.nome }}</span>
+                        <span class="player-elo">ELO: {{ "%.0f"|format(player.tournament_elo) }}</span>
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button type="submit" class="action-button" id="submit-button">AVVIA IL SORTEGGIO</button>
+            <a href="{{ url_for('tournaments.torneotto45_choose_pairing_method', date=date, players=players, tournament_id=tournament_id) }}" class="back-button">INDIETRO</a>
+        </div>
+    </form>
+</div>
+
+<style>
+.main-container {
+    padding: 20px;
+    padding-top: 120px;
+    max-width: 800px;
+    margin: 0 auto;
+    color: white;
+}
+
+.page-title {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.tournament-info {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.tournament-name {
+    font-size: calc(1.1em + 3px);
+    color: #ffd700;
+    font-weight: 600;
+    margin-bottom: 1px;
+}
+
+.tournament-date {
+    font-size: 1em;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.instructions {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+.instructions p {
+    margin: 0;
+}
+
+.players-container {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.error-message-container {
+    position: absolute;
+    top: -80px;
+    left: 0;
+    right: 0;
+    height: 0;
+    z-index: 10;
+}
+
+.error-message {
+    background-color: #2c2c2c;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid #d9534f;
+    box-shadow: 0 2px 8px rgba(217, 83, 79, 0.2);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.error-message.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.error-message i {
+    color: #d9534f;
+    font-size: 1.2em;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+#error-text {
+    font-size: 0.95em;
+    line-height: 1.4;
+    flex: 1;
+    word-wrap: break-word;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 100px;
+}
+
+.action-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 0;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    width: 250px;
+    text-align: center;
+}
+
+.action-button:hover {
+    background-color: #218838;
+}
+
+.action-button:disabled {
+    background-color: #888;
+    cursor: not-allowed;
+}
+
+.back-button {
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 0;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    width: 250px;
+    text-align: center;
+}
+
+.back-button:hover {
+    background-color: #555;
+}
+
+.players-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-gap: 10px;
+}
+
+.player-item {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 10px;
+    transition: all 0.2s ease;
+}
+
+.player-item:hover {
+    background-color: #333;
+}
+
+.player-checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.seeded-checkbox {
+    margin-right: 10px;
+}
+
+.player-name {
+    font-weight: 500;
+    flex: 1;
+}
+
+.player-elo {
+    color: #aaa;
+    font-size: 0.85em;
+    margin-left: 10px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('.seeded-checkbox');
+    const errorMessage = document.getElementById('error-message');
+    const submitButton = document.getElementById('submit-button');
+    const form = document.querySelector('.seeded-form');
+    
+    // Funzione per controllare il numero di selezioni
+    function checkSelections() {
+        const selectedCount = document.querySelectorAll('.seeded-checkbox:checked').length;
+        
+        if (selectedCount !== 4) {
+            errorMessage.classList.add('visible');
+            errorMessage.querySelector('#error-text').textContent = `Seleziona esattamente 4 teste di serie (attualmente ne hai selezionate ${selectedCount}).`;
+            submitButton.disabled = true;
+            return false;
+        } else {
+            errorMessage.classList.remove('visible');
+            submitButton.disabled = false;
+            return true;
+        }
+    }
+    
+    // Aggiungi il listener a tutti i checkbox
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', checkSelections);
+    });
+    
+    // Verifica iniziale
+    checkSelections();
+    
+    // Validazione al submit
+    form.addEventListener('submit', function(e) {
+        if (!checkSelections()) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,14 @@
+{
+  "rules": [
+    {
+      "description": "Modifica solo CSS e layout per ottimizzazione mobile, non toccare codice JS o logica",
+      "pattern": "**/*.js",
+      "allowModification": false
+    },
+    {
+      "description": "Permetti modifiche solo a file CSS/SCSS",
+      "pattern": "**/*.css",
+      "allowModification": true
+    }
+  ]
+} 

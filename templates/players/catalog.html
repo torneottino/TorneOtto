@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+    <h1 class="page-title">Elenco Giocatori</h1>
+    
+    {% if players %}
+    <div class="players-catalog">
+        {% for player in players %}
+        <div class="player-item">
+            <div class="player-content">
+                <div class="player-name">{{ player.cognome }} {{ player.nome }}</div>
+                <div class="player-details">
+                    <span class="position-badge">{{ player.posizione }}</span>
+                    <span class="elo-badge">ELO: {{ player.elo_standard|round(2) }}</span>
+                </div>
+            </div>
+            <div class="player-actions">
+                <a href="{{ url_for('players.edit_player', player_id=player.id) }}" class="icon-button edit" title="Modifica giocatore">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <form action="{{ url_for('players.delete_player', player_id=player.id) }}" method="POST" class="delete-form" onsubmit="return confirm('Sei sicuro di voler eliminare questo giocatore?');">
+                    <button type="submit" class="icon-button delete" title="Elimina giocatore">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="no-data">Nessun giocatore presente nel database.</p>
+    {% endif %}
+    
+    <a href="{{ url_for('players.new_player') }}" class="action-button">
+        <i class="fas fa-user-plus"></i>
+        NUOVO GIOCATORE
+    </a>
+</div>
+{% endblock %} 

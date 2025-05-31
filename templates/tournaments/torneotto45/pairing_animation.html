@@ -1,0 +1,475 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container" style="margin-top: 100px;">
+    <div class="tournament-info">
+        <div class="tournament-name">{{ tournament.nome }}</div>
+        <div class="tournament-date">Giornata del {{ date }}</div>
+        <div class="tournament-method">Metodo: {{ method_title }}</div>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    <div class="status-message" id="status-message">Inizializzazione...</div>
+
+    <!-- Container per i giocatori e le coppie -->
+    <div id="animation-container" class="animation-container">
+        <div id="players-container" class="players-container">
+            {% for player in players %}
+            <div class="player-card" id="player-{{ player.id }}" data-id="{{ player.id }}" data-elo="{{ player.tournament_elo }}">
+                <div class="player-name">{{ player.cognome }} {{ player.nome }}</div>
+                <div class="player-details">ELO: {{ player.tournament_elo }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        <div id="pairs-container" class="pairs-container" style="display: none;"></div>
+    </div>
+
+    <!-- Pulsante conferma -->
+    <div class="button-container">
+        <form id="pairing-form" action="{{ form_action }}" method="POST">
+            <input type="hidden" name="date" value="{{ date }}">
+            <input type="hidden" name="tournament_id" value="{{ tournament_id }}">
+            <input type="hidden" name="pairs" id="pairs-json">
+            {% if seeded_players %}
+            <input type="hidden" name="seeded_players" value="{{ seeded_players|join(',') }}">
+            {% endif %}
+            <button type="submit" id="confirm-button" class="action-button" style="display: none;">CONFERMA COPPIE</button>
+        </form>
+    </div>
+</div>
+
+<style>
+.main-container {
+    padding: 20px;
+    color: white;
+}
+
+.page-title {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 1.2em;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.tournament-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.tournament-name {
+    font-size: calc(1.1em + 3px);
+    color: #ffd700;
+    font-weight: 600;
+    margin-bottom: 1px;
+}
+
+.tournament-date, .tournament-method {
+    font-size: 0.9em;
+    color: #aaa;
+    margin-bottom: 5px;
+}
+
+.progress-container {
+    width: 100%;
+    background-color: #333;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    height: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: #28a745;
+    border-radius: 5px;
+    transition: width 0.5s ease;
+}
+
+.status-message {
+    text-align: center;
+    font-size: 1em;
+    margin-bottom: 20px;
+    color: #ddd;
+}
+
+.animation-container {
+    margin-bottom: 20px;
+}
+
+.players-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.player-card {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 10px;
+    width: 150px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.player-card.selected {
+    background-color: #28a745;
+    transform: scale(1.05);
+}
+
+.player-name {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.player-details {
+    font-size: 0.8em;
+    color: #aaa;
+}
+
+.pairs-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.pair-card {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 15px;
+    width: 300px;
+    text-align: center;
+}
+
+.pair-title {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    color: #ffd700;
+}
+
+.pair-players {
+    display: flex;
+    justify-content: space-between;
+}
+
+.pair-player {
+    flex: 1;
+    padding: 10px;
+    background-color: #333;
+    border-radius: 5px;
+    margin: 0 5px;
+}
+
+.button-container {
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 100px;
+}
+
+.action-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 30px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.action-button:hover {
+    background-color: #218838;
+}
+
+/* Nuovo stile semifinale orizzontale */
+.semifinale-row {
+  margin-bottom: 18px;
+}
+.semifinale-title {
+  color: #ffd700;
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-bottom: 7px;
+  text-align: center;
+}
+.semifinale-match-horizontal {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+  gap: 10px;
+  background: #232323;
+  border-radius: 12px;
+  padding: 12px 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+.semifinale-team {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  background: #2c2c2c;
+  border-radius: 8px;
+  padding: 10px 4px;
+  min-width: 90px;
+}
+.semifinale-vs {
+  align-self: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #ffd700;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+}
+@media (max-width: 600px) {
+  .semifinale-match-horizontal {
+    flex-direction: row;
+    gap: 6px;
+    padding: 8px 2px;
+  }
+  .semifinale-team {
+    min-width: 70px;
+    padding: 7px 2px;
+    font-size: 0.97em;
+  }
+  .semifinale-title {
+    font-size: 1em;
+  }
+}
+.semifinale-card-unique {
+  background: #232323;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  padding: 18px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.semifinale-pair-row {
+  font-size: 1.08em;
+  color: #fff;
+  font-weight: 500;
+  text-align: center;
+}
+.semifinale-vs-centered {
+  color: #ffd700;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-align: center;
+  margin: 4px 0;
+}
+</style>
+
+<script>
+    // Dati dei giocatori
+    const players = [];
+    /*{% for player in players %}*/
+    players.push({ id: {{ player.id }}, name: "{{ player.cognome }} {{ player.nome }}", elo: {{ player.tournament_elo }} });
+    /*{% endfor %}*/
+    
+    // Metodo di sorteggio
+    const method = "{{ method }}";
+    
+    // Testate di serie (se presenti)
+    {% if seeded_players %}
+    const seededPlayerIds = [{{ seeded_players|join(',') }}];
+    {% else %}
+    const seededPlayerIds = [];
+    {% endif %}
+    
+    // Riferimenti agli elementi DOM
+    const progressBar = document.getElementById('progress-bar');
+    const statusMessage = document.getElementById('status-message');
+    const playersContainer = document.getElementById('players-container');
+    const pairsContainer = document.getElementById('pairs-container');
+    const confirmButton = document.getElementById('confirm-button');
+    const pairsJsonInput = document.getElementById('pairs-json');
+    
+    // Array per le coppie risultanti
+    let pairs = [];
+    
+    // Funzione per aggiornare la barra di progresso
+    function updateProgress(percentage) {
+        progressBar.style.width = percentage + '%';
+    }
+    
+    // Al caricamento della pagina, inizia l'animazione
+    window.onload = function() {
+        updateProgress(20);
+        statusMessage.textContent = "Caricamento giocatori...";
+        
+        // Breve ritardo per l'effetto visivo
+        setTimeout(() => {
+            updateProgress(40);
+            statusMessage.textContent = "Analisi ELO e posizioni...";
+            
+            // Altro breve ritardo prima del sorteggio
+            setTimeout(() => {
+                updateProgress(60);
+                statusMessage.textContent = "Sorteggio in corso...";
+                
+                // Simula il sorteggio
+                setTimeout(createPairs, 1000);
+            }, 1000);
+        }, 1000);
+    };
+    
+    // Funzione per creare le coppie in base al metodo scelto
+    function createPairs() {
+        // Determina quali giocatori sono teste di serie se necessario
+        if (method === "random") {
+            // Sorteggio casuale
+            pairs = randomPairing([...players]);
+        } else if (method === "elo") {
+            // Sorteggio basato su ELO e posizione
+            pairs = eloPairing([...players]);
+        } else if (method === "seeded") {
+            // Sorteggio con teste di serie
+            pairs = seededPairing([...players], seededPlayerIds);
+        }
+        
+        // Aggiorna lo stato e mostra i risultati
+        updateProgress(80);
+        statusMessage.textContent = "Formazione semifinali...";
+        
+        // Mostra le coppie formate con animazione
+        showPairs();
+    }
+    
+    // Funzione per mostrare le coppie formate
+    function showPairs() {
+        // Nascondi i giocatori e mostra il contenitore delle coppie
+        playersContainer.style.display = 'none';
+        pairsContainer.style.display = 'flex';
+        pairsContainer.style.flexDirection = 'column';
+        pairsContainer.style.gap = '18px';
+
+        // Aggiorna lo stato
+        updateProgress(90);
+        statusMessage.textContent = "Generazione semifinali...";
+
+        // Genera le semifinali (ogni due coppie formano una semifinale)
+        const semifinal1 = {
+            teamA: pairs[0],
+            teamB: pairs[1]
+        };
+        const semifinal2 = {
+            teamA: pairs[2],
+            teamB: pairs[3]
+        };
+
+        // Helper per formattare i nomi delle coppie
+        function formatPair(pair) {
+            return `${pair[0].name} / ${pair[1].name}`;
+        }
+
+        // Mostra le semifinali nel contenitore
+        pairsContainer.innerHTML = `
+            <div class="semifinale-row">
+                <div class="semifinale-title">Semifinale 1</div>
+                <div class="semifinale-card-unique">
+                    <div class="semifinale-pair-row">${formatPair(semifinal1.teamA)}</div>
+                    <div class="semifinale-vs-centered">vs</div>
+                    <div class="semifinale-pair-row">${formatPair(semifinal1.teamB)}</div>
+                </div>
+            </div>
+            <div class="semifinale-row">
+                <div class="semifinale-title">Semifinale 2</div>
+                <div class="semifinale-card-unique">
+                    <div class="semifinale-pair-row">${formatPair(semifinal2.teamA)}</div>
+                    <div class="semifinale-vs-centered">vs</div>
+                    <div class="semifinale-pair-row">${formatPair(semifinal2.teamB)}</div>
+                </div>
+            </div>
+        `;
+        // Aggiorna lo stato e mostra il pulsante di conferma
+        updateProgress(100);
+        statusMessage.textContent = "Semifinali generate con successo!";
+        // Prepara i dati per l'invio (solo gli ID)
+        const pairsForSubmit = pairs.map(pair => [pair[0].id, pair[1].id]);
+        pairsJsonInput.value = JSON.stringify(pairsForSubmit);
+        // Mostra il pulsante di conferma
+        setTimeout(() => {
+            confirmButton.style.display = 'inline-block';
+        }, 500);
+    }
+    
+    // Implementazioni dei metodi di pairing
+    
+    // 1. Sorteggio casuale
+    function randomPairing(players) {
+        // Mescola casualmente l'array
+        for (let i = players.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [players[i], players[j]] = [players[j], players[i]];
+        }
+        
+        // Crea coppie dai giocatori mescolati
+        const pairs = [];
+        for (let i = 0; i < players.length; i += 2) {
+            pairs.push([players[i], players[i + 1]]);
+        }
+        
+        return pairs;
+    }
+    
+    // 2. Sorteggio basato su ELO
+    function eloPairing(players) {
+        // Ordina i giocatori per ELO
+        players.sort((a, b) => b.elo - a.elo);
+        
+        // Crea le coppie bilanciando gli ELO (1-5, 2-6, 3-7, 4-8)
+        const pairs = [];
+        const half = players.length / 2;
+        
+        for (let i = 0; i < half; i++) {
+            pairs.push([players[i], players[i + half]]);
+        }
+        
+        return pairs;
+    }
+    
+    // 3. Sorteggio con teste di serie
+    function seededPairing(players, seededPlayerIds) {
+        // Separa i giocatori in teste di serie e normali
+        const seededPlayers = players.filter(p => seededPlayerIds.includes(p.id));
+        const normalPlayers = players.filter(p => !seededPlayerIds.includes(p.id));
+        
+        // Mescola casualmente i due gruppi
+        shuffleArray(seededPlayers);
+        shuffleArray(normalPlayers);
+        
+        // Crea le coppie abbinando teste di serie con normali
+        const pairs = [];
+        for (let i = 0; i < seededPlayers.length; i++) {
+            pairs.push([seededPlayers[i], normalPlayers[i]]);
+        }
+        
+        return pairs;
+    }
+    
+    // Funzione di utilità per mescolare un array
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+</script>
+{% endblock %} 
