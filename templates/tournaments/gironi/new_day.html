@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+    <div class="section-header">
+        <h2 class="section-title">
+            <i class="fas fa-calendar-plus"></i>
+            Nuova Giornata - {{ tournament.nome }}
+        </h2>
+    </div>
+
+    <form method="POST" class="tournament-form" action="{{ url_for('tournaments.save_gironi_day', tournament_id=tournament.id) }}">
+        <div class="form-group">
+            <label for="data">Data Giornata<span class="required">*</span></label>
+            <input type="date" id="data" name="data" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+            <label for="num_coppie">Numero di Coppie<span class="required">*</span></label>
+            <select id="num_coppie" name="num_coppie" class="form-input" required>
+                <option value="">Seleziona...</option>
+                {% for n in range(7, 17) %}
+                    <option value="{{ n }}">{{ n }} coppie</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="num_gironi">Numero di Gironi<span class="required">*</span></label>
+            <select id="num_gironi" name="num_gironi" class="form-input" required>
+                <option value="">Seleziona...</option>
+                <option value="2">2 gironi</option>
+                <option value="3">3 gironi</option>
+                <option value="4">4 gironi</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="metodo_sorteggio">Metodo di Formazione Coppie<span class="required">*</span></label>
+            <div class="sorteggio-options">
+                <div class="sorteggio-option">
+                    <input type="radio" id="casuale" name="metodo_sorteggio" value="casuale" required>
+                    <label for="casuale">
+                        <i class="fas fa-random"></i>
+                        Totalmente Casuale
+                    </label>
+                </div>
+                <div class="sorteggio-option">
+                    <input type="radio" id="elo" name="metodo_sorteggio" value="elo">
+                    <label for="elo">
+                        <i class="fas fa-chart-line"></i>
+                        Per ELO e Posizione
+                    </label>
+                </div>
+                <div class="sorteggio-option">
+                    <input type="radio" id="teste" name="metodo_sorteggio" value="teste">
+                    <label for="teste">
+                        <i class="fas fa-star"></i>
+                        Teste di Serie
+                    </label>
+                </div>
+                <div class="sorteggio-option">
+                    <input type="radio" id="manuale" name="metodo_sorteggio" value="manuale">
+                    <label for="manuale">
+                        <i class="fas fa-hand-pointer"></i>
+                        Manuale
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="action-button">
+                <i class="fas fa-arrow-right"></i> AVANTI
+            </button>
+            <a href="{{ url_for('tournaments.view_tournament', tournament_id=tournament.id) }}" class="action-button secondary">
+                <i class="fas fa-times"></i> ANNULLA
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .main-container {
+        width: 100%;
+        max-width: 600px;
+        min-width: 350px;
+        margin: 0 auto;
+        padding: 15px;
+    }
+
+    .section-header {
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        margin: 0;
+    }
+
+    .tournament-form {
+        width: 100%;
+        background-color: #2a2b2e;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+        color: #e0e0e0;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        background-color: #313236;
+        color: #ffffff;
+        font-size: 0.95rem;
+        box-sizing: border-box;
+    }
+
+    .form-input:focus {
+        border-color: var(--primary-yellow);
+        outline: none;
+    }
+
+    .required {
+        color: #ff2d55;
+        margin-left: 2px;
+    }
+
+    .sorteggio-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+    .sorteggio-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        background-color: #313236;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .sorteggio-option:hover {
+        border-color: var(--primary-yellow);
+        background-color: #3a3b3f;
+    }
+
+    .sorteggio-option input[type="radio"] {
+        display: none;
+    }
+
+    .sorteggio-option input[type="radio"]:checked + label {
+        color: var(--primary-yellow);
+    }
+
+    .sorteggio-option label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        color: #e0e0e0;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .sorteggio-option i {
+        font-size: 1rem;
+        color: var(--primary-yellow);
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    .action-button {
+        flex: 1;
+        min-width: 120px;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 480px) {
+        .main-container {
+            padding: 10px;
+        }
+
+        .tournament-form {
+            padding: 15px;
+        }
+
+        .sorteggio-options {
+            grid-template-columns: 1fr;
+        }
+
+        .button-group {
+            flex-direction: column;
+        }
+
+        .action-button {
+            width: 100%;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sorteggio_options = document.querySelectorAll('.sorteggio-option');
+    
+    sorteggio_options.forEach(option => {
+        option.addEventListener('click', function() {
+            const radio = this.querySelector('input[type="radio"]');
+            radio.checked = true;
+        });
+    });
+});
+</script>
+{% endblock %} 

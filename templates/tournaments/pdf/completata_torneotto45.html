@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ tournament.nome }} - Giornata del {{ day.data.strftime('%d/%m/%Y') }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 14px 14px 0 14px;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1.5px solid #333;
+            padding-bottom: 8px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #333;
+            font-size: 20px;
+        }
+        .header p {
+            margin: 2px 0;
+            color: #666;
+        }
+        .date {
+            font-size: 15px;
+            color: #1976d2;
+            font-weight: bold;
+        }
+        .section-title {
+            color: #15406a;
+            font-size: 13pt;
+            font-weight: bold;
+            text-align: center;
+            margin: 22px 0 13px 0;
+            letter-spacing: 0.5px;
+        }
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+        .teams-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+            margin: 15px 0 15px 0;
+        }
+        .team-card {
+            flex: 1 1 0;
+            min-width: 0;
+            background: #fff;
+            border: 1px solid #1976d2;
+            border-radius: 8px;
+            margin: 0 2px;
+            padding: 6px 4px 6px 4px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .team-title {
+            color: #1976d2;
+            font-size: 11pt;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        .player {
+            font-size: 10pt;
+            margin: 1px 0;
+        }
+        .header-divider {
+            border: none;
+            border-top: 3px solid #1976d2;
+            margin: 0 0 24px 0;
+        }
+        .semifinals-row {
+            display: flex;
+            flex-direction: row;
+            gap: 14px;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
+        .semifinale-card {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 11px;
+            margin-bottom: 11px;
+            flex: 1 1 0;
+            min-width: 0;
+        }
+        .semifinale-header {
+            color: #1976d2;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 7px;
+            text-align: center;
+        }
+        .finale-primo-posto {
+            color: #1976d2;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 7px;
+            text-align: center;
+            padding: 5px;
+            border: 2px solid #1976d2;
+            border-radius: 5px;
+            background: rgba(25, 118, 210, 0.07);
+        }
+        .finale-terzo-posto {
+            color: #28a745;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 7px;
+            text-align: center;
+            padding: 5px;
+            border: 2px solid #28a745;
+            border-radius: 5px;
+            background: rgba(40, 167, 69, 0.07);
+        }
+        .match-result {
+            margin: 9px 0;
+        }
+        .team-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 6px 0;
+            padding: 3px;
+            background: #fff;
+            border-radius: 4px;
+        }
+        .team-players {
+            flex: 1;
+            text-align: center;
+            font-size: 13px;
+        }
+        .vs-row {
+            text-align: center;
+            color: #666;
+            font-weight: bold;
+            margin: 4px 0;
+        }
+        .score {
+            font-weight: bold;
+            color: #1976d2;
+            font-size: 15px;
+            min-width: 36px;
+            text-align: center;
+        }
+        .ranking-container {
+            margin-top: 18px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .ranking-title {
+            color: #1976d2;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #ddd;
+        }
+        .ranking-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .ranking-item:last-child {
+            border-bottom: none;
+        }
+        .ranking-position {
+            width: 28px;
+            font-weight: bold;
+            color: #1976d2;
+            text-align: center;
+        }
+        .ranking-team {
+            flex: 1;
+            text-align: center;
+        }
+        .ranking-players {
+            font-size: 11px;
+        }
+        .ranking-elo {
+            color: #666;
+            font-size: 10px;
+            margin-top: 1px;
+        }
+        .ranking-points {
+            width: 36px;
+            text-align: center;
+            font-weight: bold;
+            color: #1976d2;
+        }
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            .header {
+                margin-bottom: 10px;
+            }
+            .semifinale-card, .ranking-container {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ tournament.nome }}</h1>
+        <p>{{ tournament.circolo }}</p>
+        <p class="date">Giornata del {{ day.data.strftime('%d/%m/%Y') }}</p>
+    </div>
+    <div class="teams-row">
+        {% for team in teams %}
+        <div class="team-card">
+            <div class="team-title">Squadra {{ loop.index }}</div>
+            <div class="player">{{ team[0].nome }} {{ team[0].cognome }}</div>
+            <div class="player">{{ team[1].nome }} {{ team[1].cognome }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="section-title">Semifinali</div>
+    <div class="semifinals-row">
+        {% for semifinale in semifinali %}
+        <div class="semifinale-card">
+            <div class="semifinale-header">Semifinale {{ loop.index }}</div>
+            <div class="match-result">
+                <div class="team-row">
+                    <div class="team-players">
+                        {% for player_id in semifinale.squadra_a %}
+                            {% set player = players_by_id[player_id] %}
+                            {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                        {% endfor %}
+                    </div>
+                    {% if semifinale.risultato %}
+                    <div class="score">{{ semifinale.risultato.squadra_a }}</div>
+                    {% endif %}
+                </div>
+                <div class="vs-row">vs</div>
+                <div class="team-row">
+                    <div class="team-players">
+                        {% for player_id in semifinale.squadra_b %}
+                            {% set player = players_by_id[player_id] %}
+                            {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                        {% endfor %}
+                    </div>
+                    {% if semifinale.risultato %}
+                    <div class="score">{{ semifinale.risultato.squadra_b }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="section-title">Finali</div>
+    <div class="semifinale-card">
+        <div class="finale-primo-posto">Finale 1° e 2° posto</div>
+        <div class="match-result">
+            <div class="team-row">
+                <div class="team-players">
+                    {% if finali.primo_posto.squadra_a %}
+                        {% for player_id in finali.primo_posto.squadra_a %}
+                            {% set player = players_by_id[player_id] %}
+                            {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                        {% endfor %}
+                    {% else %}
+                        Da determinare
+                    {% endif %}
+                </div>
+                {% if finali.primo_posto.risultato %}
+                <div class="score">{{ finali.primo_posto.risultato.squadra_a }}</div>
+                {% endif %}
+            </div>
+
+            <div class="vs-row">vs</div>
+
+            <div class="team-row">
+                <div class="team-players">
+                    {% if finali.primo_posto.squadra_b %}
+                        {% for player_id in finali.primo_posto.squadra_b %}
+                            {% set player = players_by_id[player_id] %}
+                            {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                        {% endfor %}
+                    {% else %}
+                        Da determinare
+                    {% endif %}
+                </div>
+                {% if finali.primo_posto.risultato %}
+                <div class="score">{{ finali.primo_posto.risultato.squadra_b }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="semifinale-card">
+        <div class="finale-terzo-posto">Finale 3° e 4° posto</div>
+        <div class="match-result">
+            <div class="team-row">
+                <div class="team-players">
+                    {% if finali.terzo_posto.squadra_a %}
+                        {% for player_id in finali.terzo_posto.squadra_a %}
+                            {% set player = players_by_id[player_id] %}
+                            {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                        {% endfor %}
+                    {% else %}
+                        Da determinare
+                    {% endif %}
+                </div>
+                {% if finali.terzo_posto.risultato %}
+                <div class="score">{{ finali.terzo_posto.risultato.squadra_a }}</div>
+                {% endif %}
+            </div>
+
+            <div class="vs-row">vs</div>
+
+            <div class="team-row">
+                <div class="team-players">
+                    {% if finali.terzo_posto.squadra_b %}
+                        {% for player_id in finali.terzo_posto.squadra_b %}
+                            {% set player = players_by_id[player_id] %}
+                            {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                        {% endfor %}
+                    {% else %}
+                        Da determinare
+                    {% endif %}
+                </div>
+                {% if finali.terzo_posto.risultato %}
+                <div class="score">{{ finali.terzo_posto.risultato.squadra_b }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if day.get_ranking() %}
+    <div class="section-title">Classifica Coppie</div>
+    <div class="ranking-container">
+        <h2 class="ranking-title">Classifica Coppie</h2>
+        <ul class="ranking-list">
+            {% set classifica = day.get_ranking() %}
+            {% for i in range(0, classifica|length, 2) %}
+            <li class="ranking-item">
+                <div class="ranking-position">{{ (i//2 + 1) }}°</div>
+                <div class="ranking-team">
+                    <div class="ranking-players">
+                        {% set player1 = players_by_id[classifica[i]] %}
+                        {% set player2 = players_by_id[classifica[i+1]] %}
+                        {{ player1.cognome }} {{ player1.nome }} / {{ player2.cognome }} {{ player2.nome }}
+                    </div>
+                    <div class="ranking-elo">
+                        ELO medio: {{ ((player1.get_tournament_elo(tournament.id) + player2.get_tournament_elo(tournament.id)) / 2)|round|int }}
+                    </div>
+                </div>
+                <div class="ranking-points">
+                    {% set elo_history = player1.get_elo_history(tournament.id, day.id) %}
+                    {% if elo_history and elo_history|length > 0 %}
+                        {% set last_elo_change = elo_history[-1].elo_change %}
+                        {{ "{:+.1f}".format(last_elo_change) }}
+                    {% else %}
+                        0.0
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</body>
+</html> 

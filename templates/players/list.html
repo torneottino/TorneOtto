@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+    <h1 class="page-title">Gestione Giocatori</h1>
+    
+    <div class="button-container">
+        <a href="{{ url_for('players.new_player') }}" class="action-button" style="width: 300px; margin: 0 auto;">
+            <i class="fas fa-user-plus"></i>
+            NUOVO GIOCATORE
+        </a>
+    </div>
+    
+    {% if players %}
+    <div class="players-list">
+        {% for player in players %}
+        <div class="player-card">
+            <div class="player-info">
+                <h3>{{ player.cognome }} {{ player.nome }}</h3>
+                <p class="position">{{ player.posizione }}</p>
+                {% if player.telefono %}
+                <p class="phone">{{ player.telefono }}</p>
+                {% endif %}
+                <p class="elo">ELO: {{ player.elo_standard|round(2) }}</p>
+            </div>
+            <div class="player-actions">
+                <a href="{{ url_for('players.edit_player', player_id=player.id) }}" class="icon-button edit" title="Modifica giocatore">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <form action="{{ url_for('players.delete_player', player_id=player.id) }}" method="POST" class="delete-form" onsubmit="return confirm('Sei sicuro di voler eliminare questo giocatore?');">
+                    <button type="submit" class="icon-button delete" title="Elimina giocatore">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="no-data">Nessun giocatore presente nel database.</p>
+    {% endif %}
+</div>
+{% endblock %} 

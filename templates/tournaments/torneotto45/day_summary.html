@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ tournament.nome }} - Giornata del {{ day.data.strftime('%d/%m/%Y') }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1.2cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12pt;
+            color: #000;
+            background: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .header h1 {
+            color: #28a745;
+            font-size: 20pt;
+            margin: 0 0 4px 0;
+        }
+        .header p {
+            color: #1976d2;
+            font-size: 13pt;
+            margin: 0 0 2px 0;
+        }
+        .header .date {
+            color: #28a745;
+            font-size: 12pt;
+            margin-bottom: 0;
+        }
+        .section-title {
+            color: #15406a;
+            font-size: 16pt;
+            font-weight: bold;
+            text-align: center;
+            margin: 36px 0 18px 0;
+            letter-spacing: 0.5px;
+        }
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+        .teams-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 28px 0 28px 0;
+        }
+        .team-card {
+            flex: 1 1 0;
+            min-width: 0;
+            background: #fff;
+            border: 1px solid #1976d2;
+            border-radius: 8px;
+            margin: 0 2px;
+            padding: 8px 4px 8px 4px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .team-title {
+            color: #1976d2;
+            font-size: 13pt;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        .player {
+            font-size: 11pt;
+            margin: 2px 0;
+        }
+        .matches-section {
+            margin: 36px 0 0 0;
+        }
+        .match-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto 10px auto;
+        }
+        .match-table th, .standings-table th {
+            background: #1976d2;
+            color: #fff;
+            font-size: 11pt;
+            padding: 8px 4px 8px 4px;
+            text-align: center;
+        }
+        .match-table td {
+            border-bottom: 1px solid #eee;
+            padding: 4px 2px;
+            text-align: center;
+            font-size: 11pt;
+        }
+        .score {
+            color: #fff;
+            background: #28a745;
+            border-radius: 4px;
+            padding: 2px 10px;
+            font-weight: bold;
+            min-width: 36px;
+            display: inline-block;
+        }
+        .match-type {
+            color: #1976d2;
+            font-weight: bold;
+            font-size: 13pt;
+            text-align: center;
+            margin: 20px 0 10px 0;
+            padding: 5px;
+            border: 2px solid #1976d2;
+            border-radius: 4px;
+            background: rgba(25, 118, 210, 0.1);
+        }
+        .match-type.finale-primo {
+            color: #1f6feb;
+            border-color: #1f6feb;
+            background: rgba(31, 111, 235, 0.1);
+        }
+        .match-type.finale-terzo {
+            color: #28a745;
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+        .standings-section {
+            margin: 36px 0 0 0;
+        }
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto 10px auto;
+        }
+        .standings-table td {
+            border-bottom: 1px solid #eee;
+            padding: 4px 2px;
+            text-align: center;
+            font-size: 11pt;
+        }
+        .header-divider {
+            border: none;
+            border-top: 3px solid #1976d2;
+            margin: 0 0 24px 0;
+        }
+        .footer-pdf {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 8pt;
+            color: #888;
+            padding: 6px 0 2px 0;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ tournament.nome }}</h1>
+        <p>{{ tournament.circolo }}</p>
+        <p class="date">Giornata del {{ day.data.strftime('%d/%m/%Y') }}</p>
+    </div>
+    <hr class="header-divider">
+
+    <div class="section-title">Squadre</div>
+    <div class="teams-row">
+        {% for team in teams %}
+        <div class="team-card">
+            <div class="team-title">Squadra {{ loop.index }}</div>
+            <div class="player">{{ team[0].nome }} {{ team[0].cognome }}</div>
+            <div class="player">{{ team[1].nome }} {{ team[1].cognome }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="section-title">Partite e Risultati</div>
+    <div class="matches-section">
+        <table class="match-table">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Squadra A</th>
+                    <th>Risultato</th>
+                    <th>Squadra B</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for semifinale in semifinali %}
+                <tr>
+                    <td>Semifinale {{ loop.index }}</td>
+                    <td>
+                        {% for player_id in semifinale.squadra_a %}
+                            {% set player = players_by_id[player_id] %}
+                            {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                        {% endfor %}
+                    </td>
+                    <td><span class="score">{{ semifinale.risultato.squadra_a if semifinale.risultato else '-' }} - {{ semifinale.risultato.squadra_b if semifinale.risultato else '-' }}</span></td>
+                    <td>
+                        {% for player_id in semifinale.squadra_b %}
+                            {% set player = players_by_id[player_id] %}
+                            {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+
+                {% if finali.primo_posto.risultato %}
+                <tr>
+                    <td class="match-type finale-primo">Finale 1° e 2° posto</td>
+                    <td>
+                        {% for player_id in finali.primo_posto.squadra_a %}
+                            {% set player = players_by_id[player_id] %}
+                            {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                        {% endfor %}
+                    </td>
+                    <td><span class="score">{{ finali.primo_posto.risultato.squadra_a }} - {{ finali.primo_posto.risultato.squadra_b }}</span></td>
+                    <td>
+                        {% for player_id in finali.primo_posto.squadra_b %}
+                            {% set player = players_by_id[player_id] %}
+                            {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endif %}
+
+                {% if finali.terzo_posto.risultato %}
+                <tr>
+                    <td class="match-type finale-terzo">Finale 3° e 4° posto</td>
+                    <td>
+                        {% for player_id in finali.terzo_posto.squadra_a %}
+                            {% set player = players_by_id[player_id] %}
+                            {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                        {% endfor %}
+                    </td>
+                    <td><span class="score">{{ finali.terzo_posto.risultato.squadra_a }} - {{ finali.terzo_posto.risultato.squadra_b }}</span></td>
+                    <td>
+                        {% for player_id in finali.terzo_posto.squadra_b %}
+                            {% set player = players_by_id[player_id] %}
+                            {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if classifica %}
+    <div class="section-title">Classifica Coppie</div>
+    <div class="standings-section">
+        <table class="standings-table">
+            <thead>
+                <tr>
+                    <th>Pos</th>
+                    <th>Coppia</th>
+                    <th>ELO Medio</th>
+                    <th>Variazione</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in range(0, classifica|length, 2) %}
+                <tr>
+                    <td>{{ (i//2 + 1) }}°</td>
+                    <td>
+                        {% set player1 = players_by_id[classifica[i]] %}
+                        {% set player2 = players_by_id[classifica[i+1]] %}
+                        {{ player1.cognome }} {{ player1.nome }} / {{ player2.cognome }} {{ player2.nome }}
+                    </td>
+                    <td>{{ ((player1.get_tournament_elo(tournament.id) + player2.get_tournament_elo(tournament.id)) / 2)|round|int }}</td>
+                    <td>
+                        {% set elo_history = player1.get_elo_history(tournament.id, day.id) %}
+                        {% if elo_history and elo_history|length > 0 %}
+                            {% set last_elo_change = elo_history[-1].elo_change %}
+                            {{ "{:+.1f}".format(last_elo_change) }}
+                        {% else %}
+                            0.0
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <div class="footer-pdf">TorneOtto, The Padel App - Versione 3.0.2 - @ Mattia Ianniello, 2025</div>
+</body>
+</html> 

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+    <h1 class="page-title">Modifica Giocatore</h1>
+    
+    <form method="POST" class="player-form">
+        <div class="form-group">
+            <label for="nome">Nome *</label>
+            <input type="text" id="nome" name="nome" required class="form-input" value="{{ player.nome }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="cognome">Cognome *</label>
+            <input type="text" id="cognome" name="cognome" required class="form-input" value="{{ player.cognome }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="telefono">Telefono</label>
+            <input type="tel" id="telefono" name="telefono" class="form-input" value="{{ player.telefono or '' }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="posizione">Posizione *</label>
+            <select id="posizione" name="posizione" required class="form-input">
+                <option value="">Seleziona posizione</option>
+                <option value="Destra" {% if player.posizione == 'Destra' %}selected{% endif %}>Destra</option>
+                <option value="Sinistra" {% if player.posizione == 'Sinistra' %}selected{% endif %}>Sinistra</option>
+                <option value="Indifferente" {% if player.posizione == 'Indifferente' %}selected{% endif %}>Indifferente</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="elo_standard">ELO Standard</label>
+            <input type="number" id="elo_standard" name="elo_standard" class="form-input" value="{{ player.elo_standard }}" step="0.01">
+        </div>
+        
+        <button type="submit" class="action-button">
+            <i class="fas fa-save"></i>
+            SALVA MODIFICHE
+        </button>
+        
+        <a href="{{ url_for('players.players_list') }}" class="action-button secondary">
+            <i class="fas fa-arrow-left"></i>
+            TORNA ALLA LISTA
+        </a>
+    </form>
+</div>
+{% endblock %} 

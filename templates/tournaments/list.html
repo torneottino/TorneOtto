@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block head_extra_css %}
+    <style>
+      .tornei-header-space {
+        margin-top: 1.75rem; /* -30% rispetto a 2.5rem */
+        margin-bottom: 1.54rem; /* -30% rispetto a 2.2rem */
+      }
+      .torneo-card {
+        padding: 14px 14px 10px 14px !important;
+        gap: 4px !important;
+        font-size: 0.95em !important;
+        min-width: 0;
+        max-width: 500px;
+        margin: 0 auto 14px auto;
+        background: #313236 !important;
+        border-radius: 10px;
+      }
+      .torneo-nome {
+        font-size: calc(1em + 5px) !important;
+        font-weight: 700;
+        color: #ffd60a !important;
+        margin-bottom: 12px !important;
+        display: block;
+      }
+      .torneo-info {
+        font-size: calc(0.85em + 2px) !important;
+        gap: 10px !important;
+        margin-bottom: 6px !important;
+      }
+      .torneo-badge {
+        font-size: calc(0.85em + 2px) !important;
+        padding: 4px 12px !important; /* +2px altezza totale */
+        border-radius: 10px;
+        font-weight: 500;
+        margin-right: 6px;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      .torneo-badge.torneotto30 { background: rgba(52,199,89,0.18); color: #34c759; }
+      .torneo-badge.torneotto45 { background: rgba(255,214,10,0.18); color: #ffd60a; }
+      .torneo-badge.gironi { background: rgba(88,86,214,0.18); color: #5856d6; }
+      .torneo-badge.eliminazione { background: rgba(255,45,85,0.18); color: #ff2d55; }
+      .torneo-actions { display: flex; gap: 10px; align-items: center; }
+      .torneo-actions a, .torneo-actions button { font-size: 1.1em !important; color: #bbb !important; background: none; border: none; padding: 0; margin: 0; display: flex; align-items: center; transition: color 0.2s; }
+      .torneo-actions a:hover, .torneo-actions button:hover { color: #34c759 !important; }
+      .torneo-actions { margin-left: 10px; }
+      .torneo-info i { font-size: 1em !important; margin-right: 3px; vertical-align: middle; color: #bbb !important; }
+      .button_container { display: flex; justify-content: center; margin-top: 1.8rem; }
+      .nuovo-torneo-btn { width: auto !important; min-width: 160px; padding: 15px 18px !important; font-size: 0.95em !important; margin-top: 0 !important; border-radius: 10px; }
+      /* Stato torneo allineato a destra sotto le icone */
+      .torneo-stato-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+      .torneo-stato {
+        font-size: calc(0.80em + 2px) !important;
+        padding: 5px 12px !important; /* +2px altezza totale */
+        border-radius: 10px;
+        display: inline-block;
+        min-width: 110px;
+        text-align: right;
+        font-weight: 600;
+      }
+      .torneo-stato.pianificato { background: rgba(31,111,235,0.18); color: #1f6feb; }
+      .torneo-stato.incorso { background: rgba(52,199,89,0.18); color: #34c759; }
+      .torneo-stato.completato { background: rgba(120,120,120,0.18); color: #b0b0b0; }
+      .torneo-stato.altro { background: #444; color: #fff; }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="main-container">
+  <h2 class="text-center tornei-header-space">Tornei</h2>
+
+  {% if tournaments %}
+    {% for torneo in tournaments %}
+      <div class="torneo-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="torneo-nome">{{ torneo.nome }}</span>
+          <div class="torneo-actions">
+            <a href="{{ url_for('tournaments.view_tournament', tournament_id=torneo.id) }}" title="Visualizza dettagli"><i class="fas fa-eye"></i></a>
+            <a href="{{ url_for('tournaments.edit_tournament', tournament_id=torneo.id) }}" title="Modifica torneo"><i class="fas fa-pen"></i></a>
+            <form action="{{ url_for('tournaments.delete_tournament', tournament_id=torneo.id) }}" method="POST" style="display: inline;">
+              <button type="submit" onclick="return confirm('Sei sicuro di voler eliminare questo torneo?')" title="Elimina torneo">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="torneo-info" style="flex-wrap: wrap; align-items: center;">
+          <span>
+            <span class="torneo-badge {% if torneo.tipo_torneo == 'torneotto30' %}torneotto30{% elif torneo.tipo_torneo == 'torneotto45' %}torneotto45{% elif torneo.tipo_torneo == 'gironi' %}gironi{% elif torneo.tipo_torneo == 'eliminazione' %}eliminazione{% endif %}">
+              {% if torneo.tipo_torneo == 'torneotto30' %}TorneOtto 30'
+              {% elif torneo.tipo_torneo == 'torneotto45' %}TorneOtto 45'
+              {% elif torneo.tipo_torneo == 'gironi' %}A Gironi
+              {% elif torneo.tipo_torneo == 'eliminazione' %}Eliminazione Diretta
+              {% else %}{{ torneo.tipo_torneo }}{% endif %}
+            </span>
+          </span>
+          <span><i class="fas fa-location-dot"></i> {{ torneo.circolo or '-' }}</span>
+          <span><i class="fas fa-calendar-day"></i> {{ torneo.data_inizio.strftime('%d/%m/%Y') }}</span>
+        </div>
+        <div class="torneo-stato-row">
+          <span class="torneo-stato {% if torneo.stato.lower() == 'pianificato' %}pianificato{% elif torneo.stato.lower() == 'in corso' %}incorso{% elif torneo.stato.lower() == 'completato' %}completato{% else %}altro{% endif %}">
+            <i class="fas fa-flag"></i> {{ torneo.stato }}
+          </span>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="torneo-card">
+      <div class="torneo-info">
+        <i class="fas fa-info-circle"></i>
+        <span>Nessun torneo creato. Crea un nuovo torneo!</span>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="button_container">
+    <a href="{{ url_for('tournaments.new_tournament') }}" class="nuovo-torneo-btn action-button">
+      <i class="fas fa-plus"></i> NUOVO TORNEO
+    </a>
+  </div>
+</div>
+{% endblock %} 

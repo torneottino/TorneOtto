@@ -1,0 +1,38 @@
+{% for match in finals %}
+<div class="match-card">
+    <div class="match-header">
+        <span class="match-number">{{ 'Finale 1°-2° posto' if loop.index == 1 else 'Finale 3°-4° posto' }}</span>
+    </div>
+    <div class="match-teams">
+        <div class="match-team">
+            <div class="team-players">
+                <div class="team-player">{{ match.team1.player1.cognome }} {{ match.team1.player1.nome }}</div>
+                <div class="team-player">{{ match.team1.player2.cognome }} {{ match.team1.player2.nome }}</div>
+            </div>
+            <input type="number" 
+                   name="result_{{ match.id }}_team1" 
+                   class="score-input"
+                   min="0" 
+                   max="15" 
+                   required
+                   title="Punteggio Squadra 1"
+                   placeholder="0">
+        </div>
+        <div class="vs">VS</div>
+        <div class="match-team">
+            <div class="team-players">
+                <div class="team-player">{{ match.team2.player1.cognome }} {{ match.team2.player1.nome }}</div>
+                <div class="team-player">{{ match.team2.player2.cognome }} {{ match.team2.player2.nome }}</div>
+            </div>
+            <input type="number" 
+                   name="result_{{ match.id }}_team2" 
+                   class="score-input"
+                   min="0" 
+                   max="15" 
+                   required
+                   title="Punteggio Squadra 2"
+                   placeholder="0">
+        </div>
+    </div>
+</div>
+{% endfor %} 

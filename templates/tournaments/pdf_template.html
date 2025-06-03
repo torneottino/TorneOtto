@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Tabellone Torneo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        h1 {
+            color: #007bff;
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        h2 {
+            color: #666;
+            margin: 5px 0;
+            font-size: 18px;
+        }
+        
+        .tournament-date {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .team-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        
+        .team-header {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .player-info {
+            background-color: white;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .player-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .player-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #777;
+        }
+        
+        .round-card {
+            margin-bottom: 25px;
+        }
+        
+        .round-header {
+            background-color: #666;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .match-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .match-team {
+            text-align: center;
+            width: 40%;
+        }
+        
+        .team-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #28a745;
+        }
+        
+        .team-players-summary {
+            font-size: 12px;
+            color: #777;
+        }
+        
+        .match-vs {
+            font-weight: bold;
+            color: #ff9800;
+            font-size: 16px;
+            width: 20%;
+            text-align: center;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            font-size: 12px;
+            color: #777;
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            
+            .section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ tournament.nome }}</h1>
+        <h2>{{ tournament.circolo }}</h2>
+        <div class="tournament-date">Giornata del {{ date }}</div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Squadre Formate</div>
+        <div class="teams-grid">
+            {% for i in range(4) %}
+            <div class="team-card">
+                <div class="team-header">Squadra {{ i+1 }}</div>
+                <div class="team-players">
+                    <div class="player-info">
+                        <div class="player-name">{{ teams[i][0].nome }} {{ teams[i][0].cognome }}</div>
+                        <div class="player-details">
+                            <span class="player-elo">ELO: {{ teams[i][0].elo_standard }}</span>
+                            <span class="player-position">{{ teams[i][0].posizione }}</span>
+                        </div>
+                    </div>
+                    <div class="player-info">
+                        <div class="player-name">{{ teams[i][1].nome }} {{ teams[i][1].cognome }}</div>
+                        <div class="player-details">
+                            <span class="player-elo">ELO: {{ teams[i][1].elo_standard }}</span>
+                            <span class="player-position">{{ teams[i][1].posizione }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Tabellone Partite</div>
+        
+        {% for round_num in range(3) %}
+        <div class="round-card">
+            <div class="round-header">Turno {{ round_num + 1 }}</div>
+            <div class="matches-grid">
+                {% for match in schedule[round_num] %}
+                <div class="match-card">
+                    <div class="match-team">
+                        <div class="team-name">Squadra {{ match[0] }}</div>
+                        <div class="team-players-summary">
+                            {{ teams[match[0]-1][0].cognome }} / {{ teams[match[0]-1][1].cognome }}
+                        </div>
+                    </div>
+                    <div class="match-vs">VS</div>
+                    <div class="match-team">
+                        <div class="team-name">Squadra {{ match[1] }}</div>
+                        <div class="team-players-summary">
+                            {{ teams[match[1]-1][0].cognome }} / {{ teams[match[1]-1][1].cognome }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="footer">
+        Documento generato automaticamente il {{ now.strftime('%d/%m/%Y %H:%M') }}
+    </div>
+</body>
+</html> 

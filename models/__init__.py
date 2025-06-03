@@ -1,0 +1,1 @@
+# Questo file permette di importare dal pacchetto models 

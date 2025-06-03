@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Selezione Teste di Serie - {{ tournament.nome }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Selezione Teste di Serie - {{ tournament.nome }}</h2>
+    
+    <div class="alert alert-info">
+        <h4 class="alert-heading">Istruzioni</h4>
+        <p>Seleziona fino a {{ num_gironi }} teste di serie. Ogni testa di serie verrà assegnata a un girone diverso.</p>
+        <p>I giocatori sono ordinati per ELO del torneo.</p>
+    </div>
+    
+    <form method="POST" action="{{ url_for('tournaments.gironi_seeded_pairing', tournament_id=tournament.id) }}">
+        <input type="hidden" name="data" value="{{ date }}">
+        <input type="hidden" name="players" value="{{ players }}">
+        <input type="hidden" name="num_coppie" value="{{ num_coppie }}">
+        <input type="hidden" name="num_gironi" value="{{ num_gironi }}">
+        <input type="hidden" name="seeded_players" id="seededPlayersInput">
+        
+        <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4>Giocatori Disponibili</h4>
+                <div class="selected-count">
+                    Teste di serie selezionate: <span id="selectedCount">0</span>/{{ num_gironi }}
+                </div>
+            </div>
+        </div>
+        
+        <div id="playersGrid" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-4">
+            {% for player in all_players %}
+            <div class="col">
+                <div class="player-card-selectable card h-100" data-id="{{ player.id }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ player.cognome }} {{ player.nome }}</h5>
+                        <div class="player-meta text-muted">
+                            {{ player.tournament_elo|round|int }} ELO
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="d-flex justify-content-between">
+            <a href="{{ url_for('tournaments.select_gironi_players', tournament_id=tournament.id, data=date, num_coppie=num_coppie, num_gironi=num_gironi, metodo_sorteggio='seeded') }}" 
+               class="btn btn-secondary">Indietro</a>
+            <button type="submit" id="confirmBtn" class="btn btn-primary" disabled>
+                Conferma e Procedi
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+.player-card-selectable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.player-card-selectable:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.player-card-selectable.selected {
+    border-color: #28a745;
+    background-color: #f8fff9;
+}
+
+.selected-count {
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #28a745;
+}
+
+#confirmBtn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const playersGrid = document.getElementById('playersGrid');
+    const selectedCount = document.getElementById('selectedCount');
+    const seededPlayersInput = document.getElementById('seededPlayersInput');
+    const confirmBtn = document.getElementById('confirmBtn');
+    const maxSeeded = {{ num_gironi }};
+    let selectedPlayers = [];
+
+    // Ordina i giocatori per ELO del torneo
+    const playerCards = Array.from(playersGrid.children);
+    playerCards.sort((a, b) => {
+        const eloA = parseFloat(a.querySelector('.player-meta').textContent.split(' /')[0]);
+        const eloB = parseFloat(b.querySelector('.player-meta').textContent.split(' /')[0]);
+        return eloB - eloA;
+    });
+    
+    // Riappendi le carte ordinate
+    playerCards.forEach(card => playersGrid.appendChild(card));
+
+    // Gestione click sulle carte
+    playersGrid.addEventListener('click', function(e) {
+        const card = e.target.closest('.player-card-selectable');
+        if (!card) return;
+
+        const playerId = card.dataset.id;
+        const isSelected = card.classList.toggle('selected');
+
+        if (isSelected) {
+            if (selectedPlayers.length >= maxSeeded) {
+                card.classList.remove('selected');
+                return;
+            }
+            selectedPlayers.push(playerId);
+        } else {
+            selectedPlayers = selectedPlayers.filter(id => id !== playerId);
+        }
+
+        selectedCount.textContent = selectedPlayers.length;
+        seededPlayersInput.value = selectedPlayers.join(',');
+        
+        // Abilita/disabilita il pulsante di conferma
+        confirmBtn.disabled = selectedPlayers.length === 0;
+    });
+});
+</script>
+{% endblock %} 

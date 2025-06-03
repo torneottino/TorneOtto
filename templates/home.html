@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+    <div class="action-grid">
+        <a href="{{ url_for('players.new_player') }}" class="grid-item">
+            <i class="fas fa-user-plus"></i>
+            <span>Inserisci<br>Giocatori</span>
+        </a>
+        <a href="{{ url_for('players.players_list') }}" class="grid-item">
+            <i class="fas fa-address-book"></i>
+            <span>Gestisci<br>Giocatori</span>
+        </a>
+        <a href="/tornei" class="grid-item">
+            <i class="fas fa-trophy"></i>
+            <span>Gestione<br>Tornei</span>
+        </a>
+        <a href="/classifiche" class="grid-item">
+            <i class="fas fa-list-ol"></i>
+            <span>Classifiche</span>
+        </a>
+        <a href="/esporta" class="grid-item">
+            <i class="fas fa-file-pdf"></i>
+            <span>Esporta<br>PDF</span>
+        </a>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,426 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+    <div class="section-header">
+        <h2 class="section-title">
+            <i class="fas fa-edit"></i>
+            Inserisci Risultati - Giornata {{ day.data.strftime('%d/%m/%Y') }}
+        </h2>
+        <div class="section-subtitle">
+            {{ tournament.nome }}
+        </div>
+    </div>
+
+    <form method="POST" class="results-form">
+        {% for group in groups %}
+        <div class="group-section">
+            <h3 class="group-title">Girone {{ group.id }}</h3>
+            
+            <div class="matches-grid">
+                {% for match in group.matches %}
+                <div class="match-card">
+                    <div class="match-teams">
+                        <div class="team">
+                            {% for player in match.team1.players %}
+                            <div class="player-info">
+                                <span class="player-name">{{ player.nome }}</span>
+                                <span class="player-elo">ELO: {{ player.elo }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="score-inputs">
+                            <div class="score-input-group">
+                                <label for="score_team1_{{ match.id }}" class="visually-hidden">Punteggio squadra 1</label>
+                                <input type="number" 
+                                       id="score_team1_{{ match.id }}"
+                                       name="score_team1_{{ match.id }}" 
+                                       value="{{ match.risultato_team1 or '' }}"
+                                       min="0"
+                                       class="score-input"
+                                       aria-label="Punteggio squadra 1"
+                                       required>
+                            </div>
+                            <span class="separator" aria-hidden="true">-</span>
+                            <div class="score-input-group">
+                                <label for="score_team2_{{ match.id }}" class="visually-hidden">Punteggio squadra 2</label>
+                                <input type="number"
+                                       id="score_team2_{{ match.id }}"
+                                       name="score_team2_{{ match.id }}"
+                                       value="{{ match.risultato_team2 or '' }}"
+                                       min="0"
+                                       class="score-input"
+                                       aria-label="Punteggio squadra 2"
+                                       required>
+                            </div>
+                        </div>
+                        
+                        <div class="team">
+                            {% for player in match.team2.players %}
+                            <div class="player-info">
+                                <span class="player-name">{{ player.nome }}</span>
+                                <span class="player-elo">ELO: {{ player.elo }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        {% if semifinals %}
+        <div class="phase-section">
+            <h3 class="phase-title">Semifinali</h3>
+            <div class="matches-grid">
+                {% for match in semifinals %}
+                <div class="match-card">
+                    <div class="match-teams">
+                        <div class="team">
+                            {% for player in match.team1.players %}
+                            <div class="player-info">
+                                <span class="player-name">{{ player.nome }}</span>
+                                <span class="player-elo">ELO: {{ player.elo }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="score-inputs">
+                            <div class="score-input-group">
+                                <label for="score_team1_{{ match.id }}" class="visually-hidden">Punteggio squadra 1</label>
+                                <input type="number"
+                                       id="score_team1_{{ match.id }}"
+                                       name="score_team1_{{ match.id }}"
+                                       value="{{ match.risultato_team1 or '' }}"
+                                       min="0"
+                                       class="score-input"
+                                       aria-label="Punteggio squadra 1"
+                                       required>
+                            </div>
+                            <span class="separator" aria-hidden="true">-</span>
+                            <div class="score-input-group">
+                                <label for="score_team2_{{ match.id }}" class="visually-hidden">Punteggio squadra 2</label>
+                                <input type="number"
+                                       id="score_team2_{{ match.id }}"
+                                       name="score_team2_{{ match.id }}"
+                                       value="{{ match.risultato_team2 or '' }}"
+                                       min="0"
+                                       class="score-input"
+                                       aria-label="Punteggio squadra 2"
+                                       required>
+                            </div>
+                        </div>
+                        
+                        <div class="team">
+                            {% for player in match.team2.players %}
+                            <div class="player-info">
+                                <span class="player-name">{{ player.nome }}</span>
+                                <span class="player-elo">ELO: {{ player.elo }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if finals %}
+        <div class="phase-section">
+            <h3 class="phase-title">Finali</h3>
+            <div class="matches-grid">
+                {% for match in finals %}
+                <div class="match-card">
+                    <div class="match-teams">
+                        <div class="team">
+                            {% for player in match.team1.players %}
+                            <div class="player-info">
+                                <span class="player-name">{{ player.nome }}</span>
+                                <span class="player-elo">ELO: {{ player.elo }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="score-inputs">
+                            <div class="score-input-group">
+                                <label for="score_team1_{{ match.id }}" class="visually-hidden">Punteggio squadra 1</label>
+                                <input type="number"
+                                       id="score_team1_{{ match.id }}"
+                                       name="score_team1_{{ match.id }}"
+                                       value="{{ match.risultato_team1 or '' }}"
+                                       min="0"
+                                       class="score-input"
+                                       aria-label="Punteggio squadra 1"
+                                       required>
+                            </div>
+                            <span class="separator" aria-hidden="true">-</span>
+                            <div class="score-input-group">
+                                <label for="score_team2_{{ match.id }}" class="visually-hidden">Punteggio squadra 2</label>
+                                <input type="number"
+                                       id="score_team2_{{ match.id }}"
+                                       name="score_team2_{{ match.id }}"
+                                       value="{{ match.risultato_team2 or '' }}"
+                                       min="0"
+                                       class="score-input"
+                                       aria-label="Punteggio squadra 2"
+                                       required>
+                            </div>
+                        </div>
+                        
+                        <div class="team">
+                            {% for player in match.team2.players %}
+                            <div class="player-info">
+                                <span class="player-name">{{ player.nome }}</span>
+                                <span class="player-elo">ELO: {{ player.elo }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="button-group">
+            <button type="submit" class="action-button">
+                <i class="fas fa-save"></i> SALVA RISULTATI
+            </button>
+            <a href="{{ url_for('tournaments.view_gironi_day', tournament_id=tournament.id, day_id=day.id) }}" class="action-button secondary">
+                <i class="fas fa-times"></i> ANNULLA
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .main-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .section-header {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .section-title {
+        font-size: 24px;
+        color: var(--primary-yellow);
+        margin-bottom: 10px;
+    }
+
+    .section-subtitle {
+        color: #888;
+        font-size: 16px;
+    }
+
+    .results-form {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .group-section {
+        background-color: #313236;
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    .group-title {
+        font-size: 20px;
+        color: var(--primary-yellow);
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .phase-section {
+        background-color: #313236;
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    .phase-title {
+        font-size: 20px;
+        color: var(--primary-yellow);
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .matches-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .match-card {
+        background-color: #444;
+        border-radius: 8px;
+        padding: 20px;
+    }
+
+    .match-teams {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .team {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .player-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .player-name {
+        font-size: 16px;
+        color: #fff;
+    }
+
+    .player-elo {
+        font-size: 14px;
+        color: var(--primary-yellow);
+    }
+
+    .score-inputs {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .score-input {
+        width: 60px;
+        height: 40px;
+        text-align: center;
+        font-size: 18px;
+        border: 2px solid #666;
+        border-radius: 6px;
+        background-color: #333;
+        color: #fff;
+        transition: all 0.2s ease;
+    }
+
+    .score-input:focus {
+        border-color: var(--primary-yellow);
+        outline: none;
+    }
+
+    .score-input::-webkit-inner-spin-button,
+    .score-input::-webkit-outer-spin-button {
+        opacity: 1;
+        height: 30px;
+    }
+
+    .separator {
+        color: #888;
+        font-size: 18px;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .action-button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .action-button:hover {
+        transform: translateY(-2px);
+    }
+
+    .action-button.secondary {
+        background-color: #444444;
+        color: #fff;
+    }
+
+    @media (max-width: 768px) {
+        .matches-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .match-teams {
+            flex-direction: column;
+        }
+
+        .score-inputs {
+            margin: 15px 0;
+        }
+
+        .button-group {
+            flex-direction: column;
+        }
+    }
+
+    .score-input-group {
+        position: relative;
+    }
+
+    .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.results-form');
+    const inputs = form.querySelectorAll('.score-input');
+
+    // Aggiungi validazione per i punteggi
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            if (this.value < 0) {
+                this.value = 0;
+            }
+        });
+    });
+
+    // Previeni l'invio del form se ci sono campi vuoti
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        inputs.forEach(input => {
+            if (!input.value) {
+                isValid = false;
+                input.style.borderColor = 'red';
+            } else {
+                input.style.borderColor = '#666';
+            }
+        });
+
+        if (!isValid) {
+            e.preventDefault();
+            alert('Per favore, inserisci tutti i punteggi delle partite.');
+        }
+    });
+});
+</script>
+{% endblock %} 

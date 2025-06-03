@@ -1,0 +1,409 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+    <div class="section-header">
+        <h2 class="section-title">
+            <i class="fas fa-random"></i>
+            Formazione Coppie - {{ tournament.nome }}
+        </h2>
+        <div class="section-subtitle">
+            Metodo: {{ method|title }}
+        </div>
+    </div>
+
+    <div class="pairing-container">
+        <div class="pairing-animation" id="pairing-animation">
+            <!-- L'animazione verrà generata qui -->
+        </div>
+
+        <form method="POST" class="pairing-form" id="pairing-form" style="display: none;" action="{{ url_for('tournaments.save_gironi_day_from_pairing', tournament_id=tournament.id) }}">
+            <input type="hidden" name="data" value="{{ date }}">
+            <input type="hidden" name="num_coppie" value="{{ num_coppie }}">
+            <input type="hidden" name="num_gironi" value="{{ num_gironi }}">
+            <input type="hidden" name="metodo_sorteggio" value="{{ method }}">
+            <input type="hidden" name="teams" id="teams-data">
+            <input type="hidden" name="groups" id="groups-data">
+            
+            <div class="button-group">
+                <button type="submit" class="action-button">
+                    <i class="fas fa-save"></i> SALVA COPPIE E GIRONI
+                </button>
+                <a href="{{ url_for('tournaments.view_tournament', tournament_id=tournament.id) }}" class="action-button secondary">
+                    <i class="fas fa-times"></i> ANNULLA
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .main-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .section-header {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .section-title {
+        font-size: 24px;
+        color: var(--primary-yellow);
+        margin-bottom: 10px;
+    }
+
+    .section-subtitle {
+        color: #888;
+        font-size: 16px;
+    }
+
+    .pairing-container {
+        background-color: #313236;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 30px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .pairing-animation {
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .player-card {
+        background-color: #444;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 12px;
+        margin: 4px;
+        width: 180px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .player-card.moving {
+        animation: moveCard 1s ease-in-out;
+    }
+
+    .player-card.paired {
+        border-color: var(--primary-yellow);
+        background-color: rgba(255, 215, 0, 0.1);
+    }
+
+    .player-name {
+        font-size: 16px;
+        color: #fff;
+        margin-bottom: 5px;
+    }
+
+    .player-elo {
+        font-size: 12px;
+        color: var(--primary-yellow);
+    }
+
+    .team-container {
+        display: flex;
+        gap: 8px;
+        margin: 10px 0;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s ease;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .team-container.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .group-container {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s ease;
+        width: 100%;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .group-container.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .group-title {
+        font-size: 20px;
+        color: #28a745;
+        margin-bottom: 15px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    @keyframes moveCard {
+        0% {
+            transform: translate(0, 0);
+        }
+        50% {
+            transform: translate(var(--move-x), var(--move-y));
+        }
+        100% {
+            transform: translate(0, 0);
+        }
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .action-button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .action-button:hover {
+        transform: translateY(-2px);
+    }
+
+    .action-button.secondary {
+        background-color: #444444;
+        color: #fff;
+    }
+
+    @media (max-width: 768px) {
+        .pairing-container {
+            padding: 10px;
+        }
+
+        .player-card {
+            width: 140px;
+            padding: 8px;
+        }
+
+        .group-container {
+            padding: 10px;
+        }
+
+        .team-container {
+            gap: 4px;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const players = {{ players|tojson }};
+    const numGironi = {{ num_gironi }};
+    const method = '{{ method }}';
+    const seededPlayerIds = {% if seeded_players %}[{{ seeded_players|join(',') }}]{% else %}[]{% endif %};
+    const pairingAnimation = document.getElementById('pairing-animation');
+    const pairingForm = document.getElementById('pairing-form');
+    const teamsDataInput = document.getElementById('teams-data');
+    const groupsDataInput = document.getElementById('groups-data');
+
+    function createPlayerCard(player) {
+        const card = document.createElement('div');
+        card.className = 'player-card';
+        card.innerHTML = `
+            <div class="player-name">${player.nome} ${player.cognome}</div>
+            <div class="player-elo">ELO: ${Math.round(player.tournament_elo)}</div>
+        `;
+        return card;
+    }
+
+    // Funzione per mescolare un array
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // Funzione per creare una coppia
+    function createTeamCard(team) {
+        const teamContainer = document.createElement('div');
+        teamContainer.className = 'team-container';
+        
+        team.players.forEach(player => {
+            const card = createPlayerCard(player);
+            teamContainer.appendChild(card);
+        });
+        
+        return teamContainer;
+    }
+
+    // Funzione per creare un girone
+    function createGroupContainer(group, index) {
+        const groupContainer = document.createElement('div');
+        groupContainer.className = 'group-container';
+        
+        const groupTitle = document.createElement('div');
+        groupTitle.className = 'group-title';
+        groupTitle.textContent = `Girone ${index + 1}`;
+        groupContainer.appendChild(groupTitle);
+        
+        group.teams.forEach(team => {
+            const teamCard = createTeamCard(team);
+            groupContainer.appendChild(teamCard);
+        });
+        
+        return groupContainer;
+    }
+
+    // Funzione per formare le coppie
+    function formTeams() {
+        const players = {{ players|tojson|safe }};
+        const numTeams = {{ num_coppie }};
+        const numGroups = {{ num_gironi }};
+        const method = "{{ method }}";
+        const seededPlayers = {{ seeded_players|default('[]')|tojson|safe }};
+        
+        // Forma le coppie
+        let teams = [];
+        let shuffledPlayers = [...players];
+        
+        if (method === "casuale") {
+            shuffleArray(shuffledPlayers);
+        } else if (method === "seeded") {
+            // Rimuovi le teste di serie dalla lista dei giocatori
+            const nonSeededPlayers = shuffledPlayers.filter(p => !seededPlayers.includes(p.id.toString()));
+            shuffleArray(nonSeededPlayers);
+            
+            // Forma le squadre con le teste di serie
+            for (let i = 0; i < seededPlayers.length; i++) {
+                const seededPlayer = players.find(p => p.id.toString() === seededPlayers[i]);
+                const nextPlayer = nonSeededPlayers[i];
+                if (seededPlayer && nextPlayer) {
+                    teams.push({
+                        players: [seededPlayer, nextPlayer],
+                        points: 0,
+                        matches_played: 0,
+                        games_won: 0,
+                        games_lost: 0,
+                        goals_for: 0,
+                        goals_against: 0
+                    });
+                }
+            }
+            
+            // Forma le squadre rimanenti
+            for (let i = seededPlayers.length; i < nonSeededPlayers.length; i += 2) {
+                if (i + 1 < nonSeededPlayers.length) {
+                    teams.push({
+                        players: [nonSeededPlayers[i], nonSeededPlayers[i + 1]],
+                        points: 0,
+                        matches_played: 0,
+                        games_won: 0,
+                        games_lost: 0,
+                        goals_for: 0,
+                        goals_against: 0
+                    });
+                }
+            }
+        } else if (method === "manuale") {
+            // Per il metodo manuale, le squadre vengono formate dall'utente
+            // e salvate in un array globale
+            teams = window.manualTeams || [];
+        }
+        
+        // Distribuisci le squadre nei gironi
+        let groups = [];
+        for (let i = 0; i < numGroups; i++) {
+            groups.push({
+                id: i + 1,
+                teams: []
+            });
+        }
+        
+        // Distribuisci le squadre nei gironi
+        if (method === "seeded") {
+            // Assicurati che le teste di serie siano in gironi diversi
+            for (let i = 0; i < teams.length; i++) {
+                const groupIndex = i % numGroups;
+                groups[groupIndex].teams.push(teams[i]);
+            }
+        } else {
+            // Distribuzione casuale per gli altri metodi
+            shuffleArray(teams);
+            for (let i = 0; i < teams.length; i++) {
+                const groupIndex = i % numGroups;
+                groups[groupIndex].teams.push(teams[i]);
+            }
+        }
+        
+        // Rimuovi i gironi vuoti
+        groups = groups.filter(g => g.teams.length > 0);
+        
+        // Prepara i dati per il form
+        const teamsData = teams.map(team => ({
+            players: team.players.map(player => ({
+                id: player.id,
+                nome: player.nome,
+                cognome: player.cognome,
+                tournament_elo: player.tournament_elo
+            })),
+            points: team.points,
+            matches_played: team.matches_played,
+            games_won: team.games_won,
+            games_lost: team.games_lost,
+            goals_for: team.goals_for,
+            goals_against: team.goals_against
+        }));
+        
+        const groupsData = groups.map(group => ({
+            id: group.id,
+            teams: group.teams.map(team => ({
+                players: team.players.map(player => ({
+                    id: player.id,
+                    nome: player.nome,
+                    cognome: player.cognome,
+                    tournament_elo: player.tournament_elo
+                })),
+                points: team.points,
+                matches_played: team.matches_played,
+                games_won: team.games_won,
+                games_lost: team.games_lost,
+                goals_for: team.goals_for,
+                goals_against: team.goals_against
+            }))
+        }));
+        
+        // Salva i dati nel form
+        teamsDataInput.value = JSON.stringify(teamsData);
+        groupsDataInput.value = JSON.stringify(groupsData);
+        
+        // Mostra il form
+        pairingForm.style.display = 'block';
+        
+        // Anima la visualizzazione dei gironi
+        animateGroups(groups);
+    }
+
+    // Avvia l'animazione
+    formTeams();
+});
+</script>
+{% endblock %} 

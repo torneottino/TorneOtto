@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block head_extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/templates/tournament_creation.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="tournament-creation-container">
+    <div class="tournament-header">
+        <h1 class="tournament-title">Nuovo TorneOtto 30'</h1>
+        <div class="tournament-info">
+            <div class="tournament-info-item">
+                <i class="fas fa-info-circle"></i>
+                <span>Torneo tutti contro tutti con partite da 30 minuti</span>
+            </div>
+            <div class="tournament-info-item">
+                <i class="fas fa-users"></i>
+                <span>8 giocatori per gruppo</span>
+            </div>
+            <div class="tournament-info-item">
+                <i class="fas fa-clock"></i>
+                <span>Durata partite: 30 minuti</span>
+            </div>
+        </div>
+    </div>
+    
+    <form id="tournament-form" method="POST" class="tournament-form" action="{{ url_for('tournaments.create_torneotto30_tournament') }}">
+        <div class="tournament-details">
+            <div class="tournament-detail-item">
+                <i class="fas fa-trophy"></i>
+                <div class="form-group">
+                    <label for="nome">Nome Torneo</label>
+                    <input type="text" id="nome" name="nome" class="form-input" required 
+                           placeholder="Inserisci il nome del torneo">
+                </div>
+            </div>
+            
+            <div class="tournament-detail-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <div class="form-group">
+                    <label for="circolo">Circolo</label>
+                    <input type="text" id="circolo" name="circolo" class="form-input"
+                           placeholder="Nome del circolo">
+                </div>
+            </div>
+            
+            <div class="tournament-detail-item">
+                <i class="fas fa-sticky-note"></i>
+                <div class="form-group">
+                    <label for="note">Note</label>
+                    <textarea id="note" name="note" class="form-input" rows="3"
+                              placeholder="Aggiungi note o dettagli aggiuntivi"></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tournament-actions">
+            <button type="submit" class="tournament-button primary" onclick="return confirmSubmit()">
+                <i class="fas fa-save"></i>
+                Crea TorneOtto 30'
+            </button>
+            
+            <a href="{{ url_for('tournaments.tournaments_list') }}" class="tournament-button secondary" onclick="return confirmCancel()">
+                <i class="fas fa-times"></i>
+                Annulla
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    function confirmSubmit() {
+        return confirm('Sei sicuro di voler creare questo torneo?');
+    }
+    
+    function confirmCancel() {
+        return confirm('Sei sicuro di voler annullare? Le modifiche non salvate andranno perse.');
+    }
+</script>
+{% endblock %} 

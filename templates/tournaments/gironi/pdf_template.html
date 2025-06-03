@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ tournament.nome }} - Giornata {{ day.data.strftime('%d/%m/%Y') }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .tournament-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .day-info {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        .group-section {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+
+        .group-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        .ranking-table th,
+        .ranking-table td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .ranking-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+
+        .ranking-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .matches-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        .matches-table th,
+        .matches-table td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .matches-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+
+        .matches-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .team-name {
+            font-weight: bold;
+        }
+
+        .score {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+
+        @media print {
+            .page-break {
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="tournament-title">{{ tournament.nome }}</div>
+        <div class="day-info">Giornata {{ day.data.strftime('%d/%m/%Y') }}</div>
+    </div>
+
+    {% if day.stato == 'Completata' %}
+    <!-- Fase a Gironi -->
+    <div class="section">
+        <div class="section-title">Fase a Gironi</div>
+        
+        {% for group in groups %}
+        <div class="group-section">
+            <div class="group-title">Girone {{ group.id }}</div>
+            
+            <!-- Classifica -->
+            <table class="ranking-table">
+                <thead>
+                    <tr>
+                        <th>Pos</th>
+                        <th>Coppia</th>
+                        <th>P</th>
+                        <th>V</th>
+                        <th>P</th>
+                        <th>GF</th>
+                        <th>GS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for team in rankings[group.id] %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>
+                            {% for player in team.players %}
+                            {{ player.nome }}{% if not loop.last %} - {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>{{ team.points }}</td>
+                        <td>{{ team.games_won }}</td>
+                        <td>{{ team.games_lost }}</td>
+                        <td>{{ team.goals_for }}</td>
+                        <td>{{ team.goals_against }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Partite -->
+            <table class="matches-table">
+                <thead>
+                    <tr>
+                        <th>Partita</th>
+                        <th>Squadra 1</th>
+                        <th>Risultato</th>
+                        <th>Squadra 2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for match in group.matches %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td class="team-name">
+                            {% for player in match.team1.players %}
+                            {{ player.nome }}{% if not loop.last %} - {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td class="score">{{ match.risultato_team1 }} - {{ match.risultato_team2 }}</td>
+                        <td class="team-name">
+                            {% for player in match.team2.players %}
+                            {{ player.nome }}{% if not loop.last %} - {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if semifinals %}
+    <div class="page-break"></div>
+    <!-- Semifinali -->
+    <div class="section">
+        <div class="section-title">Semifinali</div>
+        <table class="matches-table">
+            <thead>
+                <tr>
+                    <th>Semifinale</th>
+                    <th>Squadra 1</th>
+                    <th>Risultato</th>
+                    <th>Squadra 2</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for match in semifinals %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td class="team-name">
+                        {% for player in match.team1.players %}
+                        {{ player.nome }}{% if not loop.last %} - {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td class="score">{{ match.risultato_team1 }} - {{ match.risultato_team2 }}</td>
+                    <td class="team-name">
+                        {% for player in match.team2.players %}
+                        {{ player.nome }}{% if not loop.last %} - {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if finals %}
+    <div class="page-break"></div>
+    <!-- Finali -->
+    <div class="section">
+        <div class="section-title">Finali</div>
+        <table class="matches-table">
+            <thead>
+                <tr>
+                    <th>Finale</th>
+                    <th>Squadra 1</th>
+                    <th>Risultato</th>
+                    <th>Squadra 2</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for match in finals %}
+                <tr>
+                    <td>{{ 'Finale 1°-2° posto' if loop.index == 1 else 'Finale 3°-4° posto' }}</td>
+                    <td class="team-name">
+                        {% for player in match.team1.players %}
+                        {{ player.nome }}{% if not loop.last %} - {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td class="score">{{ match.risultato_team1 }} - {{ match.risultato_team2 }}</td>
+                    <td class="team-name">
+                        {% for player in match.team2.players %}
+                        {{ player.nome }}{% if not loop.last %} - {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if final_ranking %}
+    <div class="page-break"></div>
+    <!-- Classifica Finale -->
+    <div class="section">
+        <div class="section-title">Classifica Finale</div>
+        <table class="ranking-table">
+            <thead>
+                <tr>
+                    <th>Pos</th>
+                    <th>Coppia</th>
+                    <th>P</th>
+                    <th>V</th>
+                    <th>P</th>
+                    <th>GF</th>
+                    <th>GS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in final_ranking %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>
+                        {% for player in team.players %}
+                        {{ player.nome }}{% if not loop.last %} - {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ team.points }}</td>
+                    <td>{{ team.games_won }}</td>
+                    <td>{{ team.games_lost }}</td>
+                    <td>{{ team.goals_for }}</td>
+                    <td>{{ team.goals_against }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <div class="footer">
+        Generato il {{ now.strftime('%d/%m/%Y alle %H:%M') }}
+    </div>
+    {% endif %}
+</body>
+</html> 
