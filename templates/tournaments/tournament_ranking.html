@@ -58,7 +58,7 @@
     </div>
     <div class="button-container">
         <a href="{{ url_for('tournaments.export_ranking_pdf', tournament_id=tournament.id) }}" class="btn export-btn">ESPORTA PDF</a>
-        <a href="/classifiche" class="btn back-btn">INDIETRO</a>
+        <a href="{{ url_for('classifiche') }}" class="btn back-btn">INDIETRO</a>
     </div>
 </div>
 

@@ -15,16 +15,18 @@
     {% block head_extra_css %}{% endblock %}
 </head>
 <body class="{% if print_view %}print-view{% endif %} {% if request.path == '/' %}home-page{% endif %}">
-    <header class="header">
-        <div class="logo-container">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TorneOtto Logo">
-        </div>
-        <div class="hamburger">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </header>
+    {% if not (request.path == '/') %}
+        <header class="header">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TorneOtto Logo">
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </header>
+    {% endif %}
 
     {% if not print_view %}
     <nav class="menu">
@@ -40,11 +42,11 @@
             <i class="fas fa-user-plus"></i>
             Inserisci Giocatori
         </a>
-        <a href="/tornei" class="menu-link">
+        <a href="{{ url_for('tournaments.tournaments_list') }}" class="menu-link">
             <i class="fas fa-trophy"></i>
             Gestione Tornei
         </a>
-        <a href="/classifiche" class="menu-link">
+        <a href="{{ url_for('classifiche') }}" class="menu-link">
             <i class="fas fa-list-ol"></i>
             Classifiche
         </a>
@@ -75,11 +77,11 @@
                 <i class="fas fa-address-book"></i>
                 Giocatori
             </a>
-            <a href="/tornei" class="footer-link {% if 'tornei' in request.path %}active{% endif %}">
+            <a href="{{ url_for('tournaments.tournaments_list') }}" class="footer-link {% if 'tornei' in request.path %}active{% endif %}">
                 <i class="fas fa-trophy"></i>
                 Tornei
             </a>
-            <a href="/classifiche" class="footer-link {% if 'classifiche' in request.path %}active{% endif %}">
+            <a href="{{ url_for('classifiche') }}" class="footer-link {% if 'classifiche' in request.path %}active{% endif %}">
                 <i class="fas fa-list-ol"></i>
                 Classifiche
             </a>
