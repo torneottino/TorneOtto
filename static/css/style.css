@@ -144,6 +144,11 @@ body {
     z-index: 100;
 }
 
+/* Override padding-top per la home page su tutte le dimensioni dello schermo */
+body.home-page .main-container {
+    padding-top: 40px !important;
+}
+
 /* Aggiungo regole specifiche per le pagine non-home */
 body:not(.home-page) .main-container {
     padding-bottom: 180px; /* Spazio per il footer */

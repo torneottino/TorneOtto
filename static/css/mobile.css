@@ -43,7 +43,7 @@ body:not(.home-page) .header {
 /* Aggiustamento contenuto home */
 @media (max-width: 768px) {
     body.home-page .main-container {
-        padding-top: calc(90px + 20px + var(--container-padding)) !important;
+        padding-top: 40px !important;
     }
     body:not(.home-page) .main-container {
         padding-top: 10px !important;
