@@ -4978,3 +4978,37 @@
 2025-07-07 18:16:51,709 - app - DEBUG - Trovati 2 tornei per la pagina classifiche
 2025-07-07 18:17:56,015 - app - DEBUG - Accesso alla pagina classifiche
 2025-07-07 18:17:56,254 - app - DEBUG - Trovati 2 tornei per la pagina classifiche
+2025-07-07 18:22:55,360 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-07 18:22:55,360 - app - INFO - Configurazione: development
+2025-07-07 18:22:55,360 - app - INFO - Debug mode: False
+2025-07-07 18:22:55,360 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-07 18:22:55,371 - app - INFO - Modelli importati con successo
+2025-07-07 18:22:56,165 - app - INFO - Tabelle del database create/verificate
+2025-07-07 18:22:56,168 - app - INFO - Sistema di migrazione inizializzato
+2025-07-07 18:22:56,204 - app - INFO - Blueprint importati con successo
+2025-07-07 18:22:56,223 - app - INFO - Blueprint registrati con successo
+2025-07-07 18:22:56,223 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-07 18:22:56,223 - app - INFO - Avvio server su 0.0.0.0:5001
+2025-07-07 18:22:56,544 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-07 18:22:56,544 - app - INFO - Configurazione: development
+2025-07-07 18:22:56,544 - app - INFO - Debug mode: False
+2025-07-07 18:22:56,544 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-07 18:22:56,553 - app - INFO - Modelli importati con successo
+2025-07-07 18:22:57,338 - app - INFO - Tabelle del database create/verificate
+2025-07-07 18:22:57,339 - app - INFO - Sistema di migrazione inizializzato
+2025-07-07 18:22:57,343 - app - INFO - Blueprint importati con successo
+2025-07-07 18:22:57,366 - app - INFO - Blueprint registrati con successo
+2025-07-07 18:22:57,367 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-07 18:22:57,367 - app - INFO - Avvio server su 0.0.0.0:5001
+2025-07-07 18:23:06,741 - app - WARNING - Pagina non trovata: http://localhost:5001/favicon.ico
+2025-07-07 18:23:13,388 - app - INFO - View gironi day 169: stato=Completata
+2025-07-07 18:23:13,390 - app - INFO - Matches trovati: 20
+2025-07-07 18:23:13,390 - app - INFO - Results trovati: 20
+2025-07-07 18:23:13,391 - app - INFO - Prima partita: {'id': 1, 'girone': 1, 'turno': 1, 'team1': [15, 12], 'team2': [23, 2], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}
+2025-07-07 18:23:13,391 - app - INFO - Primi risultati: {'1': {'squadra_a': 5, 'squadra_b': 6}, '2': {'squadra_a': 5, 'squadra_b': 4}}
+2025-07-07 18:23:15,416 - app - INFO - HTML Export debug - Matches: 20
+2025-07-07 18:23:15,418 - app - INFO - HTML Export debug - Results: 20
+2025-07-07 18:23:15,419 - app - INFO - HTML Export debug - Gironi: 2
+2025-07-07 18:23:15,419 - app - INFO - HTML Export debug - Prima partita: {'id': 1, 'girone': 1, 'turno': 1, 'team1': [15, 12], 'team2': [23, 2], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}
+2025-07-07 18:23:15,419 - app - INFO - HTML Export debug - Tutte le partite per girone 1: [{'id': 1, 'girone': 1, 'turno': 1, 'team1': [15, 12], 'team2': [23, 2], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 2, 'girone': 1, 'turno': 1, 'team1': [8, 20], 'team2': [9, 21], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 3, 'girone': 1, 'turno': 2, 'team1': [17, 24], 'team2': [23, 2], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 4, 'girone': 1, 'turno': 2, 'team1': [15, 12], 'team2': [8, 20], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 5, 'girone': 1, 'turno': 3, 'team1': [17, 24], 'team2': [9, 21], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 6, 'girone': 1, 'turno': 3, 'team1': [23, 2], 'team2': [8, 20], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 7, 'girone': 1, 'turno': 4, 'team1': [17, 24], 'team2': [8, 20], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 8, 'girone': 1, 'turno': 4, 'team1': [9, 21], 'team2': [15, 12], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 9, 'girone': 1, 'turno': 5, 'team1': [17, 24], 'team2': [15, 12], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 10, 'girone': 1, 'turno': 5, 'team1': [9, 21], 'team2': [23, 2], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}]
+2025-07-07 18:23:15,420 - app - INFO - HTML Export debug - Primi risultati: {'1': {'squadra_a': 5, 'squadra_b': 6}, '2': {'squadra_a': 5, 'squadra_b': 4}, '3': {'squadra_a': 3, 'squadra_b': 4}, '4': {'squadra_a': 5, 'squadra_b': 6}, '5': {'squadra_a': 7, 'squadra_b': 6}}

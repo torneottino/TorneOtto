@@ -508,6 +508,20 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .export-pdf-btn {
+            background: #3579f6 !important;
+            border-color: #3579f6 !important;
+            color: #fff !important;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(53,121,246,0.15);
+            transition: background 0.2s, border 0.2s;
+        }
+        .export-pdf-btn:hover {
+            background: #225bbf !important;
+            border-color: #225bbf !important;
+            color: #fff !important;
+        }
     </style>
 {% endblock %}
 
@@ -814,7 +828,7 @@
     
     <div class="button-container">
         <div class="button-group">
-            <a href="{{ url_for('tournaments.export_gironi_results_pdf', tournament_id=tournament.id, day_id=day.id) }}" class="action-button" style="background-color: #3579f6; border-color: #3579f6;">ESPORTA PDF</a>
+            <a href="{{ url_for('tournaments.export_gironi_results_pdf', tournament_id=tournament.id, day_id=day.id) }}" class="action-button export-pdf-btn">ESPORTA PDF</a>
             <a href="{{ url_for('tournaments.view_tournament', tournament_id=tournament.id) }}" class="action-button tertiary">TORNA AL TORNEO</a>
         </div>
     </div>
