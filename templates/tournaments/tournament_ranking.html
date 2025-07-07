@@ -1,0 +1,628 @@
+{% extends "base.html" %}
+
+{% block title %}Classifica {{ tournament.nome }}{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <div class="row justify-content-center">
+        <div class="col-12 text-center">
+            <h2 class="tournament-title">Classifica Torneo: {{ tournament.nome }}</h2>
+        </div>
+
+        <!-- Filtro per percentuale minima di presenze -->
+        <div class="col-12 d-flex justify-content-end" style="padding-right: 20px; padding-left: 20px;">
+            <div class="form-group" style="width: 300px !important; margin-left: auto;">
+                <label for="percentuale-minima" style="color: #34c759; font-size: 0.9em; margin-bottom: 5px;">% Presenze:</label>
+                <select id="percentuale-minima" class="form-control select-percentuale" style="background-color: #313236; color: var(--text-color); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--button-radius); height: 25px; padding: 0 5px; font-size: 0.9em;">
+                    <option value="0">Nessun filtro</option>
+                    <option value="50">50%</option>
+                    <option value="60">60%</option>
+                    <option value="70">70%</option>
+                    <option value="80">80%</option>
+                    <option value="90">90%</option>
+                </select>
+                <div id="info-soglia" class="mt-2" style="font-size: 0.8em; color: #34c759; display: none; text-align: center; max-width: 300px; white-space: normal; word-break: break-word;">-</div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="ranking-container">
+                <table id="classifica-torneo" class="ranking-table">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 36px">#</th>
+                            <th class="text-left" style="width: 120px">Giocatore</th>
+                            <th class="text-center" style="width: 70px">ELO</th>
+                            <th class="text-center" style="width: 32px">P</th>
+                            <th class="text-center" style="width: 24px"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for player in players %}
+                        <tr>
+                            <td class="text-center">{{ loop.index }}</td>
+                            <td>{{ player.cognome }} {{ player.nome }}</td>
+                            <td class="text-center">{{ "%.2f"|format(player.elo_rating) }}</td>
+                            <td class="text-center">{{ player.presenze }}</td>
+                            <td class="text-center">
+                                <span class="info-icon" onclick="openPlayerStatsModal({{ player.id }})" style="cursor: pointer; color: var(--primary-yellow);">
+                                    <i class="fas fa-info-circle"></i>
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="button-container">
+        <a href="{{ url_for('tournaments.export_ranking_pdf', tournament_id=tournament.id) }}" class="btn export-btn">ESPORTA PDF</a>
+        <a href="/classifiche" class="btn back-btn">INDIETRO</a>
+    </div>
+</div>
+
+<!-- Modal per le statistiche del giocatore -->
+<div id="playerStatsModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center;">
+    <div class="modal-content" style="background-color: #313236; color: var(--text-color); border-radius: 8px; padding: 20px; max-width: 500px; width: 90%; margin: 50px auto 0 auto; position: relative;">
+        <span class="close" onclick="closePlayerStatsModal()" style="float: right; font-size: 24px; cursor: pointer; color: var(--text-color);">&times;</span>
+        <h2 id="playerStatsTitle" style="margin-bottom: 20px; color: #ffd700; text-align: center; font-size: 1.2em;">Statistiche Giocatore</h2>
+        
+        <!-- Card delle statistiche generali -->
+        <div class="stats-cards" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px;">
+            <div class="stat-card" style="background-color: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-align: center;">
+                <h3 style="color: #34c759; font-size: 0.8em; margin-bottom: 5px;">Presenze</h3>
+                <p id="presenzeGiocatore" style="color: var(--text-color); font-size: 1.1em; margin: 0;">-</p>
+            </div>
+            <div class="stat-card" style="background-color: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-align: center;">
+                <h3 style="color: #34c759; font-size: 0.8em; margin-bottom: 5px;">Partite</h3>
+                <p id="partiteGiocate" style="color: var(--text-color); font-size: 1.1em; margin: 0;">-</p>
+            </div>
+            <div class="stat-card" style="background-color: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-align: center;">
+                <h3 style="color: #34c759; font-size: 0.8em; margin-bottom: 5px;">ELO Attuale</h3>
+                <p id="eloAttuale" style="color: #ffd700; font-size: 1.1em; margin: 0; font-weight: bold;">-</p>
+            </div>
+        </div>
+
+        <div class="stats-cards" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px;">
+            <div class="stat-card" style="background-color: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-align: center;">
+                <h3 style="color: #34c759; font-size: 0.8em; margin-bottom: 5px;">Vittorie</h3>
+                <p id="vittorie" style="color: var(--text-color); font-size: 1.1em; margin: 0;">-</p>
+            </div>
+            <div class="stat-card" style="background-color: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-align: center;">
+                <h3 style="color: #34c759; font-size: 0.8em; margin-bottom: 5px;">Pareggi</h3>
+                <p id="pareggi" style="color: var(--text-color); font-size: 1.1em; margin: 0;">-</p>
+            </div>
+            <div class="stat-card" style="background-color: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-align: center;">
+                <h3 style="color: #34c759; font-size: 0.8em; margin-bottom: 5px;">Sconfitte</h3>
+                <p id="sconfitte" style="color: var(--text-color); font-size: 1.1em; margin: 0;">-</p>
+            </div>
+            <div class="stat-card" style="background-color: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-align: center;">
+                <h3 style="color: #34c759; font-size: 0.8em; margin-bottom: 5px;">% Vittorie</h3>
+                <p id="percentualeVittorie" style="color: var(--text-color); font-size: 1.1em; margin: 0;">-</p>
+            </div>
+        </div>
+
+        <!-- Grafico ELO -->
+        <div class="elo-chart-container" style="background-color: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <h3 style="color: #34c759; font-size: 0.8em; margin-bottom: 10px;">Andamento ELO</h3>
+            <div style="height: 100px; width: 100%;">
+                <canvas id="eloChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Tabella Storico ELO -->
+        <div class="elo-history-container" style="background-color: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+            <h3 style="color: #34c759; font-size: 1.1em; margin-bottom: 15px;">Storico ELO</h3>
+            <div style="overflow-x: auto;">
+                <table class="elo-history-table" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="color: var(--text-color); text-align: left; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">Giornata</th>
+                            <th style="color: var(--text-color); text-align: right; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">Var</th>
+                            <th style="color: var(--text-color); text-align: right; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">ELO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="eloHistoryBody">
+                        <!-- I dati verranno inseriti dinamicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.ranking-container {
+    width: 100%;
+    max-width: 600px;
+    min-width: 280px;
+    margin: 15px auto;
+    background-color: #313236;
+    border-radius: var(--button-radius);
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 0.9em;
+}
+
+.ranking-table {
+    width: 100%;
+    color: var(--text-color);
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.ranking-table th {
+    color: #34c759;
+    font-weight: 500;
+    padding: 6px 2px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.95em;
+    white-space: nowrap;
+}
+
+.ranking-table th.text-center, .ranking-table td.text-center {
+    text-align: center;
+}
+
+.ranking-table th.text-left, .ranking-table td.text-left {
+    text-align: left;
+}
+
+.ranking-table td {
+    padding: 8px 2px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ranking-table td:nth-child(2) {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.ranking-table tr:last-child td {
+    border-bottom: none;
+}
+
+.ranking-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.info-icon {
+    font-size: 1em;
+    color: var(--primary-yellow);
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.info-icon:hover {
+    opacity: 0.8;
+}
+
+h2.tournament-title {
+    font-size: 1.25rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin: 20px 0 0 0;
+}
+
+.btn {
+    width: 250px;
+    padding: 12px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    outline: none;
+    text-decoration: none;
+    color: #fff;
+    display: block;
+    text-align: center;
+}
+
+.btn.export-btn {
+    background: #3579f6;
+}
+
+.btn.export-btn[disabled] {
+    background: #3579f6;
+    color: #eee;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.btn.back-btn {
+    background: #444444;
+    color: #fff;
+    border: none;
+}
+
+.btn.back-btn:hover {
+    background: #222;
+    color: #fff;
+}
+
+.modal-content {
+    color: var(--text-color);
+}
+
+.stat-card {
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.elo-history-table td {
+    padding: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--text-color);
+}
+
+.elo-history-table tr:last-child td {
+    border-bottom: none;
+}
+
+.positive-change {
+    color: #34c759 !important;
+}
+
+.negative-change {
+    color: #ff3b30 !important;
+}
+
+/* Stili per il modal */
+.modal-content {
+    background-color: #313236;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+}
+
+.modal-header {
+    border-bottom: 1px solid #444;
+    padding: 1rem;
+}
+
+.modal-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.stats-card {
+    background-color: #3a3a3a;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.stats-card h5 {
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-bottom: 0.5rem;
+}
+
+.stats-card .value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.elo-chart-container {
+    background-color: #3a3a3a;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.elo-history-table {
+    width: 100%;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.elo-history-table th {
+    background-color: #3a3a3a;
+    color: #aaa;
+    font-size: 0.85rem;
+    padding: 0.5rem;
+}
+
+.elo-history-table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #444;
+}
+
+.elo-history-table tr:last-child td {
+    border-bottom: none;
+}
+
+.close-button {
+    color: #fff;
+    opacity: 0.8;
+    font-size: 1.2rem;
+}
+
+.close-button:hover {
+    opacity: 1;
+    color: #fff;
+}
+
+/* Media queries per la responsività del contenitore */
+@media (max-width: 768px) {
+    .ranking-container {
+        max-width: 100%;
+        margin: 15px 10px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .ranking-container {
+        max-width: 500px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .ranking-container {
+        max-width: 600px;
+    }
+}
+
+#playerStatsModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+    /* Permette lo scroll del modal se il contenuto è troppo lungo */
+}
+
+#playerStatsModal.open {
+    display: flex;
+}
+
+.modal-content {
+    background-color: #313236;
+    color: var(--text-color);
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 500px;
+    width: 90%;
+    margin: 50px auto 0 auto;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    /* Permette lo scroll interno se il contenuto è troppo lungo */
+}
+
+@media (max-width: 768px) {
+    #playerStatsModal {
+        align-items: flex-start;
+        padding-top: 10vw;
+        padding-bottom: 80px; /* spazio per il footer fisso */
+    }
+    .modal-content {
+        max-height: 80vh;
+        margin: 10vw auto 0 auto;
+    }
+}
+
+.form-group {
+    width: 300px !important;
+}
+#info-soglia {
+    text-align: center;
+    max-width: 300px;
+    white-space: normal;
+    word-break: break-word;
+    margin-left: auto;
+    margin-right: auto;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/filtro_classifica.js') }}"></script>
+<script>
+let eloChart = null;
+
+// Assicuriamoci che il modal sia chiuso all'apertura della pagina
+document.addEventListener('DOMContentLoaded', function() {
+    closePlayerStatsModal();
+});
+
+function openPlayerStatsModal(playerId) {
+    // Mostra il modal solo se viene chiamato esplicitamente
+    if (playerId) {
+        document.getElementById("playerStatsModal").style.display = "block";
+        
+        // Imposta i valori predefiniti mentre si carica
+        document.getElementById("playerStatsTitle").innerText = `Caricamento...`;
+        document.getElementById("presenzeGiocatore").innerText = "-";
+        document.getElementById("partiteGiocate").innerText = "-";
+        document.getElementById("vittorie").innerText = "-";
+        document.getElementById("pareggi").innerText = "-";
+        document.getElementById("sconfitte").innerText = "-";
+        document.getElementById("percentualeVittorie").innerText = "-";
+        document.getElementById("eloAttuale").innerText = "-";
+        
+        // Recupera le statistiche del giocatore
+        fetch(`/api/tournaments/{{ tournament.id }}/players/${playerId}/stats`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Errore nel caricamento dei dati');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Aggiorna il titolo
+                document.getElementById("playerStatsTitle").innerText = `${data.cognome} ${data.nome}`;
+                
+                // Aggiorna le statistiche generali
+                document.getElementById("presenzeGiocatore").innerText = `${data.presenze_completate}/${data.presenze_totali}`;
+                document.getElementById("partiteGiocate").innerText = `${data.partite_giocate}/${data.partite_totali}`;
+                document.getElementById("vittorie").innerText = data.vittorie;
+                document.getElementById("pareggi").innerText = data.pareggi;
+                document.getElementById("sconfitte").innerText = data.sconfitte;
+                document.getElementById("percentualeVittorie").innerText = data.percentuale_vittorie;
+                document.getElementById("eloAttuale").innerText = parseFloat(data.elo_attuale).toFixed(2);
+                
+                // Aggiorna la tabella dello storico ELO
+                const tbody = document.getElementById("eloHistoryBody");
+                tbody.innerHTML = "";
+                
+                if (data.elo_history && data.elo_history.length > 0) {
+                    data.elo_history.forEach(entry => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${entry.giornata}</td>
+                            <td class="${parseFloat(entry.variazione) >= 0 ? 'positive-change' : 'negative-change'}" style="text-align: right;">${entry.variazione}</td>
+                            <td style="text-align: right;">${entry.elo}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                    
+                    // Aggiorna il grafico ELO
+                    updateEloChart(data.elo_history);
+                } else {
+                    // Nessun dato storico disponibile
+                    const row = document.createElement("tr");
+                    row.innerHTML = `<td colspan="3" style="text-align: center;">Nessun dato storico disponibile</td>`;
+                    tbody.appendChild(row);
+                    
+                    // Pulisci il grafico
+                    if (eloChart) {
+                        eloChart.destroy();
+                        eloChart = null;
+                    }
+                    
+                    // Mostra messaggio nel grafico
+                    const ctx = document.getElementById('eloChart').getContext('2d');
+                    ctx.font = '14px Arial';
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Nessun dato disponibile', ctx.canvas.width / 2, ctx.canvas.height / 2);
+                }
+            })
+            .catch(error => {
+                console.error('Errore nel recupero delle statistiche:', error);
+                document.getElementById("playerStatsTitle").innerText = `Errore nel caricamento dei dati`;
+                // Mostra messaggio di errore nella tabella
+                const tbody = document.getElementById("eloHistoryBody");
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #ff3b30;">Errore nel caricamento dei dati: ${error.message}</td></tr>`;
+            });
+    }
+}
+
+function updateEloChart(eloHistory) {
+    const ctx = document.getElementById('eloChart').getContext('2d');
+    
+    if (eloChart) {
+        eloChart.destroy();
+        eloChart = null;
+    }
+
+    const labels = eloHistory.map(h => '');
+    const data = eloHistory.map(h => parseFloat(h.elo));
+
+    eloChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'ELO',
+                data: data,
+                borderColor: '#4CAF50',
+                backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: '#4CAF50',
+                    borderWidth: 1,
+                    callbacks: {
+                        label: function(context) {
+                            return `ELO: ${parseFloat(context.raw).toFixed(2)}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    min: 1400,
+                    max: 1600,
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#aaa',
+                        font: {
+                            size: 10
+                        },
+                        stepSize: 50,
+                        callback: function(value) {
+                            return value.toFixed(0);
+                        }
+                    }
+                },
+                x: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+function closePlayerStatsModal() {
+    document.getElementById("playerStatsModal").style.display = "none";
+    if (eloChart) {
+        eloChart.destroy();
+        eloChart = null;
+    }
+}
+
+window.onclick = function(event) {
+    var modal = document.getElementById("playerStatsModal");
+    if (event.target == modal) {
+        closePlayerStatsModal();
+    }
+};
+</script>
+{% endblock %} 

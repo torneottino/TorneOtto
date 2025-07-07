@@ -1,0 +1,503 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container" style="margin-top: 100px;">
+    <div class="tournament-info">
+        <div class="tournament-name">{{ tournament.nome }}</div>
+        <div class="tournament-date">Giornata del {{ data }}</div>
+        <div class="tournament-method">Metodo: 
+            {% if metodo == 'casuale' %}Totalmente Casuale
+            {% elif metodo == 'elo' %}Per ELO e Posizione
+            {% elif metodo == 'seeded' %}Teste di Serie
+            {% elif metodo == 'manuale' %}Manuale
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Fase di animazione -->
+    <div id="animation-phase" class="animation-phase">
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="status-message" id="status-message">Inizializzazione...</div>
+
+        <!-- Container per i giocatori e le coppie -->
+        <div id="animation-container" class="animation-container">
+            <div id="players-container" class="players-container">
+                {% for team in teams %}
+                    {% for player in team %}
+                    <div class="player-card" id="player-{{ player.id }}" data-id="{{ player.id }}" data-elo="{{ player.tournament_elo }}">
+                        <div class="player-name">{{ player.cognome }} {{ player.nome }}</div>
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <div id="pairs-container" class="pairs-container" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Fase di riepilogo (nascosta inizialmente) -->
+    <div id="summary-phase" class="summary-phase" style="display: none;">
+        <!-- Riepilogo Coppie -->
+        <div class="section">
+            <h3 class="section-title">Coppie Formate</h3>
+            <div class="teams-grid">
+                {% for team in teams %}
+                <div class="team-card">
+                    <div class="team-header">Coppia {{ loop.index }} - ELO: {{ (team[0].tournament_elo + team[1].tournament_elo)|round(1) }}</div>
+                    <div class="team-players">
+                        <div class="player">{{ team[0].cognome }} {{ team[0].nome }}</div>
+                        <div class="player">{{ team[1].cognome }} {{ team[1].nome }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Riepilogo Gironi -->
+        <div class="section">
+            <h3 class="section-title">Gironi</h3>
+            <div class="gironi-container">
+                {% for girone in gironi %}
+                <div class="girone-card">
+                    <div class="girone-header">Girone {{ loop.index }}</div>
+                    <div class="girone-teams">
+                        {% for team in girone %}
+                        <div class="girone-team">
+                            <div class="team-names">{{ team[0].cognome }} {{ team[0].nome }} - {{ team[1].cognome }} {{ team[1].nome }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Calendario partite per questo girone -->
+                    <div class="girone-matches">
+                        <h4 class="matches-title">Partite</h4>
+                        {% set teams_in_girone = girone %}
+                        {% set num_teams = teams_in_girone|length %}
+                        {% for i in range(num_teams) %}
+                            {% for j in range(i+1, num_teams) %}
+                            <div class="match-item">
+                                {{ teams_in_girone[i][0].cognome }} / {{ teams_in_girone[i][1].cognome }}
+                                <span class="vs">VS</span>
+                                {{ teams_in_girone[j][0].cognome }} / {{ teams_in_girone[j][1].cognome }}
+                            </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Pulsanti di conferma -->
+        <div class="button-container">
+            <form method="POST" action="{{ url_for('tournaments.save_gironi_day', tournament_id=tournament.id) }}">
+                <input type="hidden" name="data" value="{{ data }}">
+                <input type="hidden" name="num_coppie" value="{{ num_coppie }}">
+                <input type="hidden" name="num_gironi" value="{{ num_gironi }}">
+                <input type="hidden" name="teams_data" value="{{ teams_data|tojson }}">
+                <input type="hidden" name="gironi_data" value="{{ gironi_data|tojson }}">
+                <input type="hidden" name="metodo" value="{{ metodo }}">
+                <button type="submit" class="action-button">
+                    <i class="fas fa-check"></i> CONFERMA GIORNATA
+                </button>
+            </form>
+            <a href="{{ url_for('tournaments.export_gironi_pdf', tournament_id=tournament.id) }}?data={{ data }}&teams_data={{ teams_data|tojson|urlencode }}&gironi_data={{ gironi_data|tojson|urlencode }}&metodo={{ metodo }}" target="_blank" class="pdf-button">
+                <i class="fas fa-file-pdf"></i> ESPORTA PDF
+            </a>
+            <a href="{{ url_for('tournaments.new_gironi_day', tournament_id=tournament.id) }}" class="back-button">
+                <i class="fas fa-times"></i> ANNULLA
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.main-container {
+    padding: 20px;
+    color: white;
+}
+
+.tournament-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.tournament-name {
+    font-size: calc(1.1em + 3px);
+    color: #ffd700;
+    font-weight: 600;
+    margin-bottom: 1px;
+}
+
+.tournament-date, .tournament-method {
+    font-size: 0.9em;
+    color: #aaa;
+    margin-bottom: 5px;
+}
+
+/* Stili animazione */
+.progress-container {
+    width: 100%;
+    background-color: #333;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    height: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: #53a551;
+    border-radius: 5px;
+    transition: width 0.5s ease;
+}
+
+.status-message {
+    text-align: center;
+    font-size: 1em;
+    margin-bottom: 20px;
+    color: #ddd;
+}
+
+.animation-container {
+    margin-bottom: 20px;
+}
+
+.players-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.player-card {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 10px;
+    width: 150px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.player-card.selected {
+    background-color: #53a551;
+    transform: scale(1.05);
+}
+
+.player-name {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.player-details {
+    font-size: 0.8em;
+    color: #aaa;
+}
+
+.pairs-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.pair-card {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 15px;
+    width: 300px;
+    text-align: center;
+}
+
+.pair-title {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    color: #ffd700;
+}
+
+.pair-players {
+    display: flex;
+    justify-content: space-between;
+}
+
+.pair-player {
+    flex: 1;
+    padding: 10px;
+    background-color: #333;
+    border-radius: 5px;
+    margin: 0 5px;
+}
+
+/* Stili riepilogo */
+.section {
+    margin-bottom: 30px;
+}
+
+.section-title {
+    font-size: 1.2em;
+    color: #ffd700;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.team-card {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+}
+
+.team-header {
+    font-size: 1em;
+    color: #ffd700;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.team-players {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.player {
+    background-color: #333;
+    padding: 8px;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+.gironi-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.girone-card {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.girone-header {
+    font-size: 1.1em;
+    color: #ffd700;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.girone-teams {
+    margin-bottom: 15px;
+}
+
+.girone-team {
+    background-color: #333;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+.team-names {
+    text-align: center;
+}
+
+.girone-matches {
+    border-top: 1px solid #444;
+    padding-top: 15px;
+}
+
+.matches-title {
+    font-size: 1em;
+    color: #53a551;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.match-item {
+    background-color: #1a1a1a;
+    padding: 8px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    font-size: 0.8em;
+    text-align: center;
+}
+
+.vs {
+    color: #ffd700;
+    font-weight: bold;
+    margin: 0 5px;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+    margin-bottom: 100px;
+}
+
+.action-button {
+    background-color: #53a551;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 0;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    width: 250px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.action-button:hover {
+    background-color: #4a9249;
+}
+
+.pdf-button {
+    background-color: #3579f6;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 0;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    width: 250px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.pdf-button:hover {
+    background-color: #2968d3;
+}
+
+.back-button {
+    background-color: #444444;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 0;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    width: 250px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.back-button:hover {
+    background-color: #555555;
+}
+
+/* Ottimizzazione mobile */
+@media (max-width: 480px) {
+    .teams-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .gironi-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .player-card {
+        width: 130px;
+        padding: 8px;
+    }
+    
+    .pair-card {
+        width: 100%;
+        max-width: 280px;
+    }
+    
+    .action-button {
+        min-width: 200px;
+        font-size: 13px;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Avvia l'animazione di sorteggio
+    startPairingAnimation();
+});
+
+function startPairingAnimation() {
+    const progressBar = document.getElementById('progress-bar');
+    const statusMessage = document.getElementById('status-message');
+    const playersContainer = document.getElementById('players-container');
+    const pairsContainer = document.getElementById('pairs-container');
+    const animationPhase = document.getElementById('animation-phase');
+    const summaryPhase = document.getElementById('summary-phase');
+    
+    let progress = 0;
+    const steps = [
+        { progress: 20, message: 'Preparazione giocatori...', duration: 800 },
+        { progress: 40, message: 'Sorteggio in corso...', duration: 1200 },
+        { progress: 60, message: 'Formazione coppie...', duration: 1000 },
+        { progress: 80, message: 'Organizzazione gironi...', duration: 1000 },
+        { progress: 100, message: 'Completato!', duration: 500 }
+    ];
+    
+    let currentStep = 0;
+    
+    function executeStep() {
+        if (currentStep >= steps.length) {
+            // Animazione completata, mostra riepilogo
+            setTimeout(() => {
+                animationPhase.style.display = 'none';
+                summaryPhase.style.display = 'block';
+            }, 800);
+            return;
+        }
+        
+        const step = steps[currentStep];
+        
+        // Aggiorna progress bar e messaggio
+        progressBar.style.width = step.progress + '%';
+        statusMessage.textContent = step.message;
+        
+        // Animazioni specifiche per ogni step
+        if (currentStep === 1) {
+            // Anima i giocatori
+            const playerCards = document.querySelectorAll('.player-card');
+            playerCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('selected');
+                    setTimeout(() => card.classList.remove('selected'), 300);
+                }, index * 100);
+            });
+        }
+        
+        setTimeout(() => {
+            currentStep++;
+            executeStep();
+        }, step.duration);
+    }
+    
+    executeStep();
+}
+</script>
+{% endblock %} 

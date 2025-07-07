@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+    <h1 class="page-title">Teste di Serie</h1>
+    
+    <div class="tournament-info">
+        <div class="tournament-name">{{ tournament.nome }}</div>
+        <div class="tournament-date">Giornata del {{ data }}</div>
+    </div>
+    
+    <div class="instructions">
+        <p>Seleziona massimo {{ num_coppie }} giocatori che saranno teste di serie. Ogni testa di serie farà parte di una coppia diversa.</p>
+    </div>
+    
+    <form method="POST" class="seeded-form">
+        <input type="hidden" name="data" value="{{ data }}">
+        <input type="hidden" name="num_coppie" value="{{ num_coppie }}">
+        <input type="hidden" name="num_gironi" value="{{ num_gironi }}">
+        <input type="hidden" name="players" value="{{ players }}">
+        
+        <div class="grid-scroll" id="playersGrid">
+            {% for player in all_players %}
+                <div class="player-card-selectable" data-id="{{ player.id }}">
+                    <div class="player-name">{{ player.cognome }} {{ player.nome }}</div>
+                    <div class="player-meta">{{ '%.0f'|format(player.tournament_elo) }}</div>
+                    <div class="checkmark">✓</div>
+                </div>
+            {% endfor %}
+        </div>
+        <input type="hidden" name="seeded_players" id="seededPlayersInput">
+
+        <div class="selection-summary">
+            <div class="selected-count">Teste di serie selezionate: <span id="selectedCount">0</span>/{{ num_coppie }}</div>
+        </div>
+        
+        <div class="button-container">
+            <button type="submit" class="action-button" id="submit-button">
+                <i class="fas fa-check"></i> AVVIA IL SORTEGGIO
+            </button>
+            <a href="{{ url_for('tournaments.new_gironi_day', tournament_id=tournament.id) }}" class="back-button">
+                <i class="fas fa-times"></i> ANNULLA
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+.main-container {
+    padding: 20px;
+    color: white;
+}
+
+.page-title {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.tournament-info {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.tournament-name {
+    font-size: calc(1.1em + 3px);
+    color: #ffd700;
+    font-weight: 600;
+    margin-bottom: 1px;
+}
+
+.tournament-date {
+    font-size: 1em;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.instructions {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.instructions p {
+    color: #fff;
+    margin: 0;
+}
+
+.grid-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 12px;
+    padding: 10px 0 20px 0;
+    margin-bottom: 20px;
+}
+
+.player-card-selectable {
+    min-width: 160px;
+    background: #222;
+    border-radius: 10px;
+    border: 2px solid #444;
+    color: #fff;
+    padding: 12px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: border 0.2s, background 0.2s;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.player-card-selectable.selected {
+    border: 2px solid #28a745;
+    background: #1e2e1e;
+}
+
+.player-card-selectable .checkmark {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 1.3em;
+    color: #28a745;
+    display: none;
+}
+
+.player-card-selectable.selected .checkmark {
+    display: block;
+}
+
+.player-name {
+    font-size: 1em;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.player-meta {
+    font-size: 0.85em;
+    color: #28a745;
+}
+
+@media (max-width: 600px) {
+    .grid-scroll {
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        padding: 8px 0 16px 0;
+    }
+    .player-card-selectable {
+        min-width: 350px;
+        max-width: 350px;
+        width: 350px;
+        margin: 0 auto;
+        padding: 8px 8px 6px 8px;
+        font-size: 0.95em;
+    }
+    .player-name {
+        font-size: 1em;
+        margin-bottom: 2px;
+    }
+    .player-meta {
+        font-size: 0.78em;
+        color: #28a745;
+        margin-bottom: 0;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+    }
+}
+
+.selection-summary {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.selected-count {
+    font-size: 1.1em;
+    color: #fff;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+    margin-bottom: 100px;
+}
+
+.action-button {
+    background-color: #53a551;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 0;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    width: 250px;
+    text-align: center;
+}
+
+.action-button:hover {
+    background-color: #4a9249;
+}
+
+.action-button:disabled {
+    background-color: #888;
+    cursor: not-allowed;
+}
+
+.back-button {
+    background-color: #444444;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 0;
+    text-decoration: none;
+    width: 250px;
+    text-align: center;
+    display: inline-block;
+}
+
+.back-button:hover {
+    background-color: #555555;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const playerCards = document.querySelectorAll('.player-card-selectable');
+    const selectedCountSpan = document.getElementById('selectedCount');
+    const submitButton = document.getElementById('submit-button');
+    const seededPlayersInput = document.getElementById('seededPlayersInput');
+    const form = document.querySelector('.seeded-form');
+    const maxSeeded = parseInt('{{ num_coppie }}');
+    let selectedPlayers = new Set();
+    
+    function updateUI() {
+        selectedCountSpan.textContent = selectedPlayers.size;
+        seededPlayersInput.value = Array.from(selectedPlayers).join(',');
+        
+        if (selectedPlayers.size === 0) {
+            submitButton.disabled = true;
+        } else if (selectedPlayers.size > maxSeeded) {
+            submitButton.disabled = true;
+        } else {
+            submitButton.disabled = false;
+        }
+    }
+    
+    playerCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const playerId = this.dataset.id;
+            
+            if (this.classList.contains('selected')) {
+                // Deseleziona
+                this.classList.remove('selected');
+                selectedPlayers.delete(playerId);
+            } else {
+                // Seleziona solo se non abbiamo raggiunto il limite
+                if (selectedPlayers.size < maxSeeded) {
+                    this.classList.add('selected');
+                    selectedPlayers.add(playerId);
+                }
+            }
+            
+            updateUI();
+        });
+    });
+    
+    form.addEventListener('submit', function(e) {
+        if (selectedPlayers.size === 0) {
+            e.preventDefault();
+            alert('Seleziona almeno una testa di serie!');
+        } else if (selectedPlayers.size > maxSeeded) {
+            e.preventDefault();
+            alert(`Seleziona massimo ${maxSeeded} teste di serie!`);
+        }
+    });
+    
+    updateUI();
+});
+</script>
+{% endblock %} 

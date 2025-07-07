@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1a1b1f">
+    <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+    <title>TorneOtto - The Padel App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Reset margin/padding specifico per la home */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1b1f;
+            color: white;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 80px; /* Spazio per il footer */
+        }
+
+        /* Logo centrato in alto con dimensioni specifiche */
+        .home-logo {
+            width: 160px;
+            height: auto;
+            margin-top: 30px;
+            margin-bottom: 50px;
+            display: block;
+        }
+
+        /* Container principale per centrare tutto */
+        .home-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: calc(100vh - 80px); /* Sottraggo l'altezza del footer */
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        /* Ottimizzazione per iPhone XS e successivi */
+        @media (max-height: 812px) {
+            .home-container {
+                padding: 0 10px;
+                justify-content: flex-start;
+            }
+            
+            .home-logo {
+                margin-top: 30px;
+                margin-bottom: 8px;
+            }
+        }
+
+        /* Container principale mantiene la larghezza originale */
+        .main-container {
+            width: 100%;
+            max-width: 400px;
+            padding-top: 0 !important;
+        }
+
+        /* Override per azzerare il margin-top delle card */
+        .action-grid {
+            margin-top: 0 !important;
+        }
+
+        /* Override mobile: azzera padding-top della main-container solo in home */
+        @media (max-width: 768px) {
+            body.home-page .main-container {
+                padding-top: 0 !important;
+            }
+            .home-logo {
+                margin-bottom: 50px;
+            }
+        }
+    </style>
+</head>
+<body class="home-page">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="home-container">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TorneOtto Logo" class="home-logo">
+        
+        <div class="main-container">
+            <div class="action-grid">
+                <a href="{{ url_for('players.new_player') }}" class="grid-item">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Inserisci<br>Giocatori</span>
+                </a>
+                <a href="{{ url_for('players.players_list') }}" class="grid-item">
+                    <i class="fas fa-address-book"></i>
+                    <span>Gestisci<br>Giocatori</span>
+                </a>
+                <a href="/tornei" class="grid-item">
+                    <i class="fas fa-trophy"></i>
+                    <span>Gestione<br>Tornei</span>
+                </a>
+                <a href="/classifiche" class="grid-item">
+                    <i class="fas fa-list-ol"></i>
+                    <span>Classifiche</span>
+                </a>
+                <a href="/export-pdf" class="grid-item">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Export PDF<br>Statistiche</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="{{ url_for('home') }}" class="footer-link active">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="{{ url_for('players.players_list') }}" class="footer-link">
+                <i class="fas fa-address-book"></i>
+                Giocatori
+            </a>
+            <a href="/tornei" class="footer-link">
+                <i class="fas fa-trophy"></i>
+                Tornei
+            </a>
+            <a href="/classifiche" class="footer-link">
+                <i class="fas fa-list-ol"></i>
+                Classifiche
+            </a>
+        </div>
+        <div class="footer-copyright">
+            TorneOtto, The Padel App – Versione 3.0.2 – © Mattia Ianniello, 2025
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html> 

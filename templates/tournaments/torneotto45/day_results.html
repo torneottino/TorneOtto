@@ -1,0 +1,487 @@
+{% extends "base.html" %}
+
+{% block head_extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/templates/torneotto_mobile_dark_css.css') }}">
+    <style>
+        .semifinals-container {
+            display: flex;
+            flex-direction: column;
+            margin-top: var(--space-xl);
+        }
+
+        .semifinale-card {
+            background: #313236;
+            border-radius: var(--radius-lg);
+            padding: var(--space-sm);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--space-xl);
+        }
+
+        .semifinale-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .semifinale-header {
+            color: #ffd700;
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+            text-align: center;
+        }
+
+        .finale-primo-posto {
+            color: #1f6feb;
+            font-size: calc(var(--font-size-lg) + 3px);
+            font-weight: 700;
+            margin-bottom: var(--space-xs);
+            text-align: center;
+            padding: var(--space-xs) var(--space-sm);
+            border: 2px solid #1f6feb;
+            border-radius: var(--radius-md);
+            background: rgba(31, 111, 235, 0.1);
+        }
+
+        .finale-terzo-posto {
+            color: #28a745;
+            font-size: calc(var(--font-size-lg) + 3px);
+            font-weight: 700;
+            margin-bottom: var(--space-xs);
+            text-align: center;
+            padding: var(--space-xs) var(--space-sm);
+            border: 2px solid #28a745;
+            border-radius: var(--radius-md);
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        .match-result {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .team-row {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-xs);
+            border-radius: var(--radius-md);
+        }
+
+        .team-players {
+            flex: 1;
+            color: var(--text-primary);
+            font-size: calc(var(--font-size-sm) + 3px);
+            text-align: center;
+            padding: var(--space-xs) 0;
+        }
+
+        .vs-row {
+            color: #ffd700;
+            font-weight: 600;
+            text-align: center;
+            margin: var(--space-xs) 0;
+        }
+
+        .score-input {
+            width: 60px;
+            padding: var(--space-xs);
+            border: 1px solid #444;
+            border-radius: var(--radius-md);
+            background: #2c2c2c;
+            color: var(--text-primary);
+            text-align: center;
+            font-size: var(--font-size-sm);
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+            align-items: center;
+            margin-top: var(--space-xl);
+        }
+
+        .action-button {
+            width: 100%;
+            max-width: 300px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-xs);
+            padding: calc(var(--space-sm) + 5px) var(--space-lg);
+            border: 1px solid var(--accent-primary);
+            border-radius: var(--radius-md);
+            background: var(--accent-primary);
+            color: white;
+            font-size: calc(var(--font-size-sm) + 2px);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-button:hover {
+            background: var(--hover-bg);
+            border-color: var(--accent-primary);
+        }
+
+        .action-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .action-button.secondary {
+            background: transparent;
+            border-color: var(--accent-secondary);
+        }
+
+        .action-button.secondary:hover {
+            background: var(--hover-bg);
+            border-color: var(--accent-secondary);
+        }
+
+        .action-button.confirm {
+            background: #238636;
+            border: 1px solid #238636;
+        }
+
+        .action-button.confirm:hover {
+            background: #2ea043;
+            border-color: #2ea043;
+        }
+
+        /* Stili per l'accessibilità */
+        .score-input:focus-visible {
+            outline: 2px solid var(--accent-secondary);
+            outline-offset: 2px;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        .page-title {
+            color: #ffd700;
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: var(--space-sm);
+        }
+
+        /* Stili per la classifica coppie */
+        .ranking-container {
+            background: #313236;
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
+            margin-top: var(--space-xl);
+            box-shadow: var(--shadow-md);
+        }
+
+        .ranking-title {
+            color: #ffd700;
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-xs);
+            border-bottom: 1px solid #444;
+        }
+
+        .ranking-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: var(--space-sm);
+            border-bottom: 1px solid #444;
+            color: var(--text-primary);
+        }
+
+        .ranking-item:last-child {
+            border-bottom: none;
+        }
+
+        .ranking-position {
+            width: 40px;
+            font-weight: 600;
+            color: #ffd700;
+            text-align: center;
+        }
+
+        .ranking-team {
+            flex: 1;
+            text-align: center;
+        }
+
+        .ranking-players {
+            font-size: calc(var(--font-size-sm) + 2px);
+        }
+
+        .ranking-elo {
+            color: #888;
+            font-size: var(--font-size-sm);
+            margin-top: 2px;
+        }
+
+        .ranking-points {
+            width: 60px;
+            text-align: center;
+            font-weight: 600;
+            color: #1f6feb;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 100px; margin-bottom: 100px; padding: calc(var(--space-md) - 10px);">
+    <h1 class="page-title">Inserimento Risultati</h1>
+    <h2 class="subtitle">{{ tournament.nome }} - Giornata del {{ day.data.strftime('%d/%m/%Y') }}</h2>
+    
+    <div id="semifinalsSection" class="semifinals-container" {% if semifinali_completate %}style="display: none;"{% endif %}>
+        <form id="semifinalsForm" method="POST" action="{{ url_for('tournaments.save_torneotto45_semifinals', tournament_id=tournament.id, day_id=day.id) }}">
+            {% for semifinale in semifinali %}
+            <div class="semifinale-card">
+                <div class="semifinale-header">Semifinale {{ loop.index }}</div>
+                <div class="match-result">
+                    <div class="team-row">
+                        <div class="team-players">
+                            {% for player_id in semifinale.squadra_a %}
+                                {% set player = players_by_id[player_id] %}
+                                {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                            {% endfor %}
+                        </div>
+                        <input type="number" 
+                               name="risultato_semifinale_{{ loop.index }}_a" 
+                               min="0" 
+                               max="100" 
+                               required
+                               class="score-input"
+                               aria-label="Punteggio Squadra A Semifinale {{ loop.index }}"
+                               value="{{ semifinale.risultato.squadra_a if semifinale.risultato else '' }}"
+                               {% if semifinali_completate %}disabled{% endif %}>
+                    </div>
+
+                    <div class="vs-row">vs</div>
+
+                    <div class="team-row">
+                        <div class="team-players">
+                            {% for player_id in semifinale.squadra_b %}
+                                {% set player = players_by_id[player_id] %}
+                                {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                            {% endfor %}
+                        </div>
+                        <input type="number" 
+                               name="risultato_semifinale_{{ loop.index }}_b" 
+                               min="0" 
+                               max="100" 
+                               required
+                               class="score-input"
+                               aria-label="Punteggio Squadra B Semifinale {{ loop.index }}"
+                               value="{{ semifinale.risultato.squadra_b if semifinale.risultato else '' }}"
+                               {% if semifinali_completate %}disabled{% endif %}>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            
+            <div class="button-container">
+                <button type="submit" class="action-button" {% if semifinali_completate %}disabled{% endif %}>
+                    <i class="fas fa-save"></i>
+                    SALVA E VAI ALLE FINALI
+                </button>
+                <a href="{{ url_for('tournaments.view_tournament', tournament_id=tournament.id) }}" class="action-button secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    TORNA AL TORNEO
+                </a>
+            </div>
+        </form>
+    </div>
+    
+    <div id="finalsSection" class="semifinals-container" {% if not semifinali_completate %}style="display: none;"{% endif %}>
+        <form id="finalsForm" method="POST" action="{{ url_for('tournaments.save_torneotto45_finals', tournament_id=tournament.id, day_id=day.id) }}">
+            <div class="semifinale-card">
+                <div class="finale-primo-posto">Finale 1° e 2° posto</div>
+                <div class="match-result">
+                    <div class="team-row">
+                        <div class="team-players">
+                            {% if finali.primo_posto.squadra_a %}
+                                {% for player_id in finali.primo_posto.squadra_a %}
+                                    {% set player = players_by_id[player_id] %}
+                                    {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                                {% endfor %}
+                            {% else %}
+                                Da determinare
+                            {% endif %}
+                        </div>
+                        <input type="number" 
+                               name="risultato_finale_1_a" 
+                               min="0" 
+                               max="100" 
+                               required
+                               class="score-input"
+                               aria-label="Punteggio Squadra A Finale 1° posto"
+                               value="{{ finali.primo_posto.risultato.squadra_a if finali.primo_posto.risultato else '' }}"
+                               {% if finali_completate %}disabled{% endif %}>
+                    </div>
+
+                    <div class="vs-row">vs</div>
+
+                    <div class="team-row">
+                        <div class="team-players">
+                            {% if finali.primo_posto.squadra_b %}
+                                {% for player_id in finali.primo_posto.squadra_b %}
+                                    {% set player = players_by_id[player_id] %}
+                                    {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                                {% endfor %}
+                            {% else %}
+                                Da determinare
+                            {% endif %}
+                        </div>
+                        <input type="number" 
+                               name="risultato_finale_1_b" 
+                               min="0" 
+                               max="100" 
+                               required
+                               class="score-input"
+                               aria-label="Punteggio Squadra B Finale 1° posto"
+                               value="{{ finali.primo_posto.risultato.squadra_b if finali.primo_posto.risultato else '' }}"
+                               {% if finali_completate %}disabled{% endif %}>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="semifinale-card">
+                <div class="finale-terzo-posto">Finale 3° e 4° posto</div>
+                <div class="match-result">
+                    <div class="team-row">
+                        <div class="team-players">
+                            {% if finali.terzo_posto.squadra_a %}
+                                {% for player_id in finali.terzo_posto.squadra_a %}
+                                    {% set player = players_by_id[player_id] %}
+                                    {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                                {% endfor %}
+                            {% else %}
+                                Da determinare
+                            {% endif %}
+                        </div>
+                        <input type="number" 
+                               name="risultato_finale_3_a" 
+                               min="0" 
+                               max="100" 
+                               required
+                               class="score-input"
+                               aria-label="Punteggio Squadra A Finale 3° posto"
+                               value="{{ finali.terzo_posto.risultato.squadra_a if finali.terzo_posto.risultato else '' }}"
+                               {% if finali_completate %}disabled{% endif %}>
+                    </div>
+
+                    <div class="vs-row">vs</div>
+
+                    <div class="team-row">
+                        <div class="team-players">
+                            {% if finali.terzo_posto.squadra_b %}
+                                {% for player_id in finali.terzo_posto.squadra_b %}
+                                    {% set player = players_by_id[player_id] %}
+                                    {% if not loop.first %} / {% endif %}{{ player.cognome }} {{ player.nome }}
+                                {% endfor %}
+                            {% else %}
+                                Da determinare
+                            {% endif %}
+                        </div>
+                        <input type="number" 
+                               name="risultato_finale_3_b" 
+                               min="0" 
+                               max="100" 
+                               required
+                               class="score-input"
+                               aria-label="Punteggio Squadra B Finale 3° posto"
+                               value="{{ finali.terzo_posto.risultato.squadra_b if finali.terzo_posto.risultato else '' }}"
+                               {% if finali_completate %}disabled{% endif %}>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-container">
+                <button type="submit" class="action-button" {% if finali_completate %}disabled{% endif %}>
+                    <i class="fas fa-save"></i>
+                    SALVA RISULTATI
+                </button>
+                
+                {% if finali_completate %}
+                <a href="{{ url_for('tournaments.close_torneotto45_day', tournament_id=tournament.id, day_id=day.id) }}" 
+                   class="action-button confirm" 
+                   onclick="return confirm('Sei sicuro di voler chiudere la giornata? Questo aggiornerà gli ELO dei giocatori e non sarà più possibile modificare i risultati.')">
+                    <i class="fas fa-check-circle"></i>
+                    CONFERMA E CHIUDI
+                </a>
+                <a href="{{ url_for('tournaments.export_day_pdf', day_id=day.id) }}" 
+                   class="action-button" 
+                   style="background-color: #1976d2; border-color: #1976d2;"
+                   target="_blank">
+                    <i class="fas fa-file-pdf"></i>
+                    ESPORTA PDF
+                </a>
+                {% endif %}
+            </div>
+        </form>
+
+        {% if finali_completate %}
+        <div class="ranking-container">
+            <h2 class="ranking-title">Classifica Coppie</h2>
+            <ul class="ranking-list">
+                {% set classifica = day.get_ranking() %}
+                {% for i in range(0, classifica|length, 2) %}
+                <li class="ranking-item">
+                    <div class="ranking-position">{{ (i//2 + 1) }}°</div>
+                    <div class="ranking-team">
+                        <div class="ranking-players">
+                            {% set player1 = players_by_id[classifica[i]] %}
+                            {% set player2 = players_by_id[classifica[i+1]] %}
+                            {{ player1.cognome }} {{ player1.nome }} / {{ player2.cognome }} {{ player2.nome }}
+                        </div>
+                        <div class="ranking-elo">
+                            ELO medio: {{ ((player1.get_tournament_elo(tournament.id) + player2.get_tournament_elo(tournament.id)) / 2)|round|int }}
+                        </div>
+                    </div>
+                    <div class="ranking-points">
+                        {% set elo_history = player1.get_elo_history(tournament.id, day.id) %}
+                        {% if elo_history and elo_history|length > 0 %}
+                            {% set last_elo_change = elo_history[-1].elo_change %}
+                            {{ "{:+.1f}".format(last_elo_change) }}
+                        {% else %}
+                            0.0
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const semifinalsSection = document.getElementById('semifinalsSection');
+        const finalsSection = document.getElementById('finalsSection');
+        
+        {% if semifinali_completate %}
+        semifinalsSection.style.display = 'none';
+        finalsSection.style.display = 'block';
+        {% else %}
+        semifinalsSection.style.display = 'block';
+        finalsSection.style.display = 'none';
+        {% endif %}
+    });
+</script>
+{% endblock %} 

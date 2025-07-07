@@ -1,0 +1,32 @@
+[2025-06-18 14:50:41,209] INFO in app: === TORNEOTTO STARTUP ===
+[2025-06-18 14:50:41,209] INFO in app: Configurazione: development
+[2025-06-18 14:50:41,209] INFO in app: Debug mode: False
+[2025-06-18 14:50:41,209] INFO in app: Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+[2025-06-18 14:50:41,225] INFO in app: Modelli importati con successo
+[2025-06-18 14:50:42,826] INFO in app: Tabelle del database create/verificate
+[2025-06-18 14:50:42,829] INFO in app: Sistema di migrazione inizializzato
+[2025-06-18 14:50:42,832] INFO in app: Blueprint importati con successo
+[2025-06-18 14:50:42,860] INFO in app: Blueprint registrati con successo
+[2025-06-18 14:50:42,861] INFO in app: === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+[2025-06-18 14:50:42,861] INFO in app: Avvio server su 0.0.0.0:5001
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.20.10.2:5001
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+[2025-06-18 14:50:43,296] INFO in app: === TORNEOTTO STARTUP ===
+[2025-06-18 14:50:43,296] INFO in app: Configurazione: development
+[2025-06-18 14:50:43,296] INFO in app: Debug mode: False
+[2025-06-18 14:50:43,296] INFO in app: Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+[2025-06-18 14:50:43,312] INFO in app: Modelli importati con successo
+[2025-06-18 14:50:44,965] INFO in app: Tabelle del database create/verificate
+[2025-06-18 14:50:44,969] INFO in app: Sistema di migrazione inizializzato
+[2025-06-18 14:50:44,971] INFO in app: Blueprint importati con successo
+[2025-06-18 14:50:45,000] INFO in app: Blueprint registrati con successo
+[2025-06-18 14:50:45,001] INFO in app: === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+[2025-06-18 14:50:45,001] INFO in app: Avvio server su 0.0.0.0:5001
+ * Debugger is active!
+ * Debugger PIN: 821-942-243

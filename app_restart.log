@@ -1,0 +1,15 @@
+[2025-06-18 14:58:13,360] INFO in app: === TORNEOTTO STARTUP ===
+[2025-06-18 14:58:13,361] INFO in app: Configurazione: development
+[2025-06-18 14:58:13,361] INFO in app: Debug mode: False
+[2025-06-18 14:58:13,361] INFO in app: Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+[2025-06-18 14:58:13,377] INFO in app: Modelli importati con successo
+[2025-06-18 14:58:15,701] INFO in app: Tabelle del database create/verificate
+[2025-06-18 14:58:15,704] INFO in app: Sistema di migrazione inizializzato
+[2025-06-18 14:58:15,736] INFO in app: Blueprint importati con successo
+[2025-06-18 14:58:15,765] INFO in app: Blueprint registrati con successo
+[2025-06-18 14:58:15,766] INFO in app: === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+[2025-06-18 14:58:15,766] INFO in app: Avvio server su 0.0.0.0:5001
+ * Serving Flask app 'app'
+ * Debug mode: on
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.

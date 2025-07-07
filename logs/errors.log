@@ -1,0 +1,24 @@
+2025-06-16 10:15:48,339 - app - ERROR - Errore durante l'eliminazione della giornata: Giornata torneo con id 86 non trovata
+2025-06-16 15:07:44,821 - app - ERROR - Errore durante la generazione del PDF: No module named 'pdfkit'
+2025-06-18 08:55:40,950 - app - ERROR - Errore durante l'importazione dei blueprint: No module named 'elo_tournament_fix'
+2025-06-18 08:57:49,809 - app - ERROR - Errore durante l'importazione dei blueprint: No module named 'elo_tournament_fix'
+2025-06-18 12:44:05,764 - app - ERROR - Errore durante l'inizializzazione del database: Foreign key associated with column 'elimin_days.tournament_id' could not find table 'tournaments' with which to generate a foreign key to target column 'id'
+2025-06-18 12:47:30,036 - app - ERROR - Errore durante l'eliminazione della giornata: Giornata torneo con id 1 non trovata
+2025-06-18 12:47:35,788 - app - ERROR - Errore durante l'eliminazione della giornata: Giornata torneo con id 1 non trovata
+2025-06-18 12:47:42,957 - app - ERROR - Errore durante l'eliminazione della giornata: Giornata torneo con id 1 non trovata
+2025-06-18 13:29:54,868 - app - ERROR - Errore durante l'importazione dei blueprint: unexpected indent (tournaments.py, line 983)
+2025-06-18 13:30:56,791 - app - ERROR - Errore durante l'importazione dei blueprint: unexpected indent (tournaments.py, line 983)
+2025-06-18 13:31:18,453 - app - ERROR - Errore durante l'importazione dei blueprint: unexpected indent (tournaments.py, line 983)
+2025-06-18 13:31:48,528 - app - ERROR - Errore durante l'importazione dei blueprint: unexpected indent (tournaments.py, line 983)
+2025-06-18 14:44:20,423 - app - ERROR - Errore nel calcolo statistiche: 'Tournament' object has no attribute 'get_days'
+2025-06-18 14:44:20,456 - app - ERROR - Errore nel caricamento statistiche: 'models.tournament.Tournament object' has no attribute 'get_days'
+2025-06-18 14:44:22,635 - app - ERROR - Errore nel calcolo statistiche: 'Tournament' object has no attribute 'get_days'
+2025-06-18 14:44:22,637 - app - ERROR - Errore nel caricamento statistiche: 'models.tournament.Tournament object' has no attribute 'get_days'
+2025-06-18 14:45:50,680 - app - ERROR - Errore nel caricamento statistiche: 'models.tournament.Tournament object' has no attribute 'get_days'
+2025-06-18 14:46:18,262 - app - ERROR - Errore nel caricamento statistiche: 'models.tournament.Tournament object' has no attribute 'get_days'
+2025-06-18 14:48:35,675 - app - ERROR - Errore nel caricamento statistiche: 'models.tournament.Tournament object' has no attribute 'get_days'
+2025-06-18 14:50:01,241 - app - ERROR - Errore nel caricamento statistiche: 'models.tournament.Tournament object' has no attribute 'get_days'
+2025-06-18 14:50:26,036 - app - ERROR - Errore nel caricamento statistiche: 'models.tournament.Tournament object' has no attribute 'get_days'
+2025-06-18 15:26:06,443 - app - ERROR - Errore durante l'importazione dei blueprint: expected an indented block (tournaments.py, line 4387)
+2025-06-18 15:27:11,486 - app - ERROR - Errore durante l'importazione dei blueprint: expected an indented block (tournaments.py, line 4387)
+2025-06-18 15:28:10,220 - app - ERROR - Errore durante l'importazione dei blueprint: expected an indented block (tournaments.py, line 4387)

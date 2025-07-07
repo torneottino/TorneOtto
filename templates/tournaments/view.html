@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="main-container">
+    <h1 class="page-title">{{ torneo.nome }}</h1>
+    
+    <div class="tournament-details-box">
+        <div class="tournament-detail-row">
+            <span class="detail-label"><i class="fas fa-trophy"></i> Tipo:</span>
+            <span class="detail-value">
+                {% if torneo.tipo_torneo == 'torneotto30' %}
+                    TorneOtto 30'
+                {% elif torneo.tipo_torneo == 'torneotto45' %}
+                    TorneOtto 45'
+                {% elif torneo.tipo_torneo == 'gironi' %}
+                    A Gironi
+                {% elif torneo.tipo_torneo == 'eliminazione' %}
+                    Eliminazione Diretta
+                {% else %}
+                    {{ torneo.tipo_torneo }}
+                {% endif %}
+            </span>
+        </div>
+        <div class="tournament-detail-row">
+            <span class="detail-label"><i class="fas fa-map-marker-alt"></i> Circolo:</span>
+            <span class="detail-value">{{ torneo.circolo or '-' }}</span>
+        </div>
+        <div class="tournament-detail-row">
+            <span class="detail-label"><i class="fas fa-sticky-note"></i> Note:</span>
+            <span class="detail-value">{{ torneo.note or '-' }}</span>
+        </div>
+    </div>
+
+    <div class="button-group mt-30">
+        {% if torneo.tipo_torneo == 'torneotto30' %}
+            <a href="{{ url_for('tournaments.new_day_torneotto30', tournament_id=torneo.id) }}" class="action-button">
+                <i class="fas fa-plus"></i> INSERISCI NUOVA GIORNATA
+            </a>
+        {% elif torneo.tipo_torneo == 'torneotto45' %}
+            <a href="{{ url_for('tournaments.new_torneotto45_day', tournament_id=torneo.id) }}" class="action-button">
+                <i class="fas fa-plus"></i> INSERISCI NUOVA GIORNATA
+            </a>
+        {% elif torneo.tipo_torneo == 'gironi' %}
+            <a href="{{ url_for('tournaments.new_gironi_day', tournament_id=torneo.id) }}" class="action-button">
+                <i class="fas fa-plus"></i> INSERISCI NUOVA GIORNATA
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="section-header mt-30">
+        <h2 class="section-title"><i class="fas fa-calendar-week"></i> Elenco Giornate</h2>
+    </div>
+    
+    <div class="tournament-days">
+        {% if giornate %}
+            {% for giornata in giornate %}
+            <div class="day-card">
+                <div class="day-header">
+                    <h3>Giornata {{ loop.index }}</h3>
+                    <span class="day-date">{{ giornata.data.strftime('%d/%m/%Y') }}</span>
+                </div>
+                <div class="day-bottom-row">
+                    <div class="day-status" data-status="{{ giornata.stato }}">
+                        Stato: {{ giornata.stato }}
+                    </div>
+                    <div class="day-actions">
+                        {% if torneo.tipo_torneo == 'torneotto30' %}
+                        <a href="{{ url_for('tournaments.view_tournament_day', day_id=giornata.id) }}" class="day-view-btn">
+                            <i class="fas fa-eye"></i>&nbsp;&nbsp;Visualizza
+                        </a>
+                        {% elif torneo.tipo_torneo == 'torneotto45' %}
+                        <a href="{{ url_for('tournaments.view_torneotto45_day', tournament_id=torneo.id, day_id=giornata.id) }}" class="day-view-btn">
+                            <i class="fas fa-eye"></i>&nbsp;&nbsp;Visualizza
+                        </a>
+                        {% elif torneo.tipo_torneo == 'gironi' %}
+                        <a href="{{ url_for('tournaments.view_gironi_day', tournament_id=torneo.id, day_id=giornata.id) }}" class="day-view-btn">
+                            <i class="fas fa-eye"></i>&nbsp;&nbsp;Visualizza
+                        </a>
+                        {% endif %}
+                        <button onclick="confirmDelete({{ giornata.id }}, '{{ torneo.tipo_torneo }}')" class="day-delete-btn" title="Elimina Giornata">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-data">Nessuna giornata inserita</p>
+        {% endif %}
+    </div>
+
+    {% if torneo.tipo_torneo in ['torneotto30', 'torneotto45', 'gironi'] %}
+    <div class="button-container">
+        <a href="{{ url_for('tournaments.export_ranking_pdf', tournament_id=torneo.id) }}" class="btn export-btn" target="_blank">
+            <i class="fas fa-file-pdf"></i> ESPORTA PDF
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Form nascosto per l'eliminazione delle giornate TorneOtto45 -->
+<form id="deleteForm" method="POST" style="display: none;">
+</form>
+
+<style>
+.day-card {
+    background: #232323;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid #333;
+    width: 100%;
+    min-width: 350px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+.tournament-days {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 10px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .tournament-days {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 15px;
+        padding: 0 15px;
+    }
+    
+    .day-card {
+        margin: 0;
+    }
+}
+
+.day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #444;
+}
+
+.day-header h3 {
+    color: #28a745;
+    margin: 0;
+}
+
+.day-date {
+    color: #ffd700;
+    font-size: 0.9em;
+}
+
+.day-status {
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    padding: 3px 8px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.day-status[data-status="Aperta"] {
+    background-color: #28a745;
+    color: white;
+}
+
+.day-status[data-status="Risultati da inserire"] {
+    background-color: #ffc107;
+    color: black;
+}
+
+.day-status[data-status="Completata"] {
+    background-color: #007bff;
+    color: white;
+}
+
+.day-bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.day-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-top: 0;
+}
+
+.day-delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.day-delete-btn:hover {
+    background-color: #c82333;
+}
+
+.day-view-btn {
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    font-size: 0.9em;
+    height: 32px;
+    display: flex;
+    align-items: center;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.action-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 30px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    width: 300px;
+    max-width: 100%;
+    text-align: center;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.action-button:hover {
+    background-color: #218838;
+}
+
+.action-button i {
+    font-size: 1.1em;
+}
+
+.export-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 30px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 200px;
+}
+
+.export-btn:hover {
+    background-color: #0056b3;
+}
+
+.export-btn i {
+    font-size: 1.1em;
+}
+</style>
+
+<script>
+const tournament_id = {{ torneo.id }};
+
+function confirmDelete(dayId, tipoTorneo) {
+    if (confirm('Sei sicuro di voler eliminare questa giornata?')) {
+        if (tipoTorneo === 'torneotto45') {
+            // Usa l'endpoint dedicato per TorneOtto45
+            const form = document.getElementById('deleteForm');
+            form.action = `/tornei/${tournament_id}/giornate/${dayId}/elimina-torneotto45`;
+            form.submit();
+        } else {
+            // Usa l'API esistente per gli altri tipi
+            fetch(`/api/tournaments/day/${dayId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Errore durante l\'eliminazione della giornata');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Errore durante l\'eliminazione della giornata');
+            });
+        }
+    }
+}
+</script>
+{% endblock %} 
