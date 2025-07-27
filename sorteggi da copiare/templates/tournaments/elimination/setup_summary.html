@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block head_extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/templates/eliminazione.css') }}">
+    <style>
+        .summary-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 60vh;
+            padding: 20px;
+        }
+
+        .summary-card {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border: 1px solid #333;
+            min-width: 330px;
+            max-width: 600px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 25px;
+            background-color: var(--bg-card, #2c2d32);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .summary-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--primary-green, #34c759);
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-weight: 500;
+            color: var(--text-secondary, #a1a1a6);
+            flex: 1;
+            font-size: 0.9em;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: var(--text-primary, #ffffff);
+            flex: 1;
+            text-align: right;
+            font-size: 0.9em;
+        }
+
+        .summary-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-green, #34c759);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2db34d;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 480px) {
+            .summary-card {
+                min-width: auto;
+                max-width: none;
+                margin: 0 10px;
+                padding: 20px;
+                gap: 12px;
+            }
+
+            .summary-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="summary-container">
+    <div class="summary-card">
+        <h1 class="summary-title">Riepilogo Torneo ad Eliminazione</h1>
+        
+        <div class="summary-item">
+            <span class="summary-label">Data di Inizio:</span>
+            <span class="summary-value">{{ tournament_data.data_inizio }}</span>
+        </div>
+        
+        <div class="summary-item">
+            <span class="summary-label">Nome Torneo:</span>
+            <span class="summary-value">{{ tournament_data.nome }}</span>
+        </div>
+        
+        <div class="summary-item">
+            <span class="summary-label">Circolo:</span>
+            <span class="summary-value">{{ tournament_data.circolo }}</span>
+        </div>
+        
+        <div class="summary-item">
+            <span class="summary-label">Tipo di Eliminazione:</span>
+            <span class="summary-value">
+                {% if tournament_data.tipo_eliminazione == 'single' %}
+                    Eliminazione Diretta
+                {% else %}
+                    Doppia Eliminazione
+                {% endif %}
+            </span>
+        </div>
+        
+        <div class="summary-item">
+            <span class="summary-label">Numero di Squadre:</span>
+            <span class="summary-value">
+                {{ tournament_data.num_squadre }}
+                {% if tournament_data.num_squadre != tournament_data.num_squadre_potenza2 %}
+                    ({{ tournament_data.num_squadre_potenza2 - tournament_data.num_squadre }} bye)
+                {% endif %}
+            </span>
+        </div>
+        
+        <div class="summary-item">
+            <span class="summary-label">Partite al meglio dei 3 set:</span>
+            <span class="summary-value">
+                {% if tournament_data.best_of_three %}
+                    <i class="fas fa-check" style="color: var(--primary-green, #34c759);"></i> Sì
+                {% else %}
+                    <i class="fas fa-times" style="color: #ff3b30;"></i> No
+                {% endif %}
+            </span>
+        </div>
+        
+        <div class="summary-item">
+            <span class="summary-label">Note:</span>
+            <span class="summary-value">{{ tournament_data.note }}</span>
+        </div>
+        
+        <div class="summary-actions">
+            <form method="POST" action="{{ url_for('tournaments.elimination_team_setup') }}" style="display: inline;">
+                <input type="hidden" name="data_inizio" value="{{ tournament_data.data_inizio }}">
+                <input type="hidden" name="nome" value="{{ tournament_data.nome }}">
+                <input type="hidden" name="circolo" value="{{ tournament_data.circolo }}">
+                <input type="hidden" name="tipo_eliminazione" value="{{ tournament_data.tipo_eliminazione }}">
+                <input type="hidden" name="num_squadre" value="{{ tournament_data.num_squadre }}">
+                <input type="hidden" name="best_of_three" value="{{ tournament_data.best_of_three }}">
+                <input type="hidden" name="note" value="{{ tournament_data.note }}">
+                
+                <button type="submit" class="action-btn btn-primary">
+                    <i class="fas fa-check"></i>
+                    Conferma e Procedi
+                </button>
+            </form>
+            
+            <a href="{{ url_for('tournaments.create_eliminazione_tournament') }}" class="action-btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Modifica
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

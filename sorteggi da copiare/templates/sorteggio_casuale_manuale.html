@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1a1b1f">
+    <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+    <title>Sorteggio Casuale - Inserimento Manuale</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1b1f;
+            color: white;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            background-color: #2a2b2f;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .back-button {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+        }
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .input-section {
+            background: #23242a;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #333;
+            text-align: center;
+        }
+        .input-section h2 {
+            margin: 0 0 20px 0;
+            font-size: 20px;
+            color: #4a9eff;
+        }
+        .number-input {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .number-input label {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .number-input input {
+            background: #1a1b1f;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 10px 15px;
+            color: white;
+            font-size: 16px;
+            width: 80px;
+            text-align: center;
+        }
+        .number-input input:focus {
+            outline: none;
+            border-color: #4a9eff;
+        }
+        .bulk-input-container {
+            margin-bottom: 20px;
+        }
+        #bulkInput {
+            min-height: 120px;
+            font-family: monospace;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #23242a;
+            color: white;
+            padding: 10px;
+            font-size: 1em;
+        }
+        .btn-secondary {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-secondary:hover {
+            background: #777;
+        }
+        .players-manual-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            background: #2a2a2a;
+        }
+        .player-input-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #333;
+            border-radius: 8px;
+            min-width: 300px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .player-number {
+            min-width: 40px;
+            text-align: center;
+            color: #28a745;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .player-name-input {
+            flex: 1;
+            margin: 0;
+            font-size: 16px;
+            padding: 10px;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 100px;
+        }
+        .btn {
+            width: 250px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #4a9eff 0%, #3a8bef 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 158, 255, 0.4);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .animation-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 27, 31, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .animation-content {
+            text-align: center;
+            color: white;
+        }
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid #333;
+            border-top: 4px solid #4a9eff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .animation-text {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .animation-subtext {
+            font-size: 16px;
+            color: #888;
+        }
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 20px;
+            }
+            .main-container {
+                padding: 15px;
+            }
+            .input-section {
+                padding: 20px;
+            }
+            .player-input-row {
+                padding: 6px;
+            }
+            .btn {
+                width: 200px;
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-button" onclick="history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>SORTEGGIO CASUALE - INSERIMENTO MANUALE</h1>
+    </div>
+    <div class="main-container">
+        <div class="input-section">
+            <h2>Numero di coppie da formare:</h2>
+            <div class="number-input">
+                <label for="numCoppie">Coppie:</label>
+                <input type="number" id="numCoppie" min="1" max="50" value="4">
+            </div>
+            <div class="bulk-input-container">
+                <label for="bulkInput">Incolla qui i nomi dei giocatori (uno per riga):</label>
+                <textarea id="bulkInput" placeholder="Mario Rossi\nLuigi Verdi\nAnna Bianchi..." rows="8"></textarea>
+                <button type="button" onclick="parseBulkInput()" class="btn-secondary" style="margin-top: 10px;">
+                    <i class="fas fa-magic"></i> Importa Nomi
+                </button>
+            </div>
+        </div>
+        <div class="players-manual-container" id="playersContainer">
+            <!-- Gli input dei giocatori verranno generati qui -->
+        </div>
+        <div class="button-container">
+            <button class="btn btn-primary" id="eseguiBtn" onclick="eseguiSorteggio()" disabled>
+                ESEGUI SORTEGGIO
+            </button>
+            <button class="btn btn-secondary" onclick="history.back()">
+                ANNULLA
+            </button>
+        </div>
+    </div>
+    <div class="animation-overlay" id="animationOverlay">
+        <div class="animation-content">
+            <div class="spinner"></div>
+            <div class="animation-text">SORTEGGIO IN CORSO...</div>
+            <div class="animation-subtext">Creazione delle coppie casuali</div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/" class="footer-link">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="/giocatori" class="footer-link">
+                <i class="fas fa-address-book"></i>
+                Giocatori
+            </a>
+            <a href="/tornei" class="footer-link">
+                <i class="fas fa-trophy"></i>
+                Tornei
+            </a>
+            <a href="/classifiche" class="footer-link">
+                <i class="fas fa-list-ol"></i>
+                Classifiche
+            </a>
+        </div>
+        <div class="footer-copyright">
+            TorneOtto, The Padel App – Versione 3.0.2 – © Mattia Ianniello, 2025
+        </div>
+    </footer>
+    <script>
+        const numCoppieInput = document.getElementById('numCoppie');
+        const playersContainer = document.getElementById('playersContainer');
+        const eseguiBtn = document.getElementById('eseguiBtn');
+        const animationOverlay = document.getElementById('animationOverlay');
+        let playerInputs = [];
+        function renderPlayerInputs() {
+            const numCoppie = parseInt(numCoppieInput.value) || 0;
+            const numPlayers = numCoppie * 2;
+            playersContainer.innerHTML = '';
+            playerInputs = [];
+            for (let i = 0; i < numPlayers; i++) {
+                const row = document.createElement('div');
+                row.className = 'player-input-row';
+                row.innerHTML = `
+                    <span class="player-number">${i + 1}</span>
+                    <input type="text" class="form-input player-name-input" placeholder="Nome e Cognome" required>
+                `;
+                playersContainer.appendChild(row);
+                playerInputs.push(row.querySelector('input'));
+            }
+            updateButtonState();
+        }
+        numCoppieInput.addEventListener('input', renderPlayerInputs);
+        function parseBulkInput() {
+            const lines = document.getElementById('bulkInput').value.split('\n').map(l => l.trim()).filter(l => l);
+            renderPlayerInputs();
+            for (let i = 0; i < lines.length && i < playerInputs.length; i++) {
+                playerInputs[i].value = lines[i];
+            }
+            updateButtonState();
+        }
+        function updateButtonState() {
+            const allFilled = playerInputs.every(input => input.value.trim().length > 0);
+            eseguiBtn.disabled = !allFilled || playerInputs.length === 0;
+        }
+        playersContainer.addEventListener('input', updateButtonState);
+        function eseguiSorteggio() {
+            const players = playerInputs.map(input => input.value.trim());
+            if (players.some(p => !p)) return;
+            animationOverlay.style.display = 'flex';
+            setTimeout(() => {
+                // Shuffle e pairing
+                const shuffled = [...players].sort(() => Math.random() - 0.5);
+                const pairs = [];
+                for (let i = 0; i < shuffled.length; i += 2) {
+                    if (i + 1 < shuffled.length) {
+                        pairs.push([shuffled[i], shuffled[i + 1]]);
+                    }
+                }
+                sessionStorage.setItem('sorteggioPairs', JSON.stringify(pairs));
+                sessionStorage.setItem('sorteggioType', 'casuale');
+                sessionStorage.setItem('numCoppie', numCoppieInput.value);
+                sessionStorage.setItem('manualPlayers', JSON.stringify(players));
+                window.location.href = '/sorteggio-risultati';
+            }, 5000);
+        }
+        renderPlayerInputs();
+    </script>
+</body>
+</html> 

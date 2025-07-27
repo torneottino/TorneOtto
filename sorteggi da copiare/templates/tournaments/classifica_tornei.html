@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Classifica {{ tournament.nome }}</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 1cm;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            font-size: 10pt;
+            padding-bottom: 2cm;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #007bff;
+            padding-bottom: 5px;
+        }
+        
+        h1 {
+            color: #007bff;
+            margin: 0;
+            font-size: 16pt;
+        }
+        
+        h2 {
+            color: #666;
+            margin: 3px 0;
+            font-size: 12pt;
+        }
+        
+        .update-date {
+            font-size: 10pt;
+            font-style: italic;
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            font-size: 9pt;
+        }
+        
+        .ranking-table th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding: 4px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .ranking-table td {
+            padding: 4px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+        
+        .ranking-table td:nth-child(2) {
+            text-align: left;
+            min-width: 120px;
+        }
+        
+        .player-name {
+            font-weight: bold;
+        }
+        
+        .player-stats {
+            font-size: 8pt;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .elo-variations {
+            font-size: 8pt;
+            color: #666;
+            margin-top: 2px;
+            text-align: left;
+        }
+        
+        .elo-change {
+            display: block;
+            margin-top: 2px;
+        }
+        
+        .elo-change.positive {
+            color: #28a745;
+        }
+        
+        .elo-change.negative {
+            color: #dc3545;
+        }
+        
+        .footer {
+            text-align: center;
+            font-size: 8pt;
+            color: #666;
+            margin-top: 20px;
+        }
+        
+        .footer-info {
+            font-style: italic;
+        }
+        
+        /* Ottimizzazione colonne */
+        .ranking-table th:nth-child(1), /* # */
+        .ranking-table td:nth-child(1) {
+            width: 25px;
+        }
+        
+        .ranking-table th:nth-child(3), /* ELO */
+        .ranking-table td:nth-child(3) {
+            width: 50px;
+        }
+        
+        .ranking-table th:nth-child(4), /* Presenze */
+        .ranking-table td:nth-child(4) {
+            width: 40px;
+        }
+        
+        .ranking-table th:nth-child(5), /* Vittorie */
+        .ranking-table td:nth-child(5),
+        .ranking-table th:nth-child(6), /* Pareggi */
+        .ranking-table td:nth-child(6),
+        .ranking-table th:nth-child(7), /* Sconfitte */
+        .ranking-table td:nth-child(7) {
+            width: 35px;
+        }
+        
+        .ranking-table th:nth-child(8), /* % Vittorie */
+        .ranking-table td:nth-child(8) {
+            width: 45px;
+        }
+        
+        .ranking-table th:nth-child(9), /* Ultima Var. */
+        .ranking-table td:nth-child(9) {
+            width: 45px;
+        }
+        
+        .elo-value {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ tournament.nome }}</h1>
+        <h2>{{ tournament.circolo }}</h2>
+        <div class="update-date">Classifica Generale - Aggiornata al {{ last_day.data.strftime('%d/%m/%Y') if last_day else now.strftime('%d/%m/%Y') }}</div>
+    </div>
+    
+    <table class="ranking-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Giocatore</th>
+                <th>ELO</th>
+                <th>P</th>
+                <th>V</th>
+                <th>N</th>
+                <th>P</th>
+                <th>% V</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in players %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>
+                    <div class="player-name">{{ player.cognome }} {{ player.nome }}</div>
+                    <div class="player-stats">
+                        Presenze: {{ player.stats.presenze_totali }}/{{ player.stats.partite_totali }} 
+                        ({{ "%.1f"|format(player.stats.presenze_totali / player.stats.partite_totali * 100) }}%)
+                    </div>
+                    <div class="elo-variations">
+                        {% for day in player.stats.giornate %}
+                        <div class="elo-change {% if day.variazione > 0 %}positive{% elif day.variazione < 0 %}negative{% endif %}">
+                            {{ day.numero }}^ giornata: {{ "%+.2f"|format(day.variazione) if day.variazione else "-" }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td class="elo-value">{{ "%.2f"|format(player.elo_rating) }}</td>
+                <td>{{ player.stats.presenze_totali }}</td>
+                <td>{{ player.stats.vittorie }}</td>
+                <td>{{ player.stats.pareggi }}</td>
+                <td>{{ player.stats.sconfitte }}</td>
+                <td>{{ "%.1f"|format(player.stats.vittorie / player.stats.partite_giocate * 100 if player.stats.partite_giocate > 0 else 0) }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="footer">
+        <div class="footer-info">TorneOtto, The Padel App – Versione 3.0.2 – © Mattia Ianniello, 2025</div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,680 @@
+{% extends "base.html" %}
+
+{% block head_extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/templates/eliminazione.css') }}">
+    <style>
+        body {
+            background-color: #191a1c;
+            color: #ffffff;
+        }
+        
+        .main-container {
+            background-color: #27282c;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px auto;
+            max-width: 1400px;
+        }
+        
+        .page-title {
+            color: #ffffff;
+            font-size: calc(2.2em - 2px);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .tournament-info {
+            background-color: #191a1c;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: calc(1em - 2px);
+        }
+        
+        .info-item i {
+            color: #53a551;
+            font-size: calc(1.2em - 2px);
+        }
+        
+        .bracket-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .round-section {
+            background-color: #191a1c;
+            border-radius: 8px;
+            padding: 8px;
+            border-bottom: 1px solid #444;
+            margin-bottom: 5px;
+        }
+        
+        .round-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .round-title {
+            color: #ffd700;
+            font-size: calc(1.3em - 2px);
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        
+        .matches-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .match-card {
+            background-color: #27282c;
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #333;
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .match-card {
+                width: 330px;
+                max-width: 330px;
+            }
+        }
+        
+        .match-card.completed {
+            border-color: #53a551;
+            background-color: rgba(83, 165, 81, 0.1);
+        }
+        
+        .match-card.pending {
+            border-color: #f39c12;
+        }
+        
+        .match-header {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        
+        .match-number {
+            color: #53a551;
+            font-weight: 600;
+            font-size: calc(1em - 2px);
+        }
+        
+        .match-teams {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .team-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 8px;
+            background-color: #191a1c;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            min-height: 28px;
+        }
+        
+        .team-row.winner {
+            background-color: #53a551;
+            color: #ffffff;
+            font-weight: 700;
+            border: 2px solid #68b366;
+            box-shadow: 0 2px 8px rgba(83, 165, 81, 0.3);
+            transform: scale(1.02);
+        }
+        
+        .team-info {
+            display: flex;
+            flex-direction: column;
+            flex: 6; /* 60% per i nomi */
+        }
+        
+        .team-name {
+            font-weight: normal;
+            margin-bottom: 2px;
+            font-size: calc(1em - 1px);
+        }
+        
+        .team-score {
+            flex: 4; /* 40% per i risultati */
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 3px;
+        }
+        
+        .score-box {
+            min-width: 22px;
+            height: 20px;
+            border: 1px solid #666;
+            border-radius: 3px;
+            background: #101112;
+            color: #ffd700;
+            font-size: calc(0.75em + 1px); /* +2px come richiesto */
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        
+        .team-row.winner .score-box {
+            border-color: #68b366;
+            background: #4a5c4a;
+            color: #ffffff;
+        }
+        
+        .score-box:empty {
+            visibility: hidden;
+        }
+        
+        .vs-separator {
+            text-align: center;
+            color: #666;
+            font-weight: 600;
+            margin: 2px 0;
+            font-size: calc(1em - 2px);
+        }
+        
+        /* Controlli interattivi */
+        .interactive-controls {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #444;
+        }
+        
+        .score-inputs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .score-input-group {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .score-input {
+            width: 60px;
+            padding: 8px;
+            border: 1px solid #666;
+            border-radius: 4px;
+            background-color: #191a1c;
+            color: #ffffff;
+            text-align: center;
+            font-size: calc(1.1em - 2px);
+        }
+        
+        .score-input:focus {
+            border-color: #53a551;
+            outline: none;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: calc(1em - 2px);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-confirm {
+            background-color: #53a551;
+            color: #ffffff;
+        }
+        
+        .btn-confirm:hover {
+            background-color: #4a9449;
+            transform: translateY(-1px);
+        }
+        
+        .btn-cancel {
+            background-color: #444444;
+            color: #ffffff;
+        }
+        
+        .btn-cancel:hover {
+            background-color: #555555;
+        }
+        
+        .btn-export {
+            background-color: #3579f6;
+            color: #ffffff;
+        }
+        
+        .btn-export:hover {
+            background-color: #2968d4;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+        }
+        
+        .loading-spinner {
+            border: 3px solid #444;
+            border-top: 3px solid #53a551;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            .matches-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .score-inputs {
+                flex-direction: column;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+                font-size: calc(0.9em - 2px);
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <h1 class="page-title">
+        <i class="fas fa-sitemap"></i>
+        Tabellone - {{ tournament.nome }}
+    </h1>
+    
+    <div class="tournament-info">
+        <div class="info-item">
+            <i class="fas fa-trophy"></i>
+            <span>
+                {% if elim_tournament.tipo_eliminazione == 'single' %}
+                    Eliminazione Diretta
+                {% else %}
+                    Doppia Eliminazione
+                {% endif %}
+            </span>
+        </div>
+        <div class="info-item">
+            <i class="fas fa-users"></i>
+            <span>{{ elim_tournament.num_partecipanti }} Partecipanti</span>
+        </div>
+        <div class="info-item">
+            <i class="fas fa-calendar"></i>
+            <span>{{ elim_tournament.data_inizio.strftime('%d/%m/%Y') }}</span>
+        </div>
+        <div class="info-item">
+            <i class="fas fa-info-circle"></i>
+            <span>Stato: {{ elim_tournament.stato }}</span>
+        </div>
+    </div>
+
+    {% if matches_by_round %}
+    <div class="bracket-container">
+        {% for round_key, round_matches in matches_by_round.items() %}
+        {% set bracket_type, round_num = round_key.split('_') %}
+        <div class="round-section">
+            <h2 class="round-title">
+                {% if bracket_type == 'winner' %}
+                    {% if round_num|int == 1 %}
+                        Primo Turno
+                    {% elif round_num|int == 2 %}
+                        Turno 2
+                    {% elif round_num|int == (matches_by_round.keys()|list|length) %}
+                        Finale
+                    {% elif round_num|int == (matches_by_round.keys()|list|length) - 1 %}
+                        Semifinale
+                    {% else %}
+                        Turno {{ round_num }}
+                    {% endif %}
+                {% else %}
+                    Bracket Perdenti - Turno {{ round_num }}
+                {% endif %}
+            </h2>
+            
+            <div class="matches-grid">
+                {% for match in round_matches %}
+                <div class="match-card {% if match.stato == 'Completed' %}completed{% elif match.stato == 'Pending' %}pending{% endif %}" 
+                     data-match-id="{{ match.id }}" 
+                     data-round="{{ match.turno }}" 
+                     data-next-match="" 
+                     data-next-position="">
+                    
+                    <div class="match-header">
+                        <div class="match-number">Partita {{ match.posizione_turno }}</div>
+                    </div>
+                    
+                    <div class="match-teams">
+                        <!-- Squadra 1 -->
+                        <div class="team-row {% if match.winner_team_id == match.team1_id %}winner{% endif %}">
+                            <div class="team-info">
+                                <div class="team-name">
+                                    {% if match.team1 and not match.team1.is_bye %}
+                                        {{ match.team1.get_display_name() }}
+                                    {% else %}
+                                        BYE
+                                    {% endif %}
+                                </div>
+
+                            </div>
+                            <div class="team-score">
+                                {% set team1_sets, team2_sets = match.get_sets_scores_for_display() %}
+                                {% for set_score in team1_sets %}
+                                    {% if set_score %}
+                                        <div class="score-box">{{ set_score }}</div>
+                                    {% else %}
+                                        <div class="score-box"></div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="vs-separator">VS</div>
+                        
+                        <!-- Squadra 2 -->
+                        <div class="team-row {% if match.winner_team_id == match.team2_id %}winner{% endif %}">
+                            <div class="team-info">
+                                <div class="team-name">
+                                    {% if match.team2 and not match.team2.is_bye %}
+                                        {{ match.team2.get_display_name() }}
+                                    {% else %}
+                                        BYE
+                                    {% endif %}
+                                </div>
+
+                            </div>
+                            <div class="team-score">
+                                {% for set_score in team2_sets %}
+                                    {% if set_score %}
+                                        <div class="score-box">{{ set_score }}</div>
+                                    {% else %}
+                                        <div class="score-box"></div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        {% if match.winner_team_id %}
+                        {% set is_final = matches_by_round[round_name]|length == 1 %}
+                        <div style="text-align: center; margin-top: 10px; color: {% if is_final %}#ffd700{% else %}#53a551{% endif %}; font-weight: 700; font-size: {% if is_final %}calc(0.9em + 1px){% else %}calc(0.9em - 2px){% endif %};">
+                            <i class="fas fa-crown"></i> 
+                            Vincitore: 
+                            {% if match.winner_team_id == match.team1_id %}
+                                {{ match.team1.get_display_name() }}
+                            {% else %}
+                                {{ match.team2.get_display_name() }}
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Controlli interattivi per partite in sospeso -->
+                    {% if match.stato == 'Pending' and match.team1_id and match.team2_id %}
+                    <div class="interactive-controls">
+                        <div class="score-inputs">
+                            <div class="score-input-group">
+                                <label>Squadra 1:</label>
+                                <input type="number" class="score-input" data-team="1" min="0" placeholder="0">
+                            </div>
+                            <div class="score-input-group">
+                                <label>Squadra 2:</label>
+                                <input type="number" class="score-input" data-team="2" min="0" placeholder="0">
+                            </div>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button class="btn btn-confirm" onclick="confirmResult({{ match.id }})">
+                                <i class="fas fa-check"></i>
+                                Conferma
+                            </button>
+                            <button class="btn btn-cancel" onclick="cancelResult({{ match.id }})">
+                                <i class="fas fa-times"></i>
+                                Annulla
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="loading-overlay">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-matches">
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            <h3>Nessuna Partita Trovata</h3>
+            <p>Il tabellone non è ancora stato creato o non ci sono partite disponibili.</p>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="button-container">
+        <a href="{{ url_for('tournaments.elimination_enter_results', tournament_id=tournament.id) }}" 
+           class="btn btn-confirm">
+            <i class="fas fa-edit"></i>
+            Inserisci Risultati
+        </a>
+        <a href="{{ url_for('tournaments.export_elimination_pdf', tournament_id=tournament.id) }}" 
+           class="btn btn-export">
+            <i class="fas fa-file-pdf"></i>
+            Esporta PDF
+        </a>
+        <a href="{{ url_for('tournaments.view_tournament', tournament_id=tournament.id) }}" 
+           class="btn btn-cancel">
+            <i class="fas fa-arrow-left"></i>
+            Torna al Torneo
+        </a>
+    </div>
+</div>
+
+<script>
+// Funzioni JavaScript per l'aggiornamento automatico
+function confirmResult(matchId) {
+    const matchCard = document.querySelector(`[data-match-id="${matchId}"]`);
+    const scoreInputs = matchCard.querySelectorAll('.score-input');
+    const team1Score = scoreInputs[0].value;
+    const team2Score = scoreInputs[1].value;
+    
+    if (!team1Score || !team2Score) {
+        alert('Inserisci entrambi i punteggi');
+        return;
+    }
+    
+    if (team1Score === team2Score) {
+        alert('I punteggi non possono essere uguali in un torneo ad eliminazione');
+        return;
+    }
+    
+    // Mostra loading
+    showLoading(matchCard);
+    
+    // Determina il vincitore
+    const winnerId = parseInt(team1Score) > parseInt(team2Score) ? 
+        matchCard.querySelector('[data-team="1"]').dataset.teamId : 
+        matchCard.querySelector('[data-team="2"]').dataset.teamId;
+    
+    // Invia i dati al server
+    const data = {
+        match_id: matchId,
+        team1_score: parseInt(team1Score),
+        team2_score: parseInt(team2Score),
+        winner_id: winnerId
+    };
+    
+    fetch(`/api/tournaments/{{ tournament.id }}/elimination/update-result`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideLoading(matchCard);
+        
+        if (data.success) {
+            // Aggiorna l'interfaccia
+            updateMatchDisplay(matchCard, data.match);
+            
+            // Se ci sono nuove partite create, aggiornale
+            if (data.next_matches) {
+                data.next_matches.forEach(nextMatch => {
+                    updateNextMatch(nextMatch);
+                });
+            }
+            
+            // Mostra messaggio di successo
+            showSuccessMessage('Risultato salvato con successo!');
+        } else {
+            showErrorMessage(data.message || 'Errore durante il salvataggio');
+        }
+    })
+    .catch(error => {
+        hideLoading(matchCard);
+        showErrorMessage('Errore di connessione');
+        console.error('Error:', error);
+    });
+}
+
+function cancelResult(matchId) {
+    const matchCard = document.querySelector(`[data-match-id="${matchId}"]`);
+    const scoreInputs = matchCard.querySelectorAll('.score-input');
+    scoreInputs.forEach(input => input.value = '');
+}
+
+function showLoading(element) {
+    const overlay = element.querySelector('.loading-overlay');
+    overlay.style.display = 'flex';
+}
+
+function hideLoading(element) {
+    const overlay = element.querySelector('.loading-overlay');
+    overlay.style.display = 'none';
+}
+
+function updateMatchDisplay(matchCard, matchData) {
+    // Aggiorna i punteggi
+    const teamRows = matchCard.querySelectorAll('.team-row');
+    const team1Score = teamRows[0].querySelector('.team-score');
+    const team2Score = teamRows[1].querySelector('.team-score');
+    
+    team1Score.textContent = matchData.team1_score;
+    team2Score.textContent = matchData.team2_score;
+    
+    // Evidenzia il vincitore
+    teamRows.forEach(row => row.classList.remove('winner'));
+    if (matchData.winner_team_id === matchData.team1_id) {
+        teamRows[0].classList.add('winner');
+    } else {
+        teamRows[1].classList.add('winner');
+    }
+    
+    // Rimuovi i controlli interattivi
+    const controls = matchCard.querySelector('.interactive-controls');
+    if (controls) {
+        controls.remove();
+    }
+    
+    // Cambia lo stato della card
+    matchCard.classList.remove('pending');
+    matchCard.classList.add('completed');
+}
+
+function updateNextMatch(nextMatchData) {
+    // Logica per aggiornare le partite del turno successivo
+    // Implementazione semplificata
+    console.log('Next match to update:', nextMatchData);
+}
+
+function showSuccessMessage(message) {
+    // Implementazione semplificata - puoi migliorare con toast/modal
+    alert(message);
+}
+
+function showErrorMessage(message) {
+    // Implementazione semplificata - puoi migliorare con toast/modal
+    alert(message);
+}
+</script>
+{% endblock %} 

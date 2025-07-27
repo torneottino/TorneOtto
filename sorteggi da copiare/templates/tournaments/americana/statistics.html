@@ -1,0 +1,552 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="statistics-container">
+    <div class="statistics-header">
+        <h1>{{ tournament.nome }} - Statistiche Avanzate</h1>
+        <p style="color: #ccc; text-align: center;">Analisi dettagliata del torneo all'americana</p>
+    </div>
+
+    <!-- Statistiche Generali -->
+    <div class="stats-section">
+        <h2><i class="fas fa-chart-line"></i> Statistiche Generali</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🏐</div>
+                <div class="stat-info">
+                    <div class="stat-value">{{ statistics.total_matches if statistics else matches|length }}</div>
+                    <div class="stat-label">Partite Totali</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <div class="stat-value">{{ statistics.completed_matches if statistics else results|length }}</div>
+                    <div class="stat-label">Partite Completate</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-info">
+                    <div class="stat-value">
+                        {% if statistics and statistics.total_matches > 0 %}
+                            {{ "%.1f"|format(statistics.completed_matches / statistics.total_matches * 100) }}%
+                        {% elif matches|length > 0 %}
+                            {{ "%.1f"|format(results|length / matches|length * 100) }}%
+                        {% else %}
+                            0%
+                        {% endif %}
+                    </div>
+                    <div class="stat-label">Progresso Torneo</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <div class="stat-value">{{ teams|length if teams else 0 }}</div>
+                    <div class="stat-label">Squadre Partecipanti</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiche di Gioco -->
+    {% if results %}
+    <div class="stats-section">
+        <h2><i class="fas fa-trophy"></i> Statistiche di Gioco</h2>
+        
+        {% if statistics and statistics.highest_game_difference %}
+        <div class="highlight-stat">
+            <div class="highlight-icon">🎯</div>
+            <div class="highlight-info">
+                <div class="highlight-title">Maggiore Differenza in una Partita</div>
+                <div class="highlight-value">{{ statistics.highest_game_difference.difference }} games</div>
+                <div class="highlight-detail">
+                    Risultato: {{ statistics.highest_game_difference.score }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Analisi Set e Games -->
+        <div class="game-analysis">
+            <h3>Analisi Risultati</h3>
+            <div class="analysis-grid">
+                {% set total_sets = 0 %}
+                {% set total_games = 0 %}
+                {% for match in matches %}
+                    {% if results[match.id|string] %}
+                        {% set result = results[match.id|string] %}
+                        {% set total_sets = total_sets + result.team1_sets + result.team2_sets %}
+                        {% set total_games = total_games + result.team1_games + result.team2_games %}
+                    {% endif %}
+                {% endfor %}
+                
+                <div class="analysis-card">
+                    <div class="analysis-value">{{ total_sets }}</div>
+                    <div class="analysis-label">Set Totali Giocati</div>
+                </div>
+                
+                <div class="analysis-card">
+                    <div class="analysis-value">{{ total_games }}</div>
+                    <div class="analysis-label">Games Totali Giocati</div>
+                </div>
+                
+                <div class="analysis-card">
+                    <div class="analysis-value">
+                        {% if results|length > 0 %}
+                            {{ "%.1f"|format(total_sets / results|length) }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </div>
+                    <div class="analysis-label">Media Set per Partita</div>
+                </div>
+                
+                <div class="analysis-card">
+                    <div class="analysis-value">
+                        {% if results|length > 0 %}
+                            {{ "%.1f"|format(total_games / results|length) }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </div>
+                    <div class="analysis-label">Media Games per Partita</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Statistiche Coppie Giranti -->
+    {% if statistics and statistics.pair_frequency %}
+    <div class="stats-section">
+        <h2><i class="fas fa-sync-alt"></i> Analisi Coppie Giranti</h2>
+        
+        {% if statistics.most_frequent_pair %}
+        <div class="highlight-stat">
+            <div class="highlight-icon">👥</div>
+            <div class="highlight-info">
+                <div class="highlight-title">Coppia Più Frequente</div>
+                <div class="highlight-value">{{ statistics.most_frequent_pair.frequency }} volte</div>
+                <div class="highlight-detail">
+                    ID Coppia: {{ statistics.most_frequent_pair.pair }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="pairs-frequency">
+            <h3>Frequenza Coppie</h3>
+            <div class="frequency-list">
+                {% for pair, frequency in statistics.pair_frequency.items() %}
+                <div class="frequency-item">
+                    <div class="pair-info">
+                        <div class="pair-id">Coppia {{ pair }}</div>
+                    </div>
+                    <div class="frequency-bar-container">
+                        <div class="frequency-bar" style="width: {{ frequency / statistics.most_frequent_pair.frequency * 100 }}%"></div>
+                        <div class="frequency-count">{{ frequency }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Classifica Top 3 -->
+    {% if teams %}
+    <div class="stats-section">
+        <h2><i class="fas fa-medal"></i> Top Performer</h2>
+        
+        {% if results %}
+        <!-- Calcola statistiche per squadra -->
+        {% set team_performance = {} %}
+        {% for team in teams %}
+            {% set _ = team_performance.update({team.id: {'wins': 0, 'games_won': 0, 'games_lost': 0, 'team': team}}) %}
+        {% endfor %}
+        
+        {% for match in matches %}
+            {% if results[match.id|string] %}
+                {% set result = results[match.id|string] %}
+                {% set team1_id = match.team1.id %}
+                {% set team2_id = match.team2.id %}
+                
+                {% if result.team1_sets > result.team2_sets %}
+                    {% set _ = team_performance[team1_id].update({'wins': team_performance[team1_id].wins + 1}) %}
+                {% elif result.team2_sets > result.team1_sets %}
+                    {% set _ = team_performance[team2_id].update({'wins': team_performance[team2_id].wins + 1}) %}
+                {% endif %}
+                
+                {% set _ = team_performance[team1_id].update({
+                    'games_won': team_performance[team1_id].games_won + result.team1_games,
+                    'games_lost': team_performance[team1_id].games_lost + result.team2_games
+                }) %}
+                {% set _ = team_performance[team2_id].update({
+                    'games_won': team_performance[team2_id].games_won + result.team2_games,
+                    'games_lost': team_performance[team2_id].games_lost + result.team1_games
+                }) %}
+            {% endif %}
+        {% endfor %}
+
+        <div class="top-performers">
+            <div class="performer-card best-winner">
+                <div class="performer-icon">🏆</div>
+                <div class="performer-info">
+                    <div class="performer-title">Più Vittorie</div>
+                    {% set best_winner = team_performance.values() | sort(attribute='wins', reverse=true) | first %}
+                    <div class="performer-value">{{ best_winner.wins }} vittorie</div>
+                    <div class="performer-detail">
+                        {% if best_winner.team.player1_name %}
+                            {{ best_winner.team.player1_name }}
+                            {% if best_winner.team.player2_name %} / {{ best_winner.team.player2_name }}{% endif %}
+                        {% else %}
+                            Squadra {{ best_winner.team.id }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="performer-card best-games">
+                <div class="performer-icon">🎯</div>
+                <div class="performer-info">
+                    <div class="performer-title">Più Games Vinti</div>
+                    {% set best_games = team_performance.values() | sort(attribute='games_won', reverse=true) | first %}
+                    <div class="performer-value">{{ best_games.games_won }} games</div>
+                    <div class="performer-detail">
+                        {% if best_games.team.player1_name %}
+                            {{ best_games.team.player1_name }}
+                            {% if best_games.team.player2_name %} / {{ best_games.team.player2_name }}{% endif %}
+                        {% else %}
+                            Squadra {{ best_games.team.id }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="performer-card best-diff">
+                <div class="performer-icon">📈</div>
+                <div class="performer-info">
+                    <div class="performer-title">Miglior Differenza</div>
+                    {% set best_diff_team = team_performance.values() | sort(attribute='games_won') | reverse | first %}
+                    {% set diff = best_diff_team.games_won - best_diff_team.games_lost %}
+                    <div class="performer-value">+{{ diff }}</div>
+                    <div class="performer-detail">
+                        {% if best_diff_team.team.player1_name %}
+                            {{ best_diff_team.team.player1_name }}
+                            {% if best_diff_team.team.player2_name %} / {{ best_diff_team.team.player2_name }}{% endif %}
+                        {% else %}
+                            Squadra {{ best_diff_team.team.id }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="no-data">
+            <p>Nessun risultato disponibile per calcolare i top performer.</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="action-buttons">
+        <a href="{{ url_for('tournaments.view_americana_day', tournament_id=tournament.id, day_id=day.id) }}" class="btn-action btn-primary">
+            <i class="fas fa-arrow-left"></i> Torna al Torneo
+        </a>
+        
+        <a href="{{ url_for('tournaments.americana_ranking', tournament_id=tournament.id, day_id=day.id) }}" class="btn-action btn-info">
+            <i class="fas fa-trophy"></i> Classifica Dettagliata
+        </a>
+    </div>
+</div>
+
+<style>
+.statistics-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.statistics-header {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #fff;
+}
+
+.statistics-header h1 {
+    color: #28a745;
+    margin-bottom: 10px;
+}
+
+.stats-section {
+    margin-bottom: 40px;
+    background: #2a2a2a;
+    border-radius: 15px;
+    padding: 25px;
+    border: 1px solid #444;
+}
+
+.stats-section h2 {
+    color: #28a745;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background: #333;
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid #555;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+
+.stat-icon {
+    font-size: 2em;
+}
+
+.stat-info {
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #28a745;
+}
+
+.stat-label {
+    color: #ccc;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.highlight-stat {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: white;
+}
+
+.highlight-icon {
+    font-size: 3em;
+}
+
+.highlight-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.highlight-value {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.highlight-detail {
+    font-size: 0.9em;
+    opacity: 0.9;
+}
+
+.analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.analysis-card {
+    background: #444;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+}
+
+.analysis-value {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #ffd700;
+    margin-bottom: 5px;
+}
+
+.analysis-label {
+    color: #ccc;
+    font-size: 0.8em;
+}
+
+.frequency-list {
+    margin-top: 20px;
+}
+
+.frequency-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #333;
+    border-radius: 8px;
+}
+
+.pair-id {
+    color: #fff;
+    font-weight: bold;
+}
+
+.frequency-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 150px;
+}
+
+.frequency-bar {
+    height: 20px;
+    background: #28a745;
+    border-radius: 10px;
+    min-width: 20px;
+}
+
+.frequency-count {
+    color: #28a745;
+    font-weight: bold;
+    min-width: 20px;
+}
+
+.top-performers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.performer-card {
+    background: #333;
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid #555;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.best-winner {
+    border-left: 4px solid #ffd700;
+}
+
+.best-games {
+    border-left: 4px solid #28a745;
+}
+
+.best-diff {
+    border-left: 4px solid #17a2b8;
+}
+
+.performer-icon {
+    font-size: 2.5em;
+}
+
+.performer-title {
+    color: #ccc;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+}
+
+.performer-value {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #28a745;
+    margin-bottom: 5px;
+}
+
+.performer-detail {
+    color: #fff;
+    font-size: 0.8em;
+}
+
+.no-data {
+    text-align: center;
+    padding: 40px;
+    color: #ccc;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
+
+.btn-action {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: #28a745;
+    color: white;
+}
+
+.btn-info {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .top-performers {
+        grid-template-columns: 1fr;
+    }
+    
+    .highlight-stat {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+</style>
+{% endblock %} 

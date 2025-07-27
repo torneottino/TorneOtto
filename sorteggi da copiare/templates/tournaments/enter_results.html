@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+    <h1 class="page-title">Inserimento Risultati</h1>
+    <h2 class="subtitle">{{ tournament.nome }}</h2>
+    <h3 class="tournament-date">Giornata del {{ day.data.strftime('%d/%m/%Y') }}</h3>
+
+    <form method="POST" class="results-form">
+        <div class="matches-section">
+            {% for round in schedule %}
+            <div class="round-card">
+                <div class="round-header">
+                    <span class="yellow">Turno {{ loop.index }}</span>
+                </div>
+                <div class="matches-list">
+                    {% for match in round %}
+                    {% set match_key = (match[0], match[1])|join('-') %}
+                    <div class="match-item">
+                        <div class="match-teams">
+                            {{ teams[match[0]-1][0].nome }} {{ teams[match[0]-1][0].cognome[0] }}. / 
+                            {{ teams[match[0]-1][1].nome }} {{ teams[match[0]-1][1].cognome[0] }}. 
+                            <span class="yellow">vs</span> 
+                            {{ teams[match[1]-1][0].nome }} {{ teams[match[1]-1][0].cognome[0] }}. / 
+                            {{ teams[match[1]-1][1].nome }} {{ teams[match[1]-1][1].cognome[0] }}.
+                        </div>
+                        <div class="result-input">
+                            <label class="sr-only" for="result_{{ match_key }}_a">Punteggio Squadra 1</label>
+                            <input type="number" min="0" max="15" name="result_{{ match_key }}_a" id="result_{{ match_key }}_a" class="result-number" value="{{ results.get(match_key, '').split('-')[0] if results.get(match_key) }}" placeholder="Squadra 1" required>
+                            <span style="color:#ffd700; font-weight:bold; margin: 0 4px;">-</span>
+                            <label class="sr-only" for="result_{{ match_key }}_b">Punteggio Squadra 2</label>
+                            <input type="number" min="0" max="15" name="result_{{ match_key }}_b" id="result_{{ match_key }}_b" class="result-number" value="{{ results.get(match_key, '').split('-')[1] if results.get(match_key) }}" placeholder="Squadra 2" required>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="button-container">
+            <button type="submit" class="action-button">SALVA RISULTATI</button>
+            <a href="{{ url_for('tournaments.view_tournament_day', day_id=day.id) }}" class="back-button">ANNULLA</a>
+        </div>
+    </form>
+</div>
+
+<style>
+.main-container {
+    padding: 20px;
+    color: white;
+}
+
+.page-title {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 1.2em;
+    color: #888;
+    margin-bottom: 5px;
+}
+
+.tournament-date {
+    font-size: 1.2em;
+    color: #ffd700;
+    margin-bottom: 20px;
+}
+
+.matches-section {
+    margin: 20px 0;
+}
+
+.round-card {
+    background: #232323;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #333;
+    width: 500px;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.round-header {
+    font-size: 1.1em;
+    color: #28a745;
+    font-weight: bold;
+    margin-bottom: 15px;
+    border-bottom: 1px dashed #444;
+    padding-bottom: 8px;
+}
+
+.match-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #333;
+}
+
+.match-item:last-child {
+    border-bottom: none;
+}
+
+.match-teams {
+    flex: 1;
+    margin-right: 15px;
+}
+
+.result-input {
+    width: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.result-number {
+    width: 48px;
+    padding: 6px;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    border: 1px solid #444;
+    text-align: center;
+    font-size: 1em;
+}
+
+.result-number:focus {
+    outline: none;
+    border-color: #28a745;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+}
+
+.yellow {
+    color: #ffd700;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+    margin-bottom: 100px;
+}
+
+.action-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 30px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    width: 300px;
+    max-width: 100%;
+    text-align: center;
+}
+
+.action-button:hover {
+    background-color: #218838;
+}
+
+.back-button {
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 30px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    width: 300px;
+    max-width: 100%;
+    text-align: center;
+}
+
+.back-button:hover {
+    background-color: #555;
+}
+
+@media (max-width: 530px) {
+    .round-card {
+        min-width: 340px;
+        width: 100%;
+    }
+    
+    .match-item {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .match-teams {
+        margin-right: 0;
+    }
+    
+    .result-input {
+        width: 150px;
+    }
+}
+</style>
+{% endblock %} 

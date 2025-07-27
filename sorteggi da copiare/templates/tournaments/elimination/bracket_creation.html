@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block head_extra_css %}
+<style>
+.bracket-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.bracket-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.tournament-name {
+    color: var(--primary-green, #34c759);
+    font-size: 2em;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.tournament-club {
+    color: var(--text-secondary, #a1a1a6);
+    font-size: 1.2em;
+    margin-bottom: 15px;
+}
+
+.round-title {
+    color: var(--text-primary, #ffffff);
+    font-size: 1.5em;
+    font-weight: 500;
+}
+
+.matches-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.match-card {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border: 2px solid #444;
+    min-width: 330px;
+    max-width: 600px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    background: var(--bg-card, #2c2d32);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.match-title {
+    color: var(--primary-green, #34c759);
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.match-teams {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.team {
+    color: var(--text-primary, #ffffff);
+    font-size: 1em;
+    padding: 8px 12px;
+    background: var(--bg-secondary, #1c1d22);
+    border-radius: 6px;
+    text-align: center;
+    min-width: 280px;
+}
+
+.team.bye {
+    color: var(--text-secondary, #a1a1a6);
+    font-style: italic;
+    background: var(--bg-tertiary, #333);
+}
+
+.team i {
+    color: var(--text-secondary, #a1a1a6);
+    margin-left: 5px;
+}
+
+.vs-divider {
+    color: var(--text-secondary, #a1a1a6);
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.actions-section {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 40px;
+}
+
+.action-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: var(--primary-green, #34c759);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2db34d;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .bracket-container {
+        padding: 15px;
+    }
+    
+    .matches-grid {
+        gap: 10px;
+    }
+    
+    .match-card {
+        min-width: auto;
+        max-width: none;
+        margin: 0 10px;
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .team {
+        min-width: 250px;
+    }
+}
+    
+    .actions-section {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .action-btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="bracket-container">
+    <div class="bracket-header">
+        <h1 class="tournament-name">{{ tournament_data.nome }}</h1>
+        {% if tournament_data.circolo %}
+        <p class="tournament-club">{{ tournament_data.circolo }}</p>
+        {% endif %}
+        <h2 class="round-title">Primo Turno</h2>
+        
+
+    </div>
+
+    <div class="matches-grid">
+        {% set teams = tournament_data.teams %}
+        {% set seeds = tournament_data.seeds %}
+        {% set num_teams = teams|length %}
+        
+        {# Calcola la prossima potenza di 2 DAVVERO CORRETTAMENTE #}
+        {% if num_teams <= 2 %}
+            {% set next_power_of_2 = 2 %}
+        {% elif num_teams <= 4 %}
+            {% set next_power_of_2 = 4 %}
+        {% elif num_teams <= 8 %}
+            {% set next_power_of_2 = 8 %}
+        {% elif num_teams <= 16 %}
+            {% set next_power_of_2 = 16 %}
+        {% elif num_teams <= 32 %}
+            {% set next_power_of_2 = 32 %}
+        {% else %}
+            {% set next_power_of_2 = 64 %}
+        {% endif %}
+        
+        {# Calcola il numero di bye necessari #}
+        {% set num_byes = next_power_of_2 - num_teams %}
+        
+        {# Creo le liste direttamente senza modifiche dinamiche #}
+        {% set all_team_names = teams|map(attribute='name')|list %}
+        {% set seeded_team_names = teams|selectattr('is_seed')|map(attribute='name')|list %}
+        {% set non_seeded_team_names = teams|rejectattr('is_seed')|map(attribute='name')|list %}
+        
+        {# Determino chi ha i bye: prime teste di serie + squadre extra se necessario #}
+        {% set bye_team_names = seeded_team_names[:num_byes] + non_seeded_team_names[:(num_byes - seeded_team_names|length)] if seeded_team_names|length < num_byes else seeded_team_names[:num_byes] %}
+        
+        {# Squadre che giocano = tutte meno quelle con bye #}
+        {% set playing_team_names = all_team_names|reject('in', bye_team_names)|list %}
+        
+        {# Crea le partite del primo turno #}
+        {% set num_first_round_matches = playing_team_names|length // 2 %}
+        {% for i in range(num_first_round_matches) %}
+            {% set team1_idx = i * 2 %}
+            {% set team2_idx = (i * 2) + 1 %}
+            
+            <div class="match-card">
+                <div class="match-title">Partita {{ i + 1 }}</div>
+                <div class="match-teams">
+                    <div class="team">{{ playing_team_names[team1_idx] }}</div>
+                    <div class="vs-divider">vs</div>
+                    <div class="team">{{ playing_team_names[team2_idx] }}</div>
+                </div>
+            </div>
+        {% endfor %}
+        
+        {# Mostra TUTTE le squadre con bye #}
+        {% for i in range(bye_team_names|length) %}
+            <div class="match-card">
+                <div class="match-title">Bye {{ i + 1 }}</div>
+                <div class="match-teams">
+                    <div class="team">{{ bye_team_names[i] }} 
+                        {% if bye_team_names[i] in seeds %}<i class="fas fa-star"></i>{% endif %}
+                    </div>
+                    <div class="vs-divider">vs</div>
+                    <div class="team bye">Bye</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="actions-section">
+        <form method="POST" action="{{ url_for('tournaments.save_elimination_bracket') }}">
+            <!-- Campi hidden per mantenere i dati del torneo -->
+            <input type="hidden" name="data_inizio" value="{{ tournament_data.data_inizio }}">
+            <input type="hidden" name="nome" value="{{ tournament_data.nome }}">
+            <input type="hidden" name="circolo" value="{{ tournament_data.circolo }}">
+            <input type="hidden" name="tipo_eliminazione" value="{{ tournament_data.tipo_eliminazione }}">
+            <input type="hidden" name="num_squadre" value="{{ tournament_data.num_squadre }}">
+            <input type="hidden" name="best_of_three" value="{{ tournament_data.best_of_three }}">
+            <input type="hidden" name="note" value="{{ tournament_data.note }}">
+            <input type="hidden" name="teams" value="{{ tournament_data.teams|map(attribute='name')|join(',') }}">
+            <input type="hidden" name="seeds" value="{{ tournament_data.seeds|join(',') }}">
+            
+            <button type="submit" class="action-btn btn-primary">
+                <i class="fas fa-save"></i>
+                Salva Tabellone
+            </button>
+        </form>
+        
+        <a href="{{ url_for('tournaments.tournaments_list') }}" class="action-btn btn-secondary">
+            <i class="fas fa-times"></i>
+            Annulla
+        </a>
+    </div>
+</div>
+
+<script>
+// Animazione automatica al caricamento pagina
+document.addEventListener('DOMContentLoaded', function() {
+    const matches = document.querySelectorAll('.match-card');
+    
+    // Nascondi inizialmente tutte le partite
+    matches.forEach(match => {
+        match.style.opacity = '0';
+        match.style.transform = 'translateY(20px)';
+        match.style.transition = 'all 0.5s ease';
+    });
+    
+    // Mostra le partite una per una con animazione automatica
+    let delay = 500; // Inizia dopo 500ms
+    matches.forEach((match, index) => {
+        setTimeout(() => {
+            match.style.opacity = '1';
+            match.style.transform = 'translateY(0)';
+        }, delay);
+        delay += 200; // 200ms tra ogni partita
+    });
+});
+</script>
+{% endblock %} 

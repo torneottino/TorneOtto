@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1a1b1f">
+    <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+    <title>Sorteggio Teste di Serie - Database</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1b1f;
+            color: white;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            background-color: #2a2b2f;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .back-button {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+        }
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .input-section, .players-section {
+            background: #23242a;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #333;
+            text-align: center;
+        }
+        .input-section h2, .players-section h2 {
+            margin: 0 0 20px 0;
+            font-size: 20px;
+            color: #4a9eff;
+        }
+        .number-input {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .number-input label {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .number-input input {
+            background: #1a1b1f;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 10px 15px;
+            color: white;
+            font-size: 16px;
+            width: 80px;
+            text-align: center;
+        }
+        .number-input input:focus {
+            outline: none;
+            border-color: #4a9eff;
+        }
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .player-card {
+            background: #23242a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 12px 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1em;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+        }
+        .player-cognome, .player-nome {
+            display: block !important;
+            width: 100% !important;
+            text-align: center !important;
+            font-weight: normal;
+            font-size: 12px !important;
+            color: white;
+            margin: 0;
+            padding: 0;
+            line-height: 1.1;
+        }
+        .player-card.selected {
+            border-color: #4a9eff;
+            background: #2a3b5f;
+        }
+        .player-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .selection-info {
+            text-align: center;
+            font-size: 17px;
+            color: var(--color-secondary, #ffd60a);
+            margin-bottom: 10px;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 100px;
+        }
+        .btn {
+            width: 250px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #4a9eff 0%, #3a8bef 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 158, 255, 0.4);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #666 0%, #555 100%);
+            color: white;
+        }
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 102, 102, 0.4);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .animation-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 27, 31, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .animation-content {
+            text-align: center;
+            color: white;
+        }
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid #333;
+            border-top: 4px solid #4a9eff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .animation-text {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .animation-subtext {
+            font-size: 16px;
+            color: #888;
+        }
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 20px;
+            }
+            .main-container {
+                padding: 15px;
+            }
+            .input-section, .players-section {
+                padding: 20px;
+            }
+            .players-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            .player-card {
+                padding: 10px 6px;
+                font-size: 0.8em;
+            }
+            .player-cognome, .player-nome {
+                font-size: 11px !important;
+            }
+            .btn {
+                width: 200px;
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-button" onclick="history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>SORTEGGIO TESTE DI SERIE - DATABASE</h1>
+    </div>
+    <div class="main-container">
+        <div class="input-section">
+            <h2>Numero di coppie da formare:</h2>
+            <div class="number-input">
+                <label for="numCoppie">Coppie:</label>
+                <input type="number" id="numCoppie" min="1" max="50" value="4">
+            </div>
+            <div class="selection-info" id="step-info">
+                Seleziona <span id="requiredPlayers">4</span> teste di serie
+            </div>
+        </div>
+        <div class="players-section">
+            <h2 id="players-section-title">Seleziona le teste di serie:</h2>
+            <div class="players-grid" id="playersGrid">
+                {% for player in players %}
+                <div class="player-card" data-player-id="{{ player.id }}" onclick="togglePlayer(this)">
+                    <div class="player-cognome">{{ player.cognome }}</div>
+                    <div class="player-nome">{{ player.nome }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="button-container">
+            <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+                AVANTI
+            </button>
+            <button class="btn btn-secondary" onclick="history.back()">
+                ANNULLA
+            </button>
+        </div>
+    </div>
+    <div class="animation-overlay" id="animationOverlay">
+        <div class="animation-content">
+            <div class="spinner"></div>
+            <div class="animation-text">SORTEGGIO IN CORSO...</div>
+            <div class="animation-subtext">Creazione delle coppie teste di serie</div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/" class="footer-link">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="/giocatori" class="footer-link">
+                <i class="fas fa-address-book"></i>
+                Giocatori
+            </a>
+            <a href="/tornei" class="footer-link">
+                <i class="fas fa-trophy"></i>
+                Tornei
+            </a>
+            <a href="/classifiche" class="footer-link">
+                <i class="fas fa-list-ol"></i>
+                Classifiche
+            </a>
+        </div>
+        <div class="footer-copyright">
+            TorneOtto, The Padel App – Versione 3.0.2 – © Mattia Ianniello, 2025
+        </div>
+    </footer>
+    <script>
+        let selectedPlayers = [];
+        let selectedNonTeste = [];
+        let step = 1;
+        const numCoppieInput = document.getElementById('numCoppie');
+        const requiredPlayersSpan = document.getElementById('requiredPlayers');
+        const nextBtn = document.getElementById('nextBtn');
+        const animationOverlay = document.getElementById('animationOverlay');
+        const playersGrid = document.getElementById('playersGrid');
+        const playersSectionTitle = document.getElementById('players-section-title');
+        const stepInfo = document.getElementById('step-info');
+        let allPlayerCards = Array.from(document.querySelectorAll('.player-card'));
+        let allPlayers = allPlayerCards.map(card => ({
+            id: card.dataset.playerId,
+            cognome: card.querySelector('.player-cognome').innerText,
+            nome: card.querySelector('.player-nome').innerText
+        }));
+        numCoppieInput.addEventListener('input', function() {
+            const numCoppie = parseInt(this.value) || 0;
+            requiredPlayersSpan.textContent = numCoppie;
+            updateButtonState();
+        });
+        function togglePlayer(card) {
+            const playerId = card.dataset.playerId;
+            const numCoppie = parseInt(numCoppieInput.value) || 0;
+            if (card.classList.contains('disabled')) return;
+            if (step === 1) {
+                if (card.classList.contains('selected')) {
+                    card.classList.remove('selected');
+                    selectedPlayers = selectedPlayers.filter(id => id !== playerId);
+                } else {
+                    if (selectedPlayers.length < numCoppie) {
+                        card.classList.add('selected');
+                        selectedPlayers.push(playerId);
+                    }
+                }
+            } else if (step === 2) {
+                if (card.classList.contains('selected')) {
+                    card.classList.remove('selected');
+                    selectedNonTeste = selectedNonTeste.filter(id => id !== playerId);
+                } else {
+                    if (selectedNonTeste.length < numCoppie) {
+                        card.classList.add('selected');
+                        selectedNonTeste.push(playerId);
+                    }
+                }
+            }
+            updateButtonState();
+            updatePlayerCards();
+        }
+        function updateButtonState() {
+            const numCoppie = parseInt(numCoppieInput.value) || 0;
+            if (step === 1) {
+                nextBtn.disabled = selectedPlayers.length !== numCoppie || numCoppie === 0;
+            } else if (step === 2) {
+                nextBtn.disabled = selectedNonTeste.length !== numCoppie || numCoppie === 0;
+            }
+        }
+        function updatePlayerCards() {
+            const numCoppie = parseInt(numCoppieInput.value) || 0;
+            allPlayerCards.forEach(card => {
+                const playerId = card.dataset.playerId;
+                if (step === 1) {
+                    card.classList.remove('disabled');
+                    if (!card.classList.contains('selected') && selectedPlayers.length >= numCoppie) {
+                        card.classList.add('disabled');
+                    } else {
+                        card.classList.remove('disabled');
+                    }
+                } else if (step === 2) {
+                    if (selectedPlayers.includes(playerId)) {
+                        card.classList.add('disabled');
+                    } else {
+                        card.classList.remove('disabled');
+                        if (!card.classList.contains('selected') && selectedNonTeste.length >= numCoppie) {
+                            card.classList.add('disabled');
+                        }
+                    }
+                }
+            });
+        }
+        function nextStep() {
+            const numCoppie = parseInt(numCoppieInput.value) || 0;
+            if (step === 1) {
+                // Passa alla selezione dei non-teste
+                step = 2;
+                selectedNonTeste = [];
+                allPlayerCards.forEach(card => card.classList.remove('selected'));
+                playersSectionTitle.innerText = 'Seleziona gli altri giocatori:';
+                stepInfo.innerHTML = 'Seleziona <span id="requiredPlayers">' + numCoppie + '</span> altri giocatori';
+                updateButtonState();
+                updatePlayerCards();
+            } else if (step === 2) {
+                // Esegui sorteggio
+                eseguiSorteggio();
+            }
+        }
+        function eseguiSorteggio() {
+            animationOverlay.style.display = 'flex';
+            setTimeout(() => {
+                // Abbina ogni testa di serie a un altro giocatore casuale
+                const shuffled = [...selectedNonTeste].sort(() => Math.random() - 0.5);
+                const pairs = [];
+                for (let i = 0; i < selectedPlayers.length; i++) {
+                    pairs.push([selectedPlayers[i], shuffled[i]]);
+                }
+                sessionStorage.setItem('sorteggioPairs', JSON.stringify(pairs));
+                sessionStorage.setItem('sorteggioType', 'teste');
+                sessionStorage.setItem('numCoppie', numCoppieInput.value);
+                window.location.href = '/sorteggio-risultati';
+            }, 5000);
+        }
+        numCoppieInput.dispatchEvent(new Event('input'));
+    </script>
+</body>
+</html> 

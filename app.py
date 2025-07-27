@@ -48,6 +48,25 @@ def create_app(config_class=Config):
     app.logger.addHandler(file_handler)
     app.logger.addHandler(error_handler)
     app.logger.addHandler(debug_handler)
+
+    # Console handler con colorlog se disponibile
+    try:
+        from colorlog import ColoredFormatter
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.DEBUG)
+        formatter = ColoredFormatter(
+            "% (log_color)s%(levelname)-8s%(reset)s | %(blue)s%(message)s",
+            log_colors={
+                'DEBUG': 'cyan',
+                'INFO': 'green',
+                'WARNING': 'yellow',
+                'ERROR': 'red',
+                'CRITICAL': 'red',
+            })
+        console_handler.setFormatter(formatter)
+        app.logger.addHandler(console_handler)
+    except ImportError:
+        pass
     app.logger.setLevel(logging.DEBUG)
     
     # Log dell'avvio dell'applicazione
@@ -87,11 +106,13 @@ def create_app(config_class=Config):
     try:
         from routes.players import players_bp
         from routes.tournaments import tournaments_bp
+        from routes.sorteggio import sorteggio_bp
         app.logger.info('Blueprint importati con successo')
 
         # Register blueprints
         app.register_blueprint(players_bp)
         app.register_blueprint(tournaments_bp)
+        app.register_blueprint(sorteggio_bp)
         app.logger.info('Blueprint registrati con successo')
         
     except Exception as e:

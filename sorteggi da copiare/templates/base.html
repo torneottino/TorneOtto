@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1a1b1f">
+    <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+    <title>TorneOtto - The Padel App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/print.css') }}">
+    {% block head_extra_css %}{% endblock %}
+</head>
+<body class="{% if print_view %}print-view{% endif %} {% if request.path == '/' %}home-page{% endif %}">
+    <header class="header">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="TorneOtto Logo">
+        </div>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    {% if not print_view %}
+    <nav class="menu">
+        <a href="{{ url_for('home') }}" class="menu-link">
+            <i class="fas fa-home"></i>
+            Home
+        </a>
+        <a href="{{ url_for('players.players_list') }}" class="menu-link">
+            <i class="fas fa-address-book"></i>
+            Gestisci Giocatori
+        </a>
+        <a href="{{ url_for('players.new_player') }}" class="menu-link">
+            <i class="fas fa-user-plus"></i>
+            Inserisci Giocatori
+        </a>
+        <a href="/tornei" class="menu-link">
+            <i class="fas fa-trophy"></i>
+            Gestione Tornei
+        </a>
+        <a href="/classifiche" class="menu-link">
+            <i class="fas fa-list-ol"></i>
+            Classifiche
+        </a>
+    </nav>
+    {% endif %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="{{ url_for('home') }}" class="footer-link {% if request.path == '/' %}active{% endif %}">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="{{ url_for('players.players_list') }}" class="footer-link {% if 'giocatori' in request.path and not 'nuovo' in request.path %}active{% endif %}">
+                <i class="fas fa-address-book"></i>
+                Giocatori
+            </a>
+            <a href="/tornei" class="footer-link {% if 'tornei' in request.path %}active{% endif %}">
+                <i class="fas fa-trophy"></i>
+                Tornei
+            </a>
+            <a href="/classifiche" class="footer-link {% if 'classifiche' in request.path %}active{% endif %}">
+                <i class="fas fa-list-ol"></i>
+                Classifiche
+            </a>
+        </div>
+        <div class="footer-copyright">
+            TorneOtto, The Padel App – Versione 3.0.2 – © Mattia Ianniello, 2025
+        </div>
+    </footer>
+
+    {% if print_view %}
+    <div class="print-footer">
+        <p>Stampato il {{ now.strftime('%d/%m/%Y alle %H:%M') }}</p>
+    </div>
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html> 

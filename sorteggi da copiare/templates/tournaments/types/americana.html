@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block head_extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/templates/tournament_creation.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="tournament-creation-container">
+    <div class="tournament-header">
+        <h1 class="tournament-title">Nuovo Torneo All'Americana</h1>
+        <div class="tournament-info">
+            <div class="tournament-info-item">
+                <i class="fas fa-flag-usa"></i>
+                <span>Torneo sociale con coppie fisse o giranti</span>
+            </div>
+            <div class="tournament-info-item">
+                <i class="fas fa-users"></i>
+                <span>Minimo 4 coppie (8 giocatori)</span>
+            </div>
+            <div class="tournament-info-item">
+                <i class="fas fa-heart"></i>
+                <span>Perfetto per socializzare e divertirsi</span>
+            </div>
+        </div>
+    </div>
+    
+    <form id="tournament-form" method="POST" class="tournament-form" action="{{ url_for('tournaments.create_americana_tournament') }}">
+        <div class="tournament-details">
+            <div class="tournament-detail-item">
+                <i class="fas fa-trophy"></i>
+                <div class="form-group">
+                    <label for="nome">Nome Torneo</label>
+                    <input type="text" id="nome" name="nome" class="form-input" required 
+                           placeholder="Inserisci il nome del torneo">
+                </div>
+            </div>
+            
+            <div class="tournament-detail-item">
+                <i class="fas fa-calendar-alt"></i>
+                <div class="form-group">
+                    <label for="data_torneo">Data Torneo</label>
+                    <input type="date" id="data_torneo" name="data_torneo" class="form-input" required>
+                </div>
+            </div>
+            
+            <div class="tournament-detail-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <div class="form-group">
+                    <label for="circolo">Circolo</label>
+                    <input type="text" id="circolo" name="circolo" class="form-input"
+                           placeholder="Nome del circolo">
+                </div>
+            </div>
+            
+            <div class="tournament-detail-item">
+                <i class="fas fa-user-friends"></i>
+                <div class="form-group">
+                    <label for="num_coppie">Numero Coppie Partecipanti</label>
+                    <input type="number" id="num_coppie" name="num_coppie" 
+                           class="form-input" min="4" value="8" required>
+                    <small style="color: #666; font-size: 0.8em;">Minimo 4 coppie</small>
+                </div>
+            </div>
+            
+            <div class="tournament-detail-item">
+                <i class="fas fa-random"></i>
+                <div class="form-group">
+                    <label for="metodo_formazione">Metodo di Formazione Coppie</label>
+                                         <select id="metodo_formazione" name="metodo_formazione" class="form-select" required>
+                        <option value="">Seleziona metodo</option>
+                        <option value="casuale">Casuale</option>
+                        <option value="teste_serie">Teste di Serie</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="tournament-detail-item">
+                <i class="fas fa-database"></i>
+                <div class="form-group">
+                    <label for="origine_giocatori">Origine Giocatori</label>
+                                         <select id="origine_giocatori" name="origine_giocatori" class="form-select" required>
+                        <option value="">Seleziona origine</option>
+                        <option value="caricati">Già Caricati</option>
+                        <option value="manuale">Inserimento Manuale</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="tournament-detail-item">
+                <i class="fas fa-cogs"></i>
+                <div class="form-group">
+                    <label for="tipo_torneo">Tipo Torneo</label>
+                                         <select id="tipo_torneo" name="tipo_torneo" class="form-select" required>
+                        <option value="">Seleziona tipo</option>
+                        <option value="semplice">Semplice - Meno Partite</option>
+                        <option value="completo">Completo - Round Robin Completo</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="tournament-detail-item">
+                <i class="fas fa-volleyball-ball"></i>
+                <div class="form-group">
+                    <label for="num_campi">Numero Campi Disponibili</label>
+                    <input type="number" id="num_campi" name="num_campi" 
+                           class="form-input" min="2" value="4" required>
+                    <small style="color: #666; font-size: 0.8em;">Minimo 2 campi</small>
+                </div>
+            </div>
+            
+            <div class="tournament-detail-item">
+                <i class="fas fa-sync-alt"></i>
+                <div class="form-group">
+                    <label for="tipo_coppie">Tipo Coppie</label>
+                                         <select id="tipo_coppie" name="tipo_coppie" class="form-select" required>
+                        <option value="">Seleziona tipo</option>
+                        <option value="fisse">Fisse</option>
+                        <option value="giranti">A Girare</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="tournament-detail-item">
+                <i class="fas fa-calculator"></i>
+                <div class="form-group">
+                    <label for="metodo_punteggio">Metodo di Assegnazione Punteggio</label>
+                                         <select id="metodo_punteggio" name="metodo_punteggio" class="form-select" required>
+                        <option value="">Seleziona metodo</option>
+                        <option value="differenza_games">Differenza Games</option>
+                        <option value="punti_set">Punti per Set Vinti</option>
+                        <option value="punti_partita">Punti per Partita Vinta</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="tournament-detail-item">
+                <i class="fas fa-sticky-note"></i>
+                <div class="form-group">
+                    <label for="note">Note</label>
+                    <textarea id="note" name="note" class="form-input" rows="3"
+                              placeholder="Aggiungi note o dettagli aggiuntivi"></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tournament-actions">
+            <button type="submit" class="tournament-button primary" onclick="return confirmSubmit()">
+                <i class="fas fa-flag-usa"></i>
+                CREA TORNEO
+            </button>
+            
+            <a href="{{ url_for('tournaments.new_tournament') }}" class="tournament-button secondary" onclick="return confirmCancel()">
+                <i class="fas fa-times"></i>
+                ANNULLA
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Imposta la data di oggi come default
+        const today = new Date();
+        const dateString = today.toISOString().split('T')[0];
+        document.getElementById('data_torneo').value = dateString;
+    });
+
+    function confirmSubmit() {
+        return confirm('Sei sicuro di voler creare questo torneo?');
+    }
+    
+    function confirmCancel() {
+        return confirm('Sei sicuro di voler annullare? Le modifiche non salvate andranno perse.');
+    }
+</script>
+{% endblock %} 

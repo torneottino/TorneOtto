@@ -4791,3 +4791,927 @@
 2025-07-07 18:23:15,419 - app - INFO - HTML Export debug - Prima partita: {'id': 1, 'girone': 1, 'turno': 1, 'team1': [15, 12], 'team2': [23, 2], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}
 2025-07-07 18:23:15,419 - app - INFO - HTML Export debug - Tutte le partite per girone 1: [{'id': 1, 'girone': 1, 'turno': 1, 'team1': [15, 12], 'team2': [23, 2], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 2, 'girone': 1, 'turno': 1, 'team1': [8, 20], 'team2': [9, 21], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 3, 'girone': 1, 'turno': 2, 'team1': [17, 24], 'team2': [23, 2], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 4, 'girone': 1, 'turno': 2, 'team1': [15, 12], 'team2': [8, 20], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 5, 'girone': 1, 'turno': 3, 'team1': [17, 24], 'team2': [9, 21], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 6, 'girone': 1, 'turno': 3, 'team1': [23, 2], 'team2': [8, 20], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 7, 'girone': 1, 'turno': 4, 'team1': [17, 24], 'team2': [8, 20], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 8, 'girone': 1, 'turno': 4, 'team1': [9, 21], 'team2': [15, 12], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 9, 'girone': 1, 'turno': 5, 'team1': [17, 24], 'team2': [15, 12], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}, {'id': 10, 'girone': 1, 'turno': 5, 'team1': [9, 21], 'team2': [23, 2], 'set1': {'team1': 0, 'team2': 0}, 'set2': {'team1': 0, 'team2': 0}, 'set3': {'team1': 0, 'team2': 0}, 'risultato': None, 'completata': False}]
 2025-07-07 18:23:15,420 - app - INFO - HTML Export debug - Primi risultati: {'1': {'squadra_a': 5, 'squadra_b': 6}, '2': {'squadra_a': 5, 'squadra_b': 4}, '3': {'squadra_a': 3, 'squadra_b': 4}, '4': {'squadra_a': 5, 'squadra_b': 6}, '5': {'squadra_a': 7, 'squadra_b': 6}}
+2025-07-27 15:16:06,250 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 15:16:06,250 - app - INFO - Configurazione: development
+2025-07-27 15:16:06,250 - app - INFO - Debug mode: False
+2025-07-27 15:16:06,250 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 15:16:06,262 - app - INFO - Modelli importati con successo
+2025-07-27 15:16:07,208 - app - INFO - Tabelle del database create/verificate
+2025-07-27 15:16:07,212 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 15:16:07,259 - app - INFO - Blueprint importati con successo
+2025-07-27 15:16:07,278 - app - INFO - Blueprint registrati con successo
+2025-07-27 15:16:07,278 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 15:16:07,278 - app - INFO - Avvio server su 0.0.0.0:5001
+2025-07-27 15:16:07,589 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 15:16:07,590 - app - INFO - Configurazione: development
+2025-07-27 15:16:07,590 - app - INFO - Debug mode: False
+2025-07-27 15:16:07,590 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 15:16:07,598 - app - INFO - Modelli importati con successo
+2025-07-27 15:16:08,432 - app - INFO - Tabelle del database create/verificate
+2025-07-27 15:16:08,434 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 15:16:08,436 - app - INFO - Blueprint importati con successo
+2025-07-27 15:16:08,461 - app - INFO - Blueprint registrati con successo
+2025-07-27 15:16:08,462 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 15:16:08,462 - app - INFO - Avvio server su 0.0.0.0:5001
+2025-07-27 15:19:53,705 - app - WARNING - Pagina non trovata: http://localhost:5001/favicon.ico
+2025-07-27 15:19:53,705 - app - WARNING - Pagina non trovata: http://localhost:5001/static/images/apple-touch-icon.png
+2025-07-27 15:20:43,753 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 15:20:43,753 - app - INFO - Configurazione: development
+2025-07-27 15:20:43,753 - app - INFO - Debug mode: False
+2025-07-27 15:20:43,753 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 15:20:43,764 - app - INFO - Modelli importati con successo
+2025-07-27 15:20:44,551 - app - INFO - Tabelle del database create/verificate
+2025-07-27 15:20:44,553 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 15:20:44,577 - app - INFO - Blueprint importati con successo
+2025-07-27 15:20:44,593 - app - INFO - Blueprint registrati con successo
+2025-07-27 15:20:44,593 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 15:20:44,593 - app - INFO - Avvio server su 0.0.0.0:5001
+2025-07-27 15:21:18,190 - app - INFO - Calcolo ELO per giornata 204 del torneo 143
+2025-07-27 15:21:18,190 - app - INFO - Classifica: [364, 370, 354, 372, 360, 374, 365, 375]
+2025-07-27 15:21:18,190 - app - INFO - Config: {'players': [364, 370, 360, 374, 354, 372, 365, 375], 'semifinali': [{'squadra_a': [364, 370], 'squadra_b': [360, 374], 'risultato': {'squadra_a': 6, 'squadra_b': 4}}, {'squadra_a': [354, 372], 'squadra_b': [365, 375], 'risultato': {'squadra_a': 5, 'squadra_b': 3}}], 'finali': {'primo_posto': {'squadra_a': [364, 370], 'squadra_b': [354, 372], 'risultato': {'squadra_a': 6, 'squadra_b': 3}}, 'terzo_posto': {'squadra_a': [360, 374], 'squadra_b': [365, 375], 'risultato': {'squadra_a': 4, 'squadra_b': 2}}}, 'classifica': [364, 370, 354, 372, 360, 374, 365, 375]}
+2025-07-27 15:21:18,225 - app - INFO - Giocatore 364: ELO attuale = 1500.0
+2025-07-27 15:21:18,259 - app - INFO - Giocatore 370: ELO attuale = 1500.0
+2025-07-27 15:21:18,292 - app - INFO - Giocatore 354: ELO attuale = 1500.0
+2025-07-27 15:21:18,328 - app - INFO - Giocatore 372: ELO attuale = 1500.0
+2025-07-27 15:21:18,362 - app - INFO - Giocatore 360: ELO attuale = 1500.0
+2025-07-27 15:21:18,395 - app - INFO - Giocatore 374: ELO attuale = 1500.0
+2025-07-27 15:21:18,428 - app - INFO - Giocatore 365: ELO attuale = 1500.0
+2025-07-27 15:21:18,463 - app - INFO - Giocatore 375: ELO attuale = 1500.0
+2025-07-27 15:21:18,464 - app - INFO - Calcolo variazioni ELO per semifinali
+2025-07-27 15:21:18,464 - app - INFO - Semifinale: Squadra A [364, 370] vs Squadra B [360, 374] - Risultato: 6-4
+2025-07-27 15:21:18,464 - app - INFO - ELO Squadra A: 3000.0, ELO Squadra B: 3000.0
+2025-07-27 15:21:18,464 - app - INFO - Variazioni ELO semifinale: Squadra A 20.0, Squadra B -20.0
+2025-07-27 15:21:18,465 - app - INFO - Semifinale: Squadra A [354, 372] vs Squadra B [365, 375] - Risultato: 5-3
+2025-07-27 15:21:18,465 - app - INFO - ELO Squadra A: 3000.0, ELO Squadra B: 3000.0
+2025-07-27 15:21:18,465 - app - INFO - Variazioni ELO semifinale: Squadra A 20.0, Squadra B -20.0
+2025-07-27 15:21:18,465 - app - INFO - Calcolo variazioni ELO per finali
+2025-07-27 15:21:18,465 - app - INFO - Finale primo_posto: Squadra A [364, 370] vs Squadra B [354, 372] - Risultato: 6-3
+2025-07-27 15:21:18,466 - app - INFO - ELO Squadra A: 3000.0, ELO Squadra B: 3000.0
+2025-07-27 15:21:18,466 - app - INFO - Variazioni ELO finale primo_posto: Squadra A 16.0, Squadra B -16.0
+2025-07-27 15:24:48,869 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 15:24:48,869 - app - INFO - Configurazione: development
+2025-07-27 15:24:48,870 - app - INFO - Debug mode: False
+2025-07-27 15:24:48,870 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 15:24:48,880 - app - INFO - Modelli importati con successo
+2025-07-27 15:24:49,874 - app - INFO - Tabelle del database create/verificate
+2025-07-27 15:24:49,875 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 15:24:49,879 - app - INFO - Blueprint importati con successo
+2025-07-27 15:24:49,898 - app - INFO - Blueprint registrati con successo
+2025-07-27 15:24:49,898 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 15:24:49,898 - app - INFO - Avvio server su 0.0.0.0:5001
+2025-07-27 15:44:40,292 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 15:44:40,292 - app - INFO - Configurazione: development
+2025-07-27 15:44:40,292 - app - INFO - Debug mode: False
+2025-07-27 15:44:40,292 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 15:44:40,301 - app - INFO - Modelli importati con successo
+2025-07-27 15:44:41,687 - app - INFO - Tabelle del database create/verificate
+2025-07-27 15:44:41,694 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 15:44:41,700 - app - INFO - Blueprint importati con successo
+2025-07-27 15:44:41,728 - app - INFO - Blueprint registrati con successo
+2025-07-27 15:44:41,729 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 15:44:41,729 - app - INFO - Avvio server su 0.0.0.0:5001
+2025-07-27 15:44:53,127 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 15:44:53,127 - app - INFO - Configurazione: development
+2025-07-27 15:44:53,127 - app - INFO - Debug mode: False
+2025-07-27 15:44:53,127 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 15:44:53,135 - app - INFO - Modelli importati con successo
+2025-07-27 15:44:54,001 - app - INFO - Tabelle del database create/verificate
+2025-07-27 15:44:54,002 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 15:44:54,005 - app - INFO - Blueprint importati con successo
+2025-07-27 15:44:54,031 - app - INFO - Blueprint registrati con successo
+2025-07-27 15:44:54,031 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:06:13,747 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:06:13,747 - app - INFO - Configurazione: development
+2025-07-27 16:06:13,747 - app - INFO - Debug mode: False
+2025-07-27 16:06:13,747 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:06:13,747 - app - INFO - Modelli importati con successo
+2025-07-27 16:06:15,203 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:06:15,205 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:06:15,224 - app - INFO - Blueprint importati con successo
+2025-07-27 16:06:15,239 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:06:15,240 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:06:15,317 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:06:15,317 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:06:15,317 - app - INFO - Configurazione: development
+2025-07-27 16:06:15,317 - app - INFO - Configurazione: development
+2025-07-27 16:06:15,317 - app - INFO - Debug mode: False
+2025-07-27 16:06:15,317 - app - INFO - Debug mode: False
+2025-07-27 16:06:15,317 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:06:15,317 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:06:15,317 - app - INFO - Modelli importati con successo
+2025-07-27 16:06:15,317 - app - INFO - Modelli importati con successo
+2025-07-27 16:06:16,183 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:06:16,183 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:06:16,186 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:06:16,186 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:06:16,186 - app - INFO - Blueprint importati con successo
+2025-07-27 16:06:16,186 - app - INFO - Blueprint importati con successo
+2025-07-27 16:06:16,217 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:06:16,217 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:06:16,220 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:06:16,220 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:06:17,109 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:06:17,109 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:06:17,109 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:06:17,109 - app - INFO - Configurazione: development
+2025-07-27 16:06:17,109 - app - INFO - Configurazione: development
+2025-07-27 16:06:17,109 - app - INFO - Configurazione: development
+2025-07-27 16:06:17,109 - app - INFO - Debug mode: False
+2025-07-27 16:06:17,109 - app - INFO - Debug mode: False
+2025-07-27 16:06:17,109 - app - INFO - Debug mode: False
+2025-07-27 16:06:17,109 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:06:17,109 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:06:17,109 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:06:17,110 - app - INFO - Modelli importati con successo
+2025-07-27 16:06:17,110 - app - INFO - Modelli importati con successo
+2025-07-27 16:06:17,110 - app - INFO - Modelli importati con successo
+2025-07-27 16:06:17,954 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:06:17,954 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:06:17,954 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:06:17,956 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:06:17,956 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:06:17,956 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:06:17,956 - app - INFO - Blueprint importati con successo
+2025-07-27 16:06:17,956 - app - INFO - Blueprint importati con successo
+2025-07-27 16:06:17,956 - app - INFO - Blueprint importati con successo
+2025-07-27 16:06:17,973 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:06:17,973 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:06:17,973 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:06:17,997 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:06:17,997 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:06:17,997 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:06:19,528 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:06:19,528 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:06:19,528 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:06:19,528 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:06:19,528 - app - INFO - Configurazione: development
+2025-07-27 16:06:19,528 - app - INFO - Configurazione: development
+2025-07-27 16:06:19,528 - app - INFO - Configurazione: development
+2025-07-27 16:06:19,528 - app - INFO - Configurazione: development
+2025-07-27 16:06:19,529 - app - INFO - Debug mode: False
+2025-07-27 16:06:19,529 - app - INFO - Debug mode: False
+2025-07-27 16:06:19,529 - app - INFO - Debug mode: False
+2025-07-27 16:06:19,529 - app - INFO - Debug mode: False
+2025-07-27 16:06:19,529 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:06:19,529 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:06:19,529 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:06:19,529 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:06:19,529 - app - INFO - Modelli importati con successo
+2025-07-27 16:06:19,529 - app - INFO - Modelli importati con successo
+2025-07-27 16:06:19,529 - app - INFO - Modelli importati con successo
+2025-07-27 16:06:19,529 - app - INFO - Modelli importati con successo
+2025-07-27 16:06:20,396 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:06:20,396 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:06:20,396 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:06:20,396 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:06:20,398 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:06:20,398 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:06:20,398 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:06:20,398 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:06:20,399 - app - INFO - Blueprint importati con successo
+2025-07-27 16:06:20,399 - app - INFO - Blueprint importati con successo
+2025-07-27 16:06:20,399 - app - INFO - Blueprint importati con successo
+2025-07-27 16:06:20,399 - app - INFO - Blueprint importati con successo
+2025-07-27 16:06:20,430 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:06:20,430 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:06:20,430 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:06:20,430 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:06:20,433 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:06:20,433 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:06:20,433 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:06:20,433 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:06:21,617 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:06:21,617 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:06:21,617 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:06:21,617 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:06:21,617 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:06:21,618 - app - INFO - Configurazione: development
+2025-07-27 16:06:21,618 - app - INFO - Configurazione: development
+2025-07-27 16:06:21,618 - app - INFO - Configurazione: development
+2025-07-27 16:06:21,618 - app - INFO - Configurazione: development
+2025-07-27 16:06:21,618 - app - INFO - Configurazione: development
+2025-07-27 16:06:21,619 - app - INFO - Debug mode: False
+2025-07-27 16:06:21,619 - app - INFO - Debug mode: False
+2025-07-27 16:06:21,619 - app - INFO - Debug mode: False
+2025-07-27 16:06:21,619 - app - INFO - Debug mode: False
+2025-07-27 16:06:21,619 - app - INFO - Debug mode: False
+2025-07-27 16:06:21,619 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:06:21,619 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:06:21,619 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:06:21,619 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:06:21,619 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:06:21,620 - app - INFO - Modelli importati con successo
+2025-07-27 16:06:21,620 - app - INFO - Modelli importati con successo
+2025-07-27 16:06:21,620 - app - INFO - Modelli importati con successo
+2025-07-27 16:06:21,620 - app - INFO - Modelli importati con successo
+2025-07-27 16:06:21,620 - app - INFO - Modelli importati con successo
+2025-07-27 16:06:22,506 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:06:22,506 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:06:22,506 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:06:22,506 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:06:22,506 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:06:22,507 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:06:22,507 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:06:22,507 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:06:22,507 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:06:22,507 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:06:22,507 - app - INFO - Blueprint importati con successo
+2025-07-27 16:06:22,507 - app - INFO - Blueprint importati con successo
+2025-07-27 16:06:22,507 - app - INFO - Blueprint importati con successo
+2025-07-27 16:06:22,507 - app - INFO - Blueprint importati con successo
+2025-07-27 16:06:22,507 - app - INFO - Blueprint importati con successo
+2025-07-27 16:06:22,531 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:06:22,531 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:06:22,531 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:06:22,531 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:06:22,531 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:06:22,533 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:06:22,533 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:06:22,533 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:06:22,533 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:06:22,533 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:06:23,515 - app - ERROR - Eccezione non gestita: tournaments/active.html - URL: http://localhost/tornei/attivi - IP: 127.0.0.1 - User Agent: Werkzeug/3.0.1
+Traceback (most recent call last):
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/Desktop/github/TorneOtto/sorteggi da copiare/routes/tournaments.py", line 62, in active_tournaments
+    return render_template('tournaments/active.html', tournaments=tournaments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/loaders.py", line 125, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: tournaments/active.html
+2025-07-27 16:06:23,515 - app - ERROR - Eccezione non gestita: tournaments/active.html - URL: http://localhost/tornei/attivi - IP: 127.0.0.1 - User Agent: Werkzeug/3.0.1
+Traceback (most recent call last):
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/Desktop/github/TorneOtto/sorteggi da copiare/routes/tournaments.py", line 62, in active_tournaments
+    return render_template('tournaments/active.html', tournaments=tournaments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/loaders.py", line 125, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: tournaments/active.html
+2025-07-27 16:06:23,515 - app - ERROR - Eccezione non gestita: tournaments/active.html - URL: http://localhost/tornei/attivi - IP: 127.0.0.1 - User Agent: Werkzeug/3.0.1
+Traceback (most recent call last):
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/Desktop/github/TorneOtto/sorteggi da copiare/routes/tournaments.py", line 62, in active_tournaments
+    return render_template('tournaments/active.html', tournaments=tournaments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/loaders.py", line 125, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: tournaments/active.html
+2025-07-27 16:06:23,515 - app - ERROR - Eccezione non gestita: tournaments/active.html - URL: http://localhost/tornei/attivi - IP: 127.0.0.1 - User Agent: Werkzeug/3.0.1
+Traceback (most recent call last):
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/Desktop/github/TorneOtto/sorteggi da copiare/routes/tournaments.py", line 62, in active_tournaments
+    return render_template('tournaments/active.html', tournaments=tournaments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/loaders.py", line 125, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: tournaments/active.html
+2025-07-27 16:06:23,515 - app - ERROR - Eccezione non gestita: tournaments/active.html - URL: http://localhost/tornei/attivi - IP: 127.0.0.1 - User Agent: Werkzeug/3.0.1
+Traceback (most recent call last):
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/Desktop/github/TorneOtto/sorteggi da copiare/routes/tournaments.py", line 62, in active_tournaments
+    return render_template('tournaments/active.html', tournaments=tournaments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/loaders.py", line 125, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: tournaments/active.html
+2025-07-27 16:08:21,700 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:08:21,701 - app - INFO - Configurazione: development
+2025-07-27 16:08:21,701 - app - INFO - Debug mode: False
+2025-07-27 16:08:21,701 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:08:21,712 - app - INFO - Modelli importati con successo
+2025-07-27 16:08:22,657 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:08:22,659 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:08:22,665 - app - INFO - Blueprint importati con successo
+2025-07-27 16:08:22,687 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:08:22,688 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:08:22,688 - app - INFO - Avvio server su 0.0.0.0:5001
+2025-07-27 16:08:23,018 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:08:23,018 - app - INFO - Configurazione: development
+2025-07-27 16:08:23,018 - app - INFO - Debug mode: False
+2025-07-27 16:08:23,018 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:08:23,029 - app - INFO - Modelli importati con successo
+2025-07-27 16:08:23,821 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:08:23,823 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:08:23,828 - app - INFO - Blueprint importati con successo
+2025-07-27 16:08:23,860 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:08:23,861 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:08:23,861 - app - INFO - Avvio server su 0.0.0.0:5001
+2025-07-27 16:10:33,855 - app - INFO - Calcolo variazioni ELO per giornata 206
+2025-07-27 16:10:33,856 - app - INFO - Config: {'players': [353, 361, 360, 365, 369, 370, 374, 372], 'teams': [[353, 361], [360, 365], [369, 370], [374, 372]], 'schedule': [[[1, 2], [3, 4]], [[1, 3], [2, 4]], [[1, 4], [2, 3]]], 'results': {'1-2': '6-2', '3-4': '4-6', '1-3': '5-2', '2-4': '3-7', '1-4': '8-4', '2-3': '5-7'}}
+2025-07-27 16:10:33,856 - app - INFO - Partita 1-2: Squadra A [353, 361] vs Squadra B [360, 365] - Risultato: 6-2
+2025-07-27 16:10:33,930 - app - INFO - Giocatore 353: ELO corrente = 1534.3999999999999 (ultimo record: 201)
+2025-07-27 16:10:33,964 - app - INFO - Giocatore 361: ELO corrente = 1468.0400000000002 (ultimo record: 191)
+2025-07-27 16:10:33,965 - app - INFO - ELO totale squadra: 3002.44
+2025-07-27 16:10:33,999 - app - INFO - Giocatore 360: ELO corrente = 1537.54 (ultimo record: 201)
+2025-07-27 16:10:34,033 - app - INFO - Giocatore 365: ELO corrente = 1484.63 (ultimo record: 202)
+2025-07-27 16:10:34,033 - app - INFO - ELO totale squadra: 3022.17
+2025-07-27 16:10:34,033 - app - INFO - ELO Squadra A: 3002.44, ELO Squadra B: 3022.17
+2025-07-27 16:10:34,033 - app - INFO - Variazioni ELO: Squadra A 16.91, Squadra B -16.91
+2025-07-27 16:10:34,034 - app - INFO - Giocatore 353: variazione 16.91 (totale: 16.91, partite: 1)
+2025-07-27 16:10:34,034 - app - INFO - Giocatore 361: variazione 16.91 (totale: 16.91, partite: 1)
+2025-07-27 16:10:34,034 - app - INFO - Giocatore 360: variazione -16.91 (totale: -16.91, partite: 1)
+2025-07-27 16:10:34,034 - app - INFO - Giocatore 365: variazione -16.91 (totale: -16.91, partite: 1)
+2025-07-27 16:10:34,034 - app - INFO - Partita 3-4: Squadra A [369, 370] vs Squadra B [374, 372] - Risultato: 4-6
+2025-07-27 16:10:34,069 - app - INFO - Giocatore 369: ELO corrente = 1515.65 (ultimo record: 202)
+2025-07-27 16:10:34,104 - app - INFO - Giocatore 370: ELO corrente = 1484.39 (ultimo record: 191)
+2025-07-27 16:10:34,105 - app - INFO - ELO totale squadra: 3000.04
+2025-07-27 16:10:34,140 - app - INFO - Giocatore 374: ELO corrente = 1485.8 (ultimo record: 202)
+2025-07-27 16:10:34,174 - app - INFO - Giocatore 372: ELO corrente = 1467.3100000000002 (ultimo record: 202)
+2025-07-27 16:10:34,175 - app - INFO - ELO totale squadra: 2953.11
+2025-07-27 16:10:34,175 - app - INFO - ELO Squadra A: 3000.04, ELO Squadra B: 2953.11
+2025-07-27 16:10:34,175 - app - INFO - Variazioni ELO: Squadra A -18.15, Squadra B 18.15
+2025-07-27 16:10:34,175 - app - INFO - Giocatore 369: variazione -18.15 (totale: -18.15, partite: 1)
+2025-07-27 16:10:34,175 - app - INFO - Giocatore 370: variazione -18.15 (totale: -18.15, partite: 1)
+2025-07-27 16:10:34,175 - app - INFO - Giocatore 374: variazione 18.15 (totale: 18.15, partite: 1)
+2025-07-27 16:10:34,175 - app - INFO - Giocatore 372: variazione 18.15 (totale: 18.15, partite: 1)
+2025-07-27 16:10:34,176 - app - INFO - Partita 1-3: Squadra A [353, 361] vs Squadra B [369, 370] - Risultato: 5-2
+2025-07-27 16:10:34,208 - app - INFO - Giocatore 353: ELO corrente = 1534.3999999999999 (ultimo record: 201)
+2025-07-27 16:10:34,241 - app - INFO - Giocatore 361: ELO corrente = 1468.0400000000002 (ultimo record: 191)
+2025-07-27 16:10:34,242 - app - INFO - ELO totale squadra: 3002.44
+2025-07-27 16:10:34,275 - app - INFO - Giocatore 369: ELO corrente = 1515.65 (ultimo record: 202)
+2025-07-27 16:10:34,308 - app - INFO - Giocatore 370: ELO corrente = 1484.39 (ultimo record: 191)
+2025-07-27 16:10:34,308 - app - INFO - ELO totale squadra: 3000.04
+2025-07-27 16:10:34,308 - app - INFO - ELO Squadra A: 3002.44, ELO Squadra B: 3000.04
+2025-07-27 16:10:34,308 - app - INFO - Variazioni ELO: Squadra A 15.89, Squadra B -15.89
+2025-07-27 16:10:34,308 - app - INFO - Giocatore 353: variazione 15.89 (totale: 32.8, partite: 2)
+2025-07-27 16:10:34,308 - app - INFO - Giocatore 361: variazione 15.89 (totale: 32.8, partite: 2)
+2025-07-27 16:10:34,308 - app - INFO - Giocatore 369: variazione -15.89 (totale: -34.04, partite: 2)
+2025-07-27 16:10:34,308 - app - INFO - Giocatore 370: variazione -15.89 (totale: -34.04, partite: 2)
+2025-07-27 16:10:34,308 - app - INFO - Partita 2-4: Squadra A [360, 365] vs Squadra B [374, 372] - Risultato: 3-7
+2025-07-27 16:10:34,342 - app - INFO - Giocatore 360: ELO corrente = 1537.54 (ultimo record: 201)
+2025-07-27 16:10:34,375 - app - INFO - Giocatore 365: ELO corrente = 1484.63 (ultimo record: 202)
+2025-07-27 16:10:34,376 - app - INFO - ELO totale squadra: 3022.17
+2025-07-27 16:10:34,413 - app - INFO - Giocatore 374: ELO corrente = 1485.8 (ultimo record: 202)
+2025-07-27 16:10:34,447 - app - INFO - Giocatore 372: ELO corrente = 1467.3100000000002 (ultimo record: 202)
+2025-07-27 16:10:34,447 - app - INFO - ELO totale squadra: 2953.11
+2025-07-27 16:10:34,448 - app - INFO - ELO Squadra A: 3022.17, ELO Squadra B: 2953.11
+2025-07-27 16:10:34,448 - app - INFO - Variazioni ELO: Squadra A -19.14, Squadra B 19.14
+2025-07-27 16:10:34,448 - app - INFO - Giocatore 360: variazione -19.14 (totale: -36.05, partite: 2)
+2025-07-27 16:10:34,448 - app - INFO - Giocatore 365: variazione -19.14 (totale: -36.05, partite: 2)
+2025-07-27 16:10:34,448 - app - INFO - Giocatore 374: variazione 19.14 (totale: 37.29, partite: 2)
+2025-07-27 16:10:34,448 - app - INFO - Giocatore 372: variazione 19.14 (totale: 37.29, partite: 2)
+2025-07-27 16:10:34,448 - app - INFO - Partita 1-4: Squadra A [353, 361] vs Squadra B [374, 372] - Risultato: 8-4
+2025-07-27 16:10:34,482 - app - INFO - Giocatore 353: ELO corrente = 1534.3999999999999 (ultimo record: 201)
+2025-07-27 16:10:34,520 - app - INFO - Giocatore 361: ELO corrente = 1468.0400000000002 (ultimo record: 191)
+2025-07-27 16:10:34,520 - app - INFO - ELO totale squadra: 3002.44
+2025-07-27 16:10:34,553 - app - INFO - Giocatore 374: ELO corrente = 1485.8 (ultimo record: 202)
+2025-07-27 16:10:34,585 - app - INFO - Giocatore 372: ELO corrente = 1467.3100000000002 (ultimo record: 202)
+2025-07-27 16:10:34,586 - app - INFO - ELO totale squadra: 2953.11
+2025-07-27 16:10:34,586 - app - INFO - ELO Squadra A: 3002.44, ELO Squadra B: 2953.11
+2025-07-27 16:10:34,586 - app - INFO - Variazioni ELO: Squadra A 13.74, Squadra B -13.74
+2025-07-27 16:10:34,586 - app - INFO - Giocatore 353: variazione 13.74 (totale: 46.54, partite: 3)
+2025-07-27 16:10:34,586 - app - INFO - Giocatore 361: variazione 13.74 (totale: 46.54, partite: 3)
+2025-07-27 16:10:34,587 - app - INFO - Giocatore 374: variazione -13.74 (totale: 23.549999999999997, partite: 3)
+2025-07-27 16:10:34,587 - app - INFO - Giocatore 372: variazione -13.74 (totale: 23.549999999999997, partite: 3)
+2025-07-27 16:10:34,587 - app - INFO - Partita 2-3: Squadra A [360, 365] vs Squadra B [369, 370] - Risultato: 5-7
+2025-07-27 16:10:34,620 - app - INFO - Giocatore 360: ELO corrente = 1537.54 (ultimo record: 201)
+2025-07-27 16:10:34,653 - app - INFO - Giocatore 365: ELO corrente = 1484.63 (ultimo record: 202)
+2025-07-27 16:10:34,654 - app - INFO - ELO totale squadra: 3022.17
+2025-07-27 16:10:34,688 - app - INFO - Giocatore 369: ELO corrente = 1515.65 (ultimo record: 202)
+2025-07-27 16:10:34,721 - app - INFO - Giocatore 370: ELO corrente = 1484.39 (ultimo record: 191)
+2025-07-27 16:10:34,722 - app - INFO - ELO totale squadra: 3000.04
+2025-07-27 16:10:34,722 - app - INFO - ELO Squadra A: 3022.17, ELO Squadra B: 3000.04
+2025-07-27 16:10:34,722 - app - INFO - Variazioni ELO: Squadra A -17.02, Squadra B 17.02
+2025-07-27 16:10:34,723 - app - INFO - Giocatore 360: variazione -17.02 (totale: -53.06999999999999, partite: 3)
+2025-07-27 16:10:34,723 - app - INFO - Giocatore 365: variazione -17.02 (totale: -53.06999999999999, partite: 3)
+2025-07-27 16:10:34,723 - app - INFO - Giocatore 369: variazione 17.02 (totale: -17.02, partite: 3)
+2025-07-27 16:10:34,723 - app - INFO - Giocatore 370: variazione 17.02 (totale: -17.02, partite: 3)
+2025-07-27 16:20:10,315 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:20:10,316 - app - INFO - Configurazione: development
+2025-07-27 16:20:10,316 - app - INFO - Debug mode: False
+2025-07-27 16:20:10,316 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:20:10,326 - app - INFO - Modelli importati con successo
+2025-07-27 16:20:11,152 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:20:11,154 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:20:11,185 - app - INFO - Blueprint importati con successo
+2025-07-27 16:20:11,203 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:20:11,204 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:20:11,204 - app - INFO - Avvio server su 0.0.0.0:5001
+2025-07-27 16:27:14,368 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:27:14,369 - app - INFO - Configurazione: development
+2025-07-27 16:27:14,369 - app - INFO - Debug mode: False
+2025-07-27 16:27:14,369 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:27:14,369 - app - INFO - Modelli importati con successo
+2025-07-27 16:27:15,821 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:27:15,824 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:27:15,829 - app - INFO - Blueprint importati con successo
+2025-07-27 16:27:15,858 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:27:15,861 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:27:15,946 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:27:15,946 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:27:15,946 - app - INFO - Configurazione: development
+2025-07-27 16:27:15,946 - app - INFO - Configurazione: development
+2025-07-27 16:27:15,946 - app - INFO - Debug mode: False
+2025-07-27 16:27:15,946 - app - INFO - Debug mode: False
+2025-07-27 16:27:15,946 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:27:15,946 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:27:15,946 - app - INFO - Modelli importati con successo
+2025-07-27 16:27:15,946 - app - INFO - Modelli importati con successo
+2025-07-27 16:27:16,847 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:27:16,847 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:27:16,849 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:27:16,849 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:27:16,849 - app - INFO - Blueprint importati con successo
+2025-07-27 16:27:16,849 - app - INFO - Blueprint importati con successo
+2025-07-27 16:27:16,881 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:27:16,881 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:27:16,884 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:27:16,884 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:27:17,796 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:27:17,796 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:27:17,796 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:27:17,796 - app - INFO - Configurazione: development
+2025-07-27 16:27:17,796 - app - INFO - Configurazione: development
+2025-07-27 16:27:17,796 - app - INFO - Configurazione: development
+2025-07-27 16:27:17,797 - app - INFO - Debug mode: False
+2025-07-27 16:27:17,797 - app - INFO - Debug mode: False
+2025-07-27 16:27:17,797 - app - INFO - Debug mode: False
+2025-07-27 16:27:17,797 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:27:17,797 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:27:17,797 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:27:17,797 - app - INFO - Modelli importati con successo
+2025-07-27 16:27:17,797 - app - INFO - Modelli importati con successo
+2025-07-27 16:27:17,797 - app - INFO - Modelli importati con successo
+2025-07-27 16:27:18,667 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:27:18,667 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:27:18,667 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:27:18,668 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:27:18,668 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:27:18,668 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:27:18,668 - app - INFO - Blueprint importati con successo
+2025-07-27 16:27:18,668 - app - INFO - Blueprint importati con successo
+2025-07-27 16:27:18,668 - app - INFO - Blueprint importati con successo
+2025-07-27 16:27:18,695 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:27:18,695 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:27:18,695 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:27:18,699 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:27:18,699 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:27:18,699 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:27:20,293 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:27:20,293 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:27:20,293 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:27:20,293 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:27:20,294 - app - INFO - Configurazione: development
+2025-07-27 16:27:20,294 - app - INFO - Configurazione: development
+2025-07-27 16:27:20,294 - app - INFO - Configurazione: development
+2025-07-27 16:27:20,294 - app - INFO - Configurazione: development
+2025-07-27 16:27:20,295 - app - INFO - Debug mode: False
+2025-07-27 16:27:20,295 - app - INFO - Debug mode: False
+2025-07-27 16:27:20,295 - app - INFO - Debug mode: False
+2025-07-27 16:27:20,295 - app - INFO - Debug mode: False
+2025-07-27 16:27:20,295 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:27:20,295 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:27:20,295 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:27:20,295 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:27:20,296 - app - INFO - Modelli importati con successo
+2025-07-27 16:27:20,296 - app - INFO - Modelli importati con successo
+2025-07-27 16:27:20,296 - app - INFO - Modelli importati con successo
+2025-07-27 16:27:20,296 - app - INFO - Modelli importati con successo
+2025-07-27 16:27:21,168 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:27:21,168 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:27:21,168 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:27:21,168 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:27:21,169 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:27:21,169 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:27:21,169 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:27:21,169 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:27:21,169 - app - INFO - Blueprint importati con successo
+2025-07-27 16:27:21,169 - app - INFO - Blueprint importati con successo
+2025-07-27 16:27:21,169 - app - INFO - Blueprint importati con successo
+2025-07-27 16:27:21,169 - app - INFO - Blueprint importati con successo
+2025-07-27 16:27:21,195 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:27:21,195 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:27:21,195 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:27:21,195 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:27:21,198 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:27:21,198 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:27:21,198 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:27:21,198 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:27:22,425 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:27:22,425 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:27:22,425 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:27:22,425 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:27:22,425 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:27:22,425 - app - INFO - Configurazione: development
+2025-07-27 16:27:22,425 - app - INFO - Configurazione: development
+2025-07-27 16:27:22,425 - app - INFO - Configurazione: development
+2025-07-27 16:27:22,425 - app - INFO - Configurazione: development
+2025-07-27 16:27:22,425 - app - INFO - Configurazione: development
+2025-07-27 16:27:22,426 - app - INFO - Debug mode: False
+2025-07-27 16:27:22,426 - app - INFO - Debug mode: False
+2025-07-27 16:27:22,426 - app - INFO - Debug mode: False
+2025-07-27 16:27:22,426 - app - INFO - Debug mode: False
+2025-07-27 16:27:22,426 - app - INFO - Debug mode: False
+2025-07-27 16:27:22,426 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:27:22,426 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:27:22,426 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:27:22,426 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:27:22,426 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:27:22,426 - app - INFO - Modelli importati con successo
+2025-07-27 16:27:22,426 - app - INFO - Modelli importati con successo
+2025-07-27 16:27:22,426 - app - INFO - Modelli importati con successo
+2025-07-27 16:27:22,426 - app - INFO - Modelli importati con successo
+2025-07-27 16:27:22,426 - app - INFO - Modelli importati con successo
+2025-07-27 16:27:23,286 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:27:23,286 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:27:23,286 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:27:23,286 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:27:23,286 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:27:23,289 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:27:23,289 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:27:23,289 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:27:23,289 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:27:23,289 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:27:23,290 - app - INFO - Blueprint importati con successo
+2025-07-27 16:27:23,290 - app - INFO - Blueprint importati con successo
+2025-07-27 16:27:23,290 - app - INFO - Blueprint importati con successo
+2025-07-27 16:27:23,290 - app - INFO - Blueprint importati con successo
+2025-07-27 16:27:23,290 - app - INFO - Blueprint importati con successo
+2025-07-27 16:27:23,306 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:27:23,306 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:27:23,306 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:27:23,306 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:27:23,306 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:27:23,309 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:27:23,309 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:27:23,309 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:27:23,309 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:27:23,309 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:27:24,348 - app - ERROR - Eccezione non gestita: tournaments/active.html - URL: http://localhost/tornei/attivi - IP: 127.0.0.1 - User Agent: Werkzeug/3.0.1
+Traceback (most recent call last):
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/Desktop/github/TorneOtto/sorteggi da copiare/routes/tournaments.py", line 62, in active_tournaments
+    return render_template('tournaments/active.html', tournaments=tournaments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/loaders.py", line 125, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: tournaments/active.html
+2025-07-27 16:27:24,348 - app - ERROR - Eccezione non gestita: tournaments/active.html - URL: http://localhost/tornei/attivi - IP: 127.0.0.1 - User Agent: Werkzeug/3.0.1
+Traceback (most recent call last):
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/Desktop/github/TorneOtto/sorteggi da copiare/routes/tournaments.py", line 62, in active_tournaments
+    return render_template('tournaments/active.html', tournaments=tournaments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/loaders.py", line 125, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: tournaments/active.html
+2025-07-27 16:27:24,348 - app - ERROR - Eccezione non gestita: tournaments/active.html - URL: http://localhost/tornei/attivi - IP: 127.0.0.1 - User Agent: Werkzeug/3.0.1
+Traceback (most recent call last):
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/Desktop/github/TorneOtto/sorteggi da copiare/routes/tournaments.py", line 62, in active_tournaments
+    return render_template('tournaments/active.html', tournaments=tournaments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/loaders.py", line 125, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: tournaments/active.html
+2025-07-27 16:27:24,348 - app - ERROR - Eccezione non gestita: tournaments/active.html - URL: http://localhost/tornei/attivi - IP: 127.0.0.1 - User Agent: Werkzeug/3.0.1
+Traceback (most recent call last):
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/Desktop/github/TorneOtto/sorteggi da copiare/routes/tournaments.py", line 62, in active_tournaments
+    return render_template('tournaments/active.html', tournaments=tournaments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/loaders.py", line 125, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: tournaments/active.html
+2025-07-27 16:27:24,348 - app - ERROR - Eccezione non gestita: tournaments/active.html - URL: http://localhost/tornei/attivi - IP: 127.0.0.1 - User Agent: Werkzeug/3.0.1
+Traceback (most recent call last):
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/Desktop/github/TorneOtto/sorteggi da copiare/routes/tournaments.py", line 62, in active_tournaments
+    return render_template('tournaments/active.html', tournaments=tournaments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/jinja2/loaders.py", line 125, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mattiaianniello/.pyenv/versions/3.12.3/lib/python3.12/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: tournaments/active.html
+2025-07-27 16:27:51,808 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:27:51,808 - app - INFO - Configurazione: development
+2025-07-27 16:27:51,808 - app - INFO - Debug mode: False
+2025-07-27 16:27:51,808 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:27:51,819 - app - INFO - Modelli importati con successo
+2025-07-27 16:27:52,603 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:27:52,606 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:27:52,633 - app - INFO - Blueprint importati con successo
+2025-07-27 16:27:52,650 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:27:52,652 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:27:52,652 - app - INFO - Avvio server su 0.0.0.0:5001
+2025-07-27 16:32:58,723 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:32:58,723 - app - INFO - Configurazione: development
+2025-07-27 16:32:58,723 - app - INFO - Debug mode: False
+2025-07-27 16:32:58,724 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:32:58,733 - app - INFO - Modelli importati con successo
+2025-07-27 16:32:59,572 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:32:59,573 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:32:59,599 - app - INFO - Blueprint importati con successo
+2025-07-27 16:32:59,615 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:32:59,616 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:32:59,616 - app - INFO - Avvio server su 0.0.0.0:5001
+2025-07-27 16:45:37,018 - app - WARNING - Pagina non trovata: http://localhost:5001/favicon.ico
+2025-07-27 16:46:17,337 - app - INFO - Calcolo ELO per giornata 208 del torneo 143
+2025-07-27 16:46:17,338 - app - INFO - Classifica: [354, 370, 365, 375, 364, 374, 360, 372]
+2025-07-27 16:46:17,339 - app - INFO - Config: {'players': [354, 370, 360, 372, 364, 374, 365, 375], 'semifinali': [{'squadra_a': [354, 370], 'squadra_b': [360, 372], 'risultato': {'squadra_a': 6, 'squadra_b': 3}}, {'squadra_a': [364, 374], 'squadra_b': [365, 375], 'risultato': {'squadra_a': 4, 'squadra_b': 6}}], 'finali': {'primo_posto': {'squadra_a': [354, 370], 'squadra_b': [365, 375], 'risultato': {'squadra_a': 6, 'squadra_b': 2}}, 'terzo_posto': {'squadra_a': [360, 372], 'squadra_b': [364, 374], 'risultato': {'squadra_a': 3, 'squadra_b': 7}}}, 'classifica': [354, 370, 365, 375, 364, 374, 360, 372]}
+2025-07-27 16:46:17,376 - app - INFO - Giocatore 354: ELO attuale = 1500.0
+2025-07-27 16:46:17,417 - app - INFO - Giocatore 370: ELO attuale = 1500.0
+2025-07-27 16:46:17,453 - app - INFO - Giocatore 365: ELO attuale = 1500.0
+2025-07-27 16:46:17,490 - app - INFO - Giocatore 375: ELO attuale = 1500.0
+2025-07-27 16:46:17,525 - app - INFO - Giocatore 364: ELO attuale = 1500.0
+2025-07-27 16:46:17,562 - app - INFO - Giocatore 374: ELO attuale = 1500.0
+2025-07-27 16:46:17,598 - app - INFO - Giocatore 360: ELO attuale = 1500.0
+2025-07-27 16:46:17,632 - app - INFO - Giocatore 372: ELO attuale = 1500.0
+2025-07-27 16:46:17,633 - app - INFO - Calcolo variazioni ELO per semifinali
+2025-07-27 16:46:17,633 - app - INFO - Semifinale: Squadra A [354, 370] vs Squadra B [360, 372] - Risultato: 6-3
+2025-07-27 16:46:17,634 - app - INFO - ELO Squadra A: 3000.0, ELO Squadra B: 3000.0
+2025-07-27 16:46:17,634 - app - INFO - Variazioni ELO semifinale: Squadra A 20.0, Squadra B -20.0
+2025-07-27 16:46:17,634 - app - INFO - Semifinale: Squadra A [364, 374] vs Squadra B [365, 375] - Risultato: 4-6
+2025-07-27 16:46:17,634 - app - INFO - ELO Squadra A: 3000.0, ELO Squadra B: 3000.0
+2025-07-27 16:46:17,634 - app - INFO - Variazioni ELO semifinale: Squadra A -20.0, Squadra B 20.0
+2025-07-27 16:46:17,635 - app - INFO - Calcolo variazioni ELO per finali
+2025-07-27 16:46:17,635 - app - INFO - Finale primo_posto: Squadra A [354, 370] vs Squadra B [365, 375] - Risultato: 6-2
+2025-07-27 16:46:17,635 - app - INFO - ELO Squadra A: 3000.0, ELO Squadra B: 3000.0
+2025-07-27 16:46:17,635 - app - INFO - Variazioni ELO finale primo_posto: Squadra A 16.0, Squadra B -16.0
+2025-07-27 16:47:06,065 - app - INFO - === TORNEOTTO STARTUP ===
+2025-07-27 16:47:06,065 - app - INFO - Configurazione: development
+2025-07-27 16:47:06,065 - app - INFO - Debug mode: False
+2025-07-27 16:47:06,065 - app - INFO - Database URI: postgresql://neondb_owner:npg_Ty5lY2xHCkeK@ep-sile...
+2025-07-27 16:47:06,076 - app - INFO - Modelli importati con successo
+2025-07-27 16:47:06,874 - app - INFO - Tabelle del database create/verificate
+2025-07-27 16:47:06,877 - app - INFO - Sistema di migrazione inizializzato
+2025-07-27 16:47:06,915 - app - INFO - Blueprint importati con successo
+2025-07-27 16:47:06,934 - app - INFO - Blueprint registrati con successo
+2025-07-27 16:47:06,934 - app - INFO - === TORNEOTTO INIZIALIZZATO CON SUCCESSO ===
+2025-07-27 16:47:06,935 - app - INFO - Avvio server su 0.0.0.0:5001
+2025-07-27 16:56:02,196 - app - INFO - Calcolo ELO per giornata 209 del torneo 143
+2025-07-27 16:56:02,197 - app - INFO - Classifica: [364, 374, 365, 370, 354, 375, 360, 372]
+2025-07-27 16:56:02,197 - app - INFO - Config: {'players': [364, 374, 354, 375, 360, 372, 365, 370], 'semifinali': [{'squadra_a': [364, 374], 'squadra_b': [354, 375], 'risultato': {'squadra_a': 6, 'squadra_b': 3}}, {'squadra_a': [360, 372], 'squadra_b': [365, 370], 'risultato': {'squadra_a': 4, 'squadra_b': 6}}], 'finali': {'primo_posto': {'squadra_a': [364, 374], 'squadra_b': [365, 370], 'risultato': {'squadra_a': 6, 'squadra_b': 1}}, 'terzo_posto': {'squadra_a': [354, 375], 'squadra_b': [360, 372], 'risultato': {'squadra_a': 5, 'squadra_b': 3}}}, 'classifica': [364, 374, 365, 370, 354, 375, 360, 372]}
+2025-07-27 16:56:02,237 - app - INFO - Giocatore 364: ELO attuale = 1500.0
+2025-07-27 16:56:02,273 - app - INFO - Giocatore 374: ELO attuale = 1500.0
+2025-07-27 16:56:02,308 - app - INFO - Giocatore 365: ELO attuale = 1500.0
+2025-07-27 16:56:02,343 - app - INFO - Giocatore 370: ELO attuale = 1500.0
+2025-07-27 16:56:02,379 - app - INFO - Giocatore 354: ELO attuale = 1500.0
+2025-07-27 16:56:02,415 - app - INFO - Giocatore 375: ELO attuale = 1500.0
+2025-07-27 16:56:02,453 - app - INFO - Giocatore 360: ELO attuale = 1500.0
+2025-07-27 16:56:02,489 - app - INFO - Giocatore 372: ELO attuale = 1500.0
+2025-07-27 16:56:02,490 - app - INFO - Calcolo variazioni ELO per semifinali
+2025-07-27 16:56:02,490 - app - INFO - Semifinale: Squadra A [364, 374] vs Squadra B [354, 375] - Risultato: 6-3
+2025-07-27 16:56:02,491 - app - INFO - ELO Squadra A: 3000.0, ELO Squadra B: 3000.0
+2025-07-27 16:56:02,491 - app - INFO - Variazioni ELO semifinale: Squadra A 20.0, Squadra B -20.0
+2025-07-27 16:56:02,491 - app - INFO - Semifinale: Squadra A [360, 372] vs Squadra B [365, 370] - Risultato: 4-6
+2025-07-27 16:56:02,492 - app - INFO - ELO Squadra A: 3000.0, ELO Squadra B: 3000.0
+2025-07-27 16:56:02,492 - app - INFO - Variazioni ELO semifinale: Squadra A -20.0, Squadra B 20.0
+2025-07-27 16:56:02,492 - app - INFO - Calcolo variazioni ELO per finali
+2025-07-27 16:56:02,492 - app - INFO - Finale primo_posto: Squadra A [364, 374] vs Squadra B [365, 370] - Risultato: 6-1
+2025-07-27 16:56:02,493 - app - INFO - ELO Squadra A: 3000.0, ELO Squadra B: 3000.0
+2025-07-27 16:56:02,493 - app - INFO - Variazioni ELO finale primo_posto: Squadra A 16.0, Squadra B -16.0
+2025-07-27 16:56:02,493 - app - INFO - Variazioni ELO finale primo_posto: Squadra A 16.0, Squadra B -16.0
+2025-07-27 16:56:02,493 - app - INFO - Finale terzo_posto: Squadra A [354, 375] vs Squadra B [360, 372] - Risultato: 5-3
+2025-07-27 16:56:02,493 - app - INFO - ELO Squadra A: 3000.0, ELO Squadra B: 3000.0
+2025-07-27 16:56:02,494 - app - INFO - Variazioni ELO finale terzo_posto: Squadra A 16.0, Squadra B -16.0
+2025-07-27 16:56:02,494 - app - INFO - Variazioni ELO finale terzo_posto: Squadra A 16.0, Squadra B -16.0
+2025-07-27 16:56:02,494 - app - INFO - Calcolo somma variazioni ELO
+2025-07-27 16:56:02,494 - app - INFO - Giocatore 364: variazioni [20.0, 16.0], somma 36.0
+2025-07-27 16:56:02,494 - app - INFO - Giocatore 374: variazioni [20.0, 16.0], somma 36.0
+2025-07-27 16:56:02,494 - app - INFO - Giocatore 365: variazioni [20.0, -16.0], somma 4.0
+2025-07-27 16:56:02,495 - app - INFO - Giocatore 370: variazioni [20.0, -16.0], somma 4.0
+2025-07-27 16:56:02,495 - app - INFO - Giocatore 354: variazioni [-20.0, 16.0], somma -4.0
+2025-07-27 16:56:02,495 - app - INFO - Giocatore 375: variazioni [-20.0, 16.0], somma -4.0
+2025-07-27 16:56:02,495 - app - INFO - Giocatore 360: variazioni [-20.0, -16.0], somma -36.0
+2025-07-27 16:56:02,496 - app - INFO - Giocatore 372: variazioni [-20.0, -16.0], somma -36.0
+2025-07-27 16:56:02,496 - app - INFO - Aggiornamento ELO nel database
+2025-07-27 16:56:02,531 - app - INFO - Giocatore 364: ELO 1500.0 -> 1536.0 (variazione 36.0)
+2025-07-27 16:56:02,738 - app - INFO - Giocatore 374: ELO 1500.0 -> 1536.0 (variazione 36.0)
+2025-07-27 16:56:03,002 - app - INFO - Giocatore 365: ELO 1500.0 -> 1504.0 (variazione 4.0)
+2025-07-27 16:56:03,163 - app - INFO - Giocatore 370: ELO 1500.0 -> 1504.0 (variazione 4.0)
+2025-07-27 16:56:03,322 - app - INFO - Giocatore 354: ELO 1500.0 -> 1496.0 (variazione -4.0)
+2025-07-27 16:56:03,481 - app - INFO - Giocatore 375: ELO 1500.0 -> 1496.0 (variazione -4.0)
+2025-07-27 16:56:03,642 - app - INFO - Giocatore 360: ELO 1500.0 -> 1464.0 (variazione -36.0)
+2025-07-27 16:56:03,800 - app - INFO - Giocatore 372: ELO 1500.0 -> 1464.0 (variazione -36.0)
+2025-07-27 16:56:03,966 - app - INFO - Aggiornamento ELO completato con successo

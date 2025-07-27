@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1a1b1f">
+    <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+    <title>Sorteggio Teste di Serie - TorneOtto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1b1f;
+            color: white;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: #2a2b2f;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .origine-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 400px;
+            align-items: center;
+        }
+
+        .origine-item {
+            background: linear-gradient(135deg, #2a2b2f 0%, #1a1b1f 100%);
+            border-radius: 15px;
+            padding: 20px 15px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            border: 1px solid #333;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .origine-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            border-color: #4a9eff;
+        }
+
+        .origine-item i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .origine-item span {
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 1.3;
+        }
+
+        .database-icon {
+            color: #4a9eff;
+        }
+
+        .manual-icon {
+            color: #ff6b6b;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .origine-grid {
+                gap: 15px;
+            }
+            
+            .origine-item {
+                padding: 15px 10px;
+                max-width: 250px;
+            }
+            
+            .origine-item i {
+                font-size: 20px;
+            }
+            
+            .origine-item span {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-button" onclick="history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>SORTEGGIO TESTE DI SERIE</h1>
+    </div>
+
+    <div class="main-container">
+        <div class="origine-grid">
+            <a href="/sorteggio-teste-database" class="origine-item">
+                <i class="fas fa-database database-icon"></i>
+                <span>DATABASE<br>GIOCATORI<br>ESISTENTE</span>
+            </a>
+            <a href="/sorteggio-teste-manuale" class="origine-item">
+                <i class="fas fa-edit manual-icon"></i>
+                <span>INSERIMENTO<br>MANUALE</span>
+            </a>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/" class="footer-link">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="/giocatori" class="footer-link">
+                <i class="fas fa-address-book"></i>
+                Giocatori
+            </a>
+            <a href="/tornei" class="footer-link">
+                <i class="fas fa-trophy"></i>
+                Tornei
+            </a>
+            <a href="/classifiche" class="footer-link">
+                <i class="fas fa-list-ol"></i>
+                Classifiche
+            </a>
+        </div>
+        <div class="footer-copyright">
+            TorneOtto, The Padel App – Versione 3.0.2 – © Mattia Ianniello, 2025
+        </div>
+    </footer>
+</body>
+</html> 

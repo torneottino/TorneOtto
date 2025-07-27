@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+    <!-- Progress Steps -->
+    <div class="progress-steps">
+        <div class="step completed">1</div>
+        <div class="step completed">2</div>
+        <div class="step active">3</div>
+    </div>
+
+    <div class="step-title">
+        <h2 class="section-subtitle">Scegli come formare le coppie</h2>
+    </div>
+    <div class="tournament-info">
+        <div class="tournament-name">{{ tournament.nome }}</div>
+        <div class="tournament-date">Giornata del {{ date }}</div>
+    </div>
+
+    <!-- Opzioni e Pulsante Indietro -->
+    <div class="content-wrapper">
+        <div class="options-container">
+            <!-- Sorteggio Automatico -->
+            <form action="{{ url_for('tournaments.random_pairing') }}" method="POST" class="option-card">
+                <div class="option-icon">
+                    <i class="fas fa-random"></i>
+                </div>
+                <h3 class="option-title">Totalmente casuale</h3>
+                <p class="option-description">Sorteggio completamente casuale senza considerare punti o posizioni preferite.</p>
+                <input type="hidden" name="date" value="{{ date }}">
+                <input type="hidden" name="players" value="{{ players|map(attribute='id')|join(',') }}">
+                <input type="hidden" name="tournament_id" value="{{ tournament.id }}">
+                <button type="submit" class="action-button">AVVIA IL SORTEGGIO</button>
+            </form>
+
+            <!-- ELO e Posizione -->
+            <form action="{{ url_for('tournaments.elo_pairing') }}" method="POST" class="option-card">
+                <div class="option-icon">
+                    <i class="fas fa-balance-scale"></i>
+                </div>
+                <h3 class="option-title">Punti e posizione</h3>
+                <p class="option-description">Sorteggio in base ai punti ELO dei giocatori e alla loro posizione preferita (destra/sinistra).</p>
+                <input type="hidden" name="date" value="{{ date }}">
+                <input type="hidden" name="players" value="{{ players|map(attribute='id')|join(',') }}">
+                <input type="hidden" name="tournament_id" value="{{ tournament.id }}">
+                <button type="submit" class="action-button">AVVIA IL SORTEGGIO</button>
+            </form>
+
+            <!-- Teste di Serie -->
+            <a href="{{ url_for('tournaments.seeded_pairing', date=date, players=players|map(attribute='id')|join(','), tournament_id=tournament.id) }}" class="option-card">
+                <div class="option-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <h3 class="option-title">Teste di serie</h3>
+                <p class="option-description">Scegli manualmente le teste di serie che non potranno essere sorteggiate insieme nel primo turno.</p>
+                <button type="button" class="action-button">SELEZIONA TESTE DI SERIE</button>
+            </a>
+
+            <!-- Inserimento Manuale -->
+            <a href="{{ url_for('tournaments.manual_pairing', date=date, players=players|map(attribute='id')|join(','), tournament_id=tournament.id) }}" class="option-card">
+                <div class="option-icon">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <h3 class="option-title">Inserimento manuale</h3>
+                <p class="option-description">Decidi tu come formare le coppie inserendo manualmente le squadre.</p>
+                <button type="button" class="action-button">INSERISCI MANUALMENTE</button>
+            </a>
+        </div>
+
+        <!-- Pulsante Indietro -->
+        <div class="button-container">
+            <a href="{{ url_for('tournaments.new_day_torneotto30') }}" class="back-button">INDIETRO</a>
+        </div>
+    </div>
+</div>
+
+<style>
+.main-container {
+    padding: 10px;
+    color: white;
+}
+
+.step-title {
+    margin: 2px 0 1px 0;
+}
+
+.section-subtitle {
+    font-size: 1.2em;
+    margin: 0;
+    text-align: center;
+}
+
+.progress-steps {
+    display: none !important;
+}
+
+.tournament-info {
+    margin: 1px 0 10px 0;
+}
+
+.tournament-name {
+    font-size: 1.1em;
+    margin: 0 0 1px 0;
+    text-align: center;
+}
+
+.tournament-date {
+    font-size: 1.1em;
+    color: #ffd700;
+    margin: 0;
+    text-align: center;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.options-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.option-card {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.option-icon {
+    font-size: 2em;
+    margin-bottom: 15px;
+    color: #28a745;
+}
+
+.option-title {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: white;
+    font-weight: 500;
+    text-transform: lowercase;
+}
+
+.option-title::first-letter {
+    text-transform: uppercase;
+}
+
+.option-description {
+    color: #888;
+    font-size: 0.85em;
+    margin-bottom: 20px;
+    flex-grow: 1;
+    line-height: 1.4;
+    text-transform: none !important;
+}
+
+.action-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 20px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
+    margin-top: auto;
+    font-size: 0.85em;
+}
+
+.action-button:hover {
+    background-color: #218838;
+}
+
+.button-container {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 50px;
+}
+
+.back-button {
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 30px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    text-transform: uppercase;
+}
+
+.back-button::first-letter {
+    text-transform: uppercase;
+}
+
+.back-button:hover {
+    background-color: #555;
+}
+</style>
+{% endblock %} 

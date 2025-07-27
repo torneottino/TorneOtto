@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistiche {{ tournament.nome }}</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 1cm;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            font-size: 11pt;
+            padding-bottom: 2cm;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        h1 {
+            color: #007bff;
+            margin: 0;
+            font-size: 18pt;
+        }
+        
+        h2 {
+            color: #666;
+            margin: 5px 0;
+            font-size: 14pt;
+        }
+        
+        .tournament-info {
+            font-size: 10pt;
+            color: #666;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .tournament-info span {
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .stats-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            color: #007bff;
+            font-size: 14pt;
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-box {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 24pt;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 10pt;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .ranking-table th,
+        .ranking-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .ranking-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        .ranking-table .position {
+            text-align: center;
+            width: 60px;
+            font-weight: bold;
+        }
+        
+        .ranking-table .elo-value {
+            text-align: center;
+            width: 80px;
+        }
+        
+        .ranking-table .presences {
+            text-align: center;
+            width: 80px;
+        }
+        
+        .ranking-table .rank-1 {
+            background-color: #fff3cd;
+        }
+        
+        .ranking-table .rank-2 {
+            background-color: #e2e3e5;
+        }
+        
+        .ranking-table .rank-3 {
+            background-color: #f8d7da;
+        }
+        
+        .advanced-stats {
+            display: grid;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        
+        .advanced-stat-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+        
+        .stat-label-advanced {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value-advanced {
+            color: #007bff;
+            font-size: 12pt;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 9pt;
+            color: #666;
+            margin-top: 30px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        
+        /* Ottimizzazione per stampa */
+        @media print {
+            body {
+                padding-bottom: 0;
+            }
+            
+            .stats-grid {
+                break-inside: avoid;
+            }
+            
+            .stat-box {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Statistiche Torneo</h1>
+        <h2>{{ tournament.nome }}</h2>
+        {% if tournament.circolo %}
+        <div style="font-size: 12pt; color: #666; margin-top: 5px;">{{ tournament.circolo }}</div>
+        {% endif %}
+    </div>
+
+    <div class="tournament-info">
+        <p>
+            Tipo: <span>{{ tournament.tipo_torneo|title }}</span> | 
+            {% if tournament.data_inizio %}
+                Data inizio: <span>{{ tournament.data_inizio.strftime('%d/%m/%Y') }}</span> | 
+            {% endif %}
+            Aggiornato: <span>{{ now.strftime('%d/%m/%Y alle %H:%M') }}</span>
+        </p>
+    </div>
+
+    <div class="stats-section">
+        <div class="section-title">Statistiche Generali</div>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-number">{{ stats.numero_giocatori }}</div>
+                <div class="stat-label">Giocatori Totali</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">{{ stats.giornate_giocate }}</div>
+                <div class="stat-label">Giornate Giocate</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">{{ stats.partite_totali }}</div>
+                <div class="stat-label">Partite Totali</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top 5 Classificati -->
+    {% if stats.top_5 %}
+    <div class="stats-section">
+        <div class="section-title">Top 5 Classificati</div>
+        <table class="ranking-table">
+            <thead>
+                <tr>
+                    <th>Pos.</th>
+                    <th>Giocatore</th>
+                    <th>ELO</th>
+                    <th>Presenze</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in stats.top_5 %}
+                <tr class="rank-{{ loop.index }}">
+                    <td class="position">
+                        {% if loop.index == 1 %}🥇
+                        {% elif loop.index == 2 %}🥈
+                        {% elif loop.index == 3 %}🥉
+                        {% else %}{{ loop.index }}°
+                        {% endif %}
+                    </td>
+                    <td class="player-name">{{ player.nome }} {{ player.cognome }}</td>
+                    <td class="elo-value">{{ "%.2f"|format(player.elo_rating) }}</td>
+                    <td class="presences">{{ player.presenze }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <!-- Statistiche Avanzate -->
+    <div class="stats-section">
+        <div class="section-title">Statistiche Avanzate</div>
+        <div class="advanced-stats">
+            <div class="advanced-stat-item">
+                <div class="stat-label-advanced">Coppia più frequente:</div>
+                <div class="stat-value-advanced">{{ stats.coppia_frequente }}</div>
+            </div>
+            <div class="advanced-stat-item">
+                <div class="stat-label-advanced">Partita con più alto scarto:</div>
+                <div class="stat-value-advanced">{{ stats.partita_alto_scarto }}</div>
+            </div>
+            <div class="advanced-stat-item">
+                <div class="stat-label-advanced">Partita con punteggi più bassi:</div>
+                <div class="stat-value-advanced">{{ stats.partita_bassi_punteggi }}</div>
+            </div>
+            <div class="advanced-stat-item">
+                <div class="stat-label-advanced">Giocatore che ha vinto più games:</div>
+                <div class="stat-value-advanced">{{ stats.giocatore_vinto_games }}</div>
+            </div>
+            <div class="advanced-stat-item">
+                <div class="stat-label-advanced">Giocatore che ha perso più games:</div>
+                <div class="stat-value-advanced">{{ stats.giocatore_perso_games }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>
+            Generato da TorneOtto il {{ now.strftime('%d/%m/%Y alle %H:%M') }}<br>
+            <em>Sistema di gestione tornei di ping pong</em>
+        </p>
+    </div>
+</body>
+</html> 

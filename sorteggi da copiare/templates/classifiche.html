@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Classifiche Tornei{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="classifiche-container">
+        <h1>Classifiche Tornei</h1>
+        
+        {% for torneo in tornei %}
+        <div class="torneo-card">
+            <div class="card-body">
+                <h5 class="card-title">{{ torneo.nome }}</h5>
+                <div class="card-details">
+                    <p><i class="fas fa-calendar"></i> {{ torneo.date_display }}</p>
+                    <p><i class="fas fa-map-marker-alt"></i> {{ torneo.circolo or 'Circolo non specificato' }}</p>
+                    <p><i class="fas fa-trophy"></i> {{ torneo.tipo_torneo|title }}</p>
+                    <p><i class="fas fa-info-circle"></i> Stato: <span class="tournament-status {{ torneo.stato|lower }}">{{ torneo.stato }}</span></p>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('tournaments.tournament_ranking', tournament_id=torneo.id) }}" class="action-button btn-visualizza">Visualizza Classifica</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center">
+            <p class="text-muted">Nessun torneo disponibile</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

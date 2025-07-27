@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ tournament.nome }} - Tabellone Eliminazione</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 10mm;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #ffffff;
+            font-size: 10pt;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #007bff;
+            padding-bottom: 5px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 16pt;
+            color: #007bff;
+        }
+        
+        .header h2 {
+            margin: 3px 0;
+            font-size: 12pt;
+            color: #666;
+        }
+        
+        .tournament-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 9pt;
+        }
+        
+        .bracket-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            margin: 15px 0;
+            min-height: 500px;
+            gap: 15px;
+        }
+        
+        .bracket-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+        
+        .round-title {
+            font-size: 10pt;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #007bff;
+            padding: 3px 6px;
+            border: 1px solid #007bff;
+            border-radius: 3px;
+            background-color: #f8f9fa;
+        }
+        
+        .matches-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            height: 400px;
+            width: 100%;
+            gap: 8px;
+        }
+        
+        .match-bracket {
+            border: 1px solid #007bff;
+            border-radius: 3px;
+            padding: 4px;
+            background-color: #fff;
+            margin: 2px 0;
+            position: relative;
+            width: 160px;
+            margin: 0 auto;
+        }
+        
+        .match-bracket.completed {
+            border-color: #28a745;
+            background-color: #f8fff9;
+        }
+        
+        .team-bracket {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2px 5px;
+            border: 1px solid #dee2e6;
+            border-radius: 2px;
+            margin: 1px 0;
+            font-size: 8pt;
+        }
+        
+        .team-bracket.winner {
+            background-color: #d4edda;
+            border-color: #28a745;
+            font-weight: bold;
+        }
+        
+        .team-bracket.bye {
+            background-color: #f8f9fa;
+            border-color: #6c757d;
+            font-style: italic;
+            color: #6c757d;
+        }
+        
+        .team-name {
+            flex: 6; /* 60% per i nomi */
+            font-weight: bold;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 8pt;
+            padding-right: 4px;
+        }
+        
+        .team-score {
+            flex: 4; /* 40% per i risultati */
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 2px;
+        }
+        
+        .score-box {
+            min-width: 14px;
+            height: 12px;
+            border: 0.5pt solid #666;
+            border-radius: 2px;
+            background: #fff;
+            color: #000;
+            font-size: 8pt; /* +2pt come richiesto */
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        
+        .team-bracket.winner .score-box {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+        
+        .score-box:empty {
+            visibility: hidden;
+        }
+        
+        /* Linee di connessione */
+        .connection-line {
+            position: absolute;
+            border: 1px solid #666;
+        }
+        
+        .horizontal-line {
+            height: 0;
+            border-top: 1px solid #666;
+        }
+        
+        .vertical-line {
+            width: 0;
+            border-left: 1px solid #666;
+        }
+        
+        /* Legenda */
+        .legend {
+            margin-top: 15px;
+            font-size: 8pt;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border: 1px solid #333;
+        }
+        
+        .legend-completed {
+            background-color: #d4edda;
+        }
+        
+        .legend-pending {
+            background-color: #fff;
+        }
+        
+        .legend-bye {
+            background-color: #f8f9fa;
+        }
+        
+        /* Footer */
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 8pt;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 5px;
+        }
+        
+        .footer-info {
+            font-style: italic;
+        }
+        
+        /* Responsive per schema bracket */
+        .bracket-8 .matches-column {
+            justify-content: space-between;
+        }
+        
+        .bracket-4 .matches-column {
+            justify-content: space-around;
+        }
+        
+        .bracket-2 .matches-column {
+            justify-content: center;
+        }
+        
+        /* Print optimization */
+        @media print {
+            body {
+                padding: 5mm;
+            }
+            
+            .match-bracket {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ tournament.nome }}</h1>
+        {% if tournament.circolo %}
+        <h2>{{ tournament.circolo }}</h2>
+        {% endif %}
+        <div class="tournament-info">
+            <span>Eliminazione Diretta - {{ tournament.data_inizio.strftime('%d/%m/%Y') }}</span>
+            <span>Squadre: {{ elim_tournament.num_squadre }}</span>
+            <span>{{ "Best of 3" if elim_tournament.best_of_three else "Partita Singola" }}</span>
+        </div>
+    </div>
+
+    {% if matches_by_round %}
+    <div class="bracket-container">
+        {% set rounds = matches_by_round.keys() | list | sort %}
+        {% for round_key in rounds %}
+            {% if round_key.startswith('winner_') %}
+                {% set round_num = round_key.split('_')[1] | int %}
+                {% set round_matches = matches_by_round[round_key] %}
+                
+                <div class="bracket-column bracket-{{ round_matches|length }}">
+                    {% if round_matches|length == 1 %}
+                        <div class="round-title">FINALE</div>
+                    {% elif round_matches|length == 2 %}
+                        <div class="round-title">SEMIFINALI</div>
+                    {% elif round_matches|length == 4 %}
+                        <div class="round-title">QUARTI</div>
+                    {% elif round_matches|length == 8 %}
+                        <div class="round-title">OTTAVI</div>
+                    {% else %}
+                        <div class="round-title">TURNO {{ round_num }}</div>
+                    {% endif %}
+                    
+                    <div class="matches-column">
+                        {% for match in round_matches %}
+                        <div class="match-bracket {% if match.stato == 'Completed' %}completed{% endif %}">
+                            {% if match.team1 %}
+                            <div class="team-bracket {% if match.winner_team_id == match.team1.id %}winner{% endif %} {% if match.team1.is_bye %}bye{% endif %}">
+                                <span class="team-name">
+                                    {% if match.team1.is_bye %}
+                                        BYE
+                                    {% else %}
+                                        {{ match.team1.team_name }}
+                                    {% endif %}
+                                </span>
+                                {% if match.stato == 'Completed' and not match.team1.is_bye %}
+                                    {% set team1_sets, team2_sets = match.get_sets_scores_for_display() %}
+                                    <div class="team-score">
+                                        {% for set_score in team1_sets %}
+                                            {% if set_score %}
+                                                <div class="score-box">{{ set_score }}</div>
+                                            {% else %}
+                                                <div class="score-box"></div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                            
+                            {% if match.team2 %}
+                            <div class="team-bracket {% if match.winner_team_id == match.team2.id %}winner{% endif %} {% if match.team2.is_bye %}bye{% endif %}">
+                                <span class="team-name">
+                                    {% if match.team2.is_bye %}
+                                        BYE
+                                    {% else %}
+                                        {{ match.team2.team_name }}
+                                    {% endif %}
+                                </span>
+                                {% if match.stato == 'Completed' and not match.team2.is_bye %}
+                                    <div class="team-score">
+                                        {% for set_score in team2_sets %}
+                                            {% if set_score %}
+                                                <div class="score-box">{{ set_score }}</div>
+                                            {% else %}
+                                                <div class="score-box"></div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 50px; color: #666;">
+        <h3>Tabellone non ancora configurato</h3>
+        <p>Il bracket verrà visualizzato dopo aver configurato le squadre e creato il tabellone.</p>
+    </div>
+    {% endif %}
+
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-color legend-completed"></div>
+            <span>Partita Completata</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color legend-pending"></div>
+            <span>Partita da Giocare</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color legend-bye"></div>
+            <span>Bye</span>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-info">TorneOtto, The Padel App – Versione 3.0.2 – © Mattia Ianniello, 2025</div>
+    </div>
+</body>
+</html> 

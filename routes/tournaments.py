@@ -9,6 +9,7 @@ from services import pairing
 import random
 import io
 from functools import wraps
+from flask import current_app
 from sqlalchemy import func
 from services.elo_calculator import update_tournament_elos, delete_tournament_day_elos, calculate_match_elo_change, get_team_elo, get_player_current_elo
 from services.tournament_service import delete_tournament_day_simple
@@ -60,7 +61,8 @@ def tournaments_list():
 def active_tournaments():
     """Visualizza i tornei attualmente attivi."""
     tournaments = Tournament.query.filter_by(stato="In corso").all()
-    return render_template('tournaments/active.html', tournaments=tournaments)
+    # Reuse generic list template
+    return render_template('tournaments/list.html', tournaments=tournaments)
 
 @tournaments_bp.route('/tornei/nuovo', methods=['GET', 'POST'])
 def new_tournament():
@@ -2066,7 +2068,21 @@ def save_torneotto45_semifinals(tournament_id, day_id):
             perdenti.append(semifinale['squadra_a'])
     
     # Configura le finali
-    finali = day.get_finals()
+    finali = day.get_finals() or {}
+    # Se la struttura delle finali non è presente la inizializziamo
+    if 'primo_posto' not in finali or 'terzo_posto' not in finali:
+        finali = {
+            'primo_posto': {
+                'squadra_a': [],
+                'squadra_b': [],
+                'risultato': {}
+            },
+            'terzo_posto': {
+                'squadra_a': [],
+                'squadra_b': [],
+                'risultato': {}
+            }
+        }
     finali['primo_posto']['squadra_a'] = vincitori[0]
     finali['primo_posto']['squadra_b'] = vincitori[1]
     finali['terzo_posto']['squadra_a'] = perdenti[0]

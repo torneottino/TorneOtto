@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Risultati {{ tournament.nome }} - {{ day.data.strftime('%d/%m/%Y') }}</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 1cm;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            font-size: 10pt;
+            padding-bottom: 2cm;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #007bff;
+            padding-bottom: 5px;
+        }
+        
+        h1 {
+            color: #007bff;
+            margin: 0;
+            font-size: 16pt;
+        }
+        
+        h2 {
+            color: #666;
+            margin: 3px 0;
+            font-size: 12pt;
+        }
+        
+        .date-info {
+            font-size: 10pt;
+            font-style: italic;
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        .section-title {
+            color: #007bff;
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            padding-bottom: 3px;
+            border-bottom: 1px solid #007bff;
+        }
+        
+        .gironi-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .girone-card {
+            flex: 1;
+            min-width: 200px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .girone-header {
+            color: #007bff;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 11pt;
+        }
+        
+        .match-result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 10px;
+        }
+        
+        .match-teams {
+            flex: 1;
+        }
+        
+        .match-score {
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 9pt;
+        }
+        
+        .standings-table th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding: 4px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .standings-table td {
+            padding: 4px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+        
+        .standings-table td:nth-child(2) {
+            text-align: left;
+            min-width: 100px;
+        }
+        
+        .qualified {
+            background-color: #d4edda;
+            font-weight: bold;
+        }
+        
+        .semifinali-container {
+            margin: 20px 0;
+        }
+        
+        .semifinale {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .semifinale-header {
+            color: #ffd700;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 8px;
+            background-color: #333;
+            color: white;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        
+        .finale-header {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 8px;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        
+        .finale-primo {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .finale-terzo {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .match-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 3px;
+        }
+        
+        .team-name {
+            font-size: 10pt;
+        }
+        
+        .score-display {
+            font-weight: bold;
+            color: #007bff;
+            font-size: 12pt;
+        }
+        
+        .classifica-finale {
+            margin-top: 20px;
+        }
+        
+        .classifica-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            font-size: 10pt;
+        }
+        
+        .classifica-table th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding: 6px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .classifica-table td {
+            padding: 6px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+        
+        .classifica-table td:nth-child(2) {
+            text-align: left;
+            min-width: 150px;
+        }
+        
+        .position-1 { background-color: #ffd700; font-weight: bold; }
+        .position-2 { background-color: #c0c0c0; font-weight: bold; }
+        .position-3 { background-color: #cd7f32; font-weight: bold; }
+        .position-4 { background-color: #e6f3ff; }
+        
+        .footer {
+            text-align: center;
+            font-size: 8pt;
+            color: #666;
+            margin-top: 20px;
+        }
+        
+        .footer-info {
+            font-style: italic;
+        }
+        
+        .page-break {
+            page-break-before: always;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ tournament.nome }}</h1>
+        {% if tournament.circolo %}
+        <h2>{{ tournament.circolo }}</h2>
+        {% endif %}
+        <div class="date-info">Risultati Giornata {{ day.data.strftime('%d/%m/%Y') }}</div>
+    </div>
+
+    <!-- Risultati Round Robin per Girone -->
+    <div class="section-title">RISULTATI ROUND ROBIN</div>
+    
+    <div class="gironi-container">
+        {% for girone in gironi %}
+        <div class="girone-card">
+            <div class="girone-header">GIRONE {{ loop.index }}</div>
+            
+            <!-- Partite del girone -->
+            {% set girone_idx = loop.index %}
+            {% if matches %}
+            {% for match in matches %}
+                {% if match['girone'] == girone_idx %}
+                <div class="match-result">
+                    <div class="match-teams">
+                        {{ players_by_id[match['team1'][0]].cognome }}/{{ players_by_id[match['team1'][1]].cognome }}
+                        vs
+                        {{ players_by_id[match['team2'][0]].cognome }}/{{ players_by_id[match['team2'][1]].cognome }}
+                    </div>
+                    <div class="match-score">
+                        {% if match['id'] in results %}
+                        {{ results[match['id']]['squadra_a'] }} - {{ results[match['id']]['squadra_b'] }}
+                        {% elif match['id']|string in results %}
+                        {{ results[match['id']|string]['squadra_a'] }} - {{ results[match['id']|string]['squadra_b'] }}
+                        {% else %}
+                        - - -
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+            {% else %}
+            <div class="match-result">
+                <div class="match-teams">Nessuna partita trovata</div>
+            </div>
+            {% endif %}
+            
+            <!-- Classifica del girone -->
+            {% if classifiche_gironi and classifiche_gironi[loop.index0] %}
+            <div class="classifica-girone">
+                <h4>Classifica</h4>
+                {% for team_stats in classifiche_gironi[loop.index0] %}
+                <div class="classifica-row">
+                    <span class="posizione">{{ loop.index }}°</span>
+                    <span class="team">{{ players_by_id[team_stats['team'][0]].cognome }}/{{ players_by_id[team_stats['team'][1]].cognome }}</span>
+                    <span class="punti">{{ team_stats['punti'] }}pt</span>
+                    <span class="diff">{{ '+' if team_stats['differenza_games'] > 0 else '' }}{{ team_stats['differenza_games'] }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Semifinali -->
+    {% if semifinali %}
+    <div class="section-title">SEMIFINALI</div>
+    
+    <div class="semifinali-container">
+        {% for semifinale in semifinali %}
+        <div class="semifinale">
+            <div class="semifinale-header">SEMIFINALE {{ loop.index }}</div>
+            <div class="match-display">
+                <div class="team-name">
+                    {{ players_by_id[semifinale['squadra_a'][0]].nome }} {{ players_by_id[semifinale['squadra_a'][0]].cognome }}<br>
+                    {{ players_by_id[semifinale['squadra_a'][1]].nome }} {{ players_by_id[semifinale['squadra_a'][1]].cognome }}
+                </div>
+                <div class="score-display">
+                    {% if semifinale['risultato'] %}
+                    {{ semifinale['risultato']['squadra_a'] }} - {{ semifinale['risultato']['squadra_b'] }}
+                    {% else %}
+                    - - -
+                    {% endif %}
+                </div>
+                <div class="team-name">
+                    {{ players_by_id[semifinale['squadra_b'][0]].nome }} {{ players_by_id[semifinale['squadra_b'][0]].cognome }}<br>
+                    {{ players_by_id[semifinale['squadra_b'][1]].nome }} {{ players_by_id[semifinale['squadra_b'][1]].cognome }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Finali -->
+    {% if finali %}
+    <div class="section-title">FINALI</div>
+    
+    <div class="semifinali-container">
+        <!-- Finale 1° Posto -->
+        <div class="semifinale">
+            <div class="finale-header finale-primo">FINALE 1° POSTO</div>
+            <div class="match-display">
+                <div class="team-name">
+                    {{ players_by_id[finali['primo_posto']['squadra_a'][0]].nome }} {{ players_by_id[finali['primo_posto']['squadra_a'][0]].cognome }}<br>
+                    {{ players_by_id[finali['primo_posto']['squadra_a'][1]].nome }} {{ players_by_id[finali['primo_posto']['squadra_a'][1]].cognome }}
+                </div>
+                <div class="score-display">
+                    {% if finali['primo_posto']['risultato'] %}
+                    {{ finali['primo_posto']['risultato']['squadra_a'] }} - {{ finali['primo_posto']['risultato']['squadra_b'] }}
+                    {% else %}
+                    - - -
+                    {% endif %}
+                </div>
+                <div class="team-name">
+                    {{ players_by_id[finali['primo_posto']['squadra_b'][0]].nome }} {{ players_by_id[finali['primo_posto']['squadra_b'][0]].cognome }}<br>
+                    {{ players_by_id[finali['primo_posto']['squadra_b'][1]].nome }} {{ players_by_id[finali['primo_posto']['squadra_b'][1]].cognome }}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Finale 3° Posto -->
+        <div class="semifinale">
+            <div class="finale-header finale-terzo">FINALE 3° POSTO</div>
+            <div class="match-display">
+                <div class="team-name">
+                    {{ players_by_id[finali['terzo_posto']['squadra_a'][0]].nome }} {{ players_by_id[finali['terzo_posto']['squadra_a'][0]].cognome }}<br>
+                    {{ players_by_id[finali['terzo_posto']['squadra_a'][1]].nome }} {{ players_by_id[finali['terzo_posto']['squadra_a'][1]].cognome }}
+                </div>
+                <div class="score-display">
+                    {% if finali['terzo_posto']['risultato'] %}
+                    {{ finali['terzo_posto']['risultato']['squadra_a'] }} - {{ finali['terzo_posto']['risultato']['squadra_b'] }}
+                    {% else %}
+                    - - -
+                    {% endif %}
+                </div>
+                <div class="team-name">
+                    {{ players_by_id[finali['terzo_posto']['squadra_b'][0]].nome }} {{ players_by_id[finali['terzo_posto']['squadra_b'][0]].cognome }}<br>
+                    {{ players_by_id[finali['terzo_posto']['squadra_b'][1]].nome }} {{ players_by_id[finali['terzo_posto']['squadra_b'][1]].cognome }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Classifica Finale -->
+    {% if classifica %}
+    <div class="section-title">CLASSIFICA FINALE</div>
+    
+    <table class="classifica-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Squadra</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for team in classifica %}
+            <tr class="{% if loop.index == 1 %}position-1{% elif loop.index == 2 %}position-2{% elif loop.index == 3 %}position-3{% elif loop.index == 4 %}position-4{% endif %}">
+                <td>{{ loop.index }}°</td>
+                <td>{{ players_by_id[team[0]].nome }} {{ players_by_id[team[0]].cognome }} - {{ players_by_id[team[1]].nome }} {{ players_by_id[team[1]].cognome }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <div class="footer">
+        <div class="footer-info">TorneOtto, The Padel App – Versione 3.0.2 – © Mattia Ianniello, 2025</div>
+    </div>
+</body>
+</html> 

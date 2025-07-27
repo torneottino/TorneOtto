@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+    <h1 class="page-title">Nuovo Torneo</h1>
+    
+    <form id="tournament-form" method="POST" class="player-form" action="{{ url_for('tournaments.new_tournament') }}">
+        <div class="form-group">
+            <label for="tipo_torneo">Tipo Torneo</label>
+            <select id="tipo_torneo" name="tipo_torneo" class="form-input" required>
+                <option value="" {% if not tipo %}selected{% endif %} disabled>Seleziona un tipo</option>
+                {% for key, value in tipi_tornei.items() %}
+                <option value="{{ key }}" {% if tipo == key %}selected{% endif %}>{{ value }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="button-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+            <button type="submit" class="action-button" style="width: 300px; border-radius: 10px;">
+                <i class="fas fa-arrow-right"></i>
+                Continua
+            </button>
+            
+            <a href="{{ url_for('tournaments.tournaments_list') }}" class="action-button" style="width: 300px; background-color: #444444; border-radius: 10px;" onclick="return confirmCancel()">
+                <i class="fas fa-times"></i>
+                Annulla
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    function confirmCancel() {
+        return confirm('Sei sicuro di voler annullare?');
+    }
+</script>
+{% endblock %} 

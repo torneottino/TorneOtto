@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="ranking-container">
+    <div class="ranking-header">
+        <h1 style="text-align: center; color: #ffd700;">{{ tournament.nome }} - Classifica Finale</h1>
+        <p style="color: #ccc; text-align: center;">Classifica dettagliata del torneo all'americana</p>
+    </div>
+
+    {% if ranking %}
+    <div class="ranking-table-container">
+        <table class="ranking-table">
+            <thead>
+                <tr>
+                    <th class="text-center" style="width: 36px">#</th>
+                    <th class="text-left" style="width: 120px">{% if ranking[0]['player_id'] is defined %}Giocatore{% else %}Squadra{% endif %}</th>
+                    {% if config.metodo_punteggio == 'game_difference' %}
+                        <th class="text-center" style="width: 50px">DG</th>
+                    {% else %}
+                        <th class="text-center" style="width: 50px">Punti</th>
+                    {% endif %}
+                    <th class="text-center" style="width: 15px">P</th>
+                    <th class="text-center" style="width: 15px">V</th>
+                    <th class="text-center" style="width: 15px">S</th>
+                    <th class="text-center" style="width: 60px">Games</th>
+                    {% if config.metodo_punteggio != 'game_difference' %}
+                        <th class="text-center" style="width: 50px">DG</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for stats in ranking %}
+                <tr>
+                    <td class="text-center">
+                        {% if loop.index == 1 %}🥇{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}{{ loop.index }}{% endif %}
+                    </td>
+                    <td class="text-left">
+                        {% if stats['player_id'] is defined %}
+                            {{ stats['player_name'] }}
+                        {% elif stats.team.player1_name %}
+                            {{ stats.team.player1_name }}
+                            {% if stats.team.player2_name %}<br><span style="color: #ccc; font-size: 0.8em;">{{ stats.team.player2_name }}</span>{% endif %}
+                        {% else %}
+                            Squadra {{ stats.team.id }}
+                        {% endif %}
+                    </td>
+                    {% if config.metodo_punteggio == 'game_difference' %}
+                        <td class="text-center" style="color: #ffd700; font-weight: bold;">{{ stats.game_difference }}</td>
+                    {% else %}
+                        <td class="text-center" style="color: #ffd700; font-weight: bold;">{{ stats.points }}</td>
+                    {% endif %}
+                    <td class="text-center">{{ stats.matches_played }}</td>
+                    <td class="text-center" style="color: #34c759;">{{ stats.matches_won }}</td>
+                    <td class="text-center" style="color: #ff3b30;">{{ stats.matches_lost }}</td>
+                    <td class="text-center" style="font-family: monospace; color: #ccc;">{{ stats.games_won }}-{{ stats.games_lost }}</td>
+                    {% if config.metodo_punteggio != 'game_difference' %}
+                        <td class="text-center" style="color: #ccc;">{{ stats.game_difference }}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+    <div class="no-ranking">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Nessuna classifica disponibile</h3>
+        <p>Non ci sono ancora risultati inseriti per calcolare la classifica.</p>
+    </div>
+    {% endif %}
+
+    <div class="button-container">
+        <a href="{{ url_for('tournaments.view_americana_day', tournament_id=tournament.id, day_id=day.id) }}" class="btn back-btn">INDIETRO</a>
+    </div>
+</div>
+
+<style>
+.ranking-container {
+    width: 100%;
+    max-width: 600px;
+    min-width: 280px;
+    margin: 15px auto;
+    background-color: #313236;
+    border-radius: var(--button-radius);
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 0.9em;
+}
+
+.ranking-table-container {
+    overflow-x: auto;
+}
+
+.ranking-table {
+    width: 100%;
+    color: var(--text-color);
+    border-collapse: collapse;
+    table-layout: fixed;
+    min-width: 400px;
+}
+
+.ranking-table th {
+    color: #34c759;
+    font-weight: 500;
+    padding: 6px 2px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.95em;
+    white-space: nowrap;
+}
+
+.ranking-table th.text-center, .ranking-table td.text-center {
+    text-align: center;
+}
+
+.ranking-table th.text-left, .ranking-table td.text-left {
+    text-align: left;
+}
+
+.ranking-table td {
+    padding: 8px 2px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Aumenta solo i nomi e i valori numerici, NON le icone e posizioni */
+.ranking-table td:nth-child(2),
+.ranking-table td:nth-child(3),
+.ranking-table td:nth-child(4),
+.ranking-table td:nth-child(5),
+.ranking-table td:nth-child(6),
+.ranking-table td:nth-child(7),
+.ranking-table td:nth-child(8) {
+    font-size: 1.05em !important;
+}
+
+/* Forza larghezze specifiche per colonne P V S */
+.ranking-table th:nth-child(4),
+.ranking-table td:nth-child(4),
+.ranking-table th:nth-child(5),
+.ranking-table td:nth-child(5),
+.ranking-table th:nth-child(6),
+.ranking-table td:nth-child(6) {
+    width: 10px !important;
+    max-width: 10px !important;
+    min-width: 10px !important;
+    padding: 8px 0px !important;
+}
+
+.ranking-table td:nth-child(2) {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.ranking-table tr:last-child td {
+    border-bottom: none;
+}
+
+.ranking-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin: 20px 0 0 0;
+}
+
+.btn {
+    width: 250px;
+    padding: 12px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    outline: none;
+    text-decoration: none;
+    color: #fff;
+    display: block;
+    text-align: center;
+}
+
+.btn.back-btn {
+    background: #444444;
+    color: #fff;
+    border: none;
+}
+
+.btn.back-btn:hover {
+    background: #222;
+    color: #fff;
+}
+
+.no-ranking {
+    text-align: center;
+    padding: 40px;
+    color: #ccc;
+}
+
+.no-ranking i {
+    font-size: 3em;
+    margin-bottom: 20px;
+    color: #ff3b30;
+}
+
+@media (max-width: 480px) {
+    .ranking-container {
+        margin: 10px;
+        padding: 15px;
+        max-width: 380px;
+    }
+    .ranking-table-container {
+        max-width: 380px;
+        overflow-x: auto;
+    }
+    .ranking-table {
+        font-size: 0.8em;
+        min-width: 370px;
+    }
+    .ranking-table th, .ranking-table td {
+        padding: 6px 1px;
+    }
+}
+</style>
+{% endblock %} 

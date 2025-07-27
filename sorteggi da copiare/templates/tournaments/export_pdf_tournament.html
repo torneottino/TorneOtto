@@ -1,0 +1,408 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="pdf-stats-container">
+    <div class="pdf-header">
+        <div class="pdf-title">
+            <h1>Statistiche Torneo</h1>
+            <h2>{{ tournament.nome }}</h2>
+        </div>
+        <div class="pdf-info">
+            <span class="tournament-type-badge {{ tournament.tipo_torneo }}">
+                {{ tournament.tipo_torneo|title }}
+            </span>
+            {% if tournament.data_inizio %}
+            <span class="tournament-date">
+                <i class="fas fa-calendar"></i>
+                {{ tournament.data_inizio.strftime('%d/%m/%Y') }}
+            </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <!-- Numero totale di giocatori -->
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ stats.numero_giocatori }}</div>
+                <div class="stat-label">Giocatori Totali</div>
+            </div>
+        </div>
+
+        <!-- Giornate giocate -->
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ stats.giornate_giocate }}</div>
+                <div class="stat-label">Giornate Giocate</div>
+            </div>
+        </div>
+
+        <!-- Partite giocate in totale -->
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-table-tennis"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ stats.partite_totali }}</div>
+                <div class="stat-label">Partite Totali</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top 5 classificati -->
+    {% if stats.top_5 %}
+    <div class="top-players-section">
+        <h3 class="section-title">
+            <i class="fas fa-medal"></i>
+            Top 5 Classificati
+        </h3>
+        <div class="podium-container">
+            {% for player in stats.top_5 %}
+            <div class="podium-card rank-{{ loop.index }} {% if loop.index > 3 %}rank-other{% endif %}">
+                <div class="podium-position">
+                    {% if loop.index == 1 %}🥇
+                    {% elif loop.index == 2 %}🥈
+                    {% elif loop.index == 3 %}🥉
+                    {% else %}{{ loop.index }}°
+                    {% endif %}
+                </div>
+                <div class="podium-player">
+                    <div class="player-name">{{ player.nome }} {{ player.cognome }}</div>
+                    <div class="player-elo">{{ "%.2f"|format(player.elo_rating) }} ELO</div>
+                    <div class="player-presences">{{ player.presenze }} presenze</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Statistiche aggiuntive -->
+    <div class="additional-stats">
+        <h3 class="section-title">
+            <i class="fas fa-chart-bar"></i>
+            Statistiche Avanzate
+        </h3>
+        <div class="advanced-stats-grid">
+            <div class="advanced-stat-card">
+                <div class="advanced-stat-label">Coppia più frequente</div>
+                <div class="advanced-stat-value">{{ stats.coppia_frequente }}</div>
+            </div>
+            <div class="advanced-stat-card">
+                <div class="advanced-stat-label">Partita con più alto scarto</div>
+                <div class="advanced-stat-value">{{ stats.partita_alto_scarto }}</div>
+            </div>
+            <div class="advanced-stat-card">
+                <div class="advanced-stat-label">Partita con punteggi più bassi</div>
+                <div class="advanced-stat-value">{{ stats.partita_bassi_punteggi }}</div>
+            </div>
+            <div class="advanced-stat-card">
+                <div class="advanced-stat-label">Giocatore che ha vinto più games</div>
+                <div class="advanced-stat-value">{{ stats.giocatore_vinto_games }}</div>
+            </div>
+            <div class="advanced-stat-card">
+                <div class="advanced-stat-label">Giocatore che ha perso più games</div>
+                <div class="advanced-stat-value">{{ stats.giocatore_perso_games }}</div>
+            </div>
+        </div>
+    </div>
+
+    {% if not print_view %}
+    <div class="pdf-actions">
+        <button onclick="window.print()" class="action-button">
+            <i class="fas fa-print"></i>
+            Stampa Statistiche
+        </button>
+        <a href="/export-pdf" class="action-button secondary">
+            <i class="fas fa-arrow-left"></i>
+            Scegli altro torneo
+        </a>
+    </div>
+    {% endif %}
+    
+    <!-- Button container per PDF -->
+    <div class="button-container">
+        <a href="/export-pdf/torneo/{{ tournament.id }}/pdf" class="action-button">
+            <i class="fas fa-file-pdf"></i>
+            Esporta PDF
+        </a>
+    </div>
+</div>
+
+<style>
+.pdf-stats-container {
+    max-width: 330px;
+    margin: 0 auto 20px;
+    padding: 20px;
+    font-size: 1em;
+}
+
+.pdf-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--primary-green);
+}
+
+.pdf-title h1 {
+    color: var(--primary-green);
+    font-size: 1.5em;
+    margin: 0 0 10px 0;
+}
+
+.pdf-title h2 {
+    color: var(--text-color);
+    font-size: 1.2em;
+    margin: 0;
+    font-weight: 400;
+}
+
+.pdf-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.tournament-date {
+    color: #ccc;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.stats-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background-color: #2c2d32;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-icon {
+    font-size: 1.5em;
+    color: var(--primary-green);
+    width: 40px;
+    text-align: center;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-number {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: var(--text-color);
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.9em;
+    color: #ccc;
+}
+
+.section-title {
+    color: var(--text-color);
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.section-title i {
+    color: var(--primary-green);
+}
+
+.podium-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.podium-card {
+    background-color: #2c2d32;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.podium-card.rank-1 {
+    border-color: #FFD700;
+    background-color: rgba(255, 215, 0, 0.1);
+}
+
+.podium-card.rank-2 {
+    border-color: #C0C0C0;
+    background-color: rgba(192, 192, 192, 0.1);
+}
+
+.podium-card.rank-3 {
+    border-color: #CD7F32;
+    background-color: rgba(205, 127, 50, 0.1);
+}
+
+.podium-card.rank-other {
+    border-color: #666;
+    background-color: rgba(102, 102, 102, 0.1);
+}
+
+.podium-position {
+    font-size: 2em;
+    width: 50px;
+    text-align: center;
+}
+
+.podium-player {
+    flex: 1;
+}
+
+.player-name {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 5px;
+}
+
+.player-elo {
+    font-size: 1em;
+    color: var(--primary-green);
+    margin-bottom: 3px;
+}
+
+.player-presences {
+    font-size: 0.9em;
+    color: #ccc;
+}
+
+.advanced-stats-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.advanced-stat-card {
+    background-color: #2c2d32;
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.advanced-stat-label {
+    font-size: 0.9em;
+    color: #ccc;
+    margin-bottom: 8px;
+}
+
+.advanced-stat-value {
+    font-size: 1.1em;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.pdf-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.action-button.secondary {
+    background-color: #444;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 100px;
+}
+
+.button-container .action-button {
+    background-color: #3579f6;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1em;
+    font-weight: 500;
+    border: none;
+    transition: background-color 0.3s ease;
+    margin-bottom: 100px;
+}
+
+.button-container .action-button:hover {
+    background-color: #2968e3;
+}
+
+/* Stili per la stampa */
+@media print {
+    .pdf-stats-container {
+        max-width: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .pdf-actions {
+        display: none;
+    }
+    
+    .stat-card, .podium-card, .advanced-stat-card {
+        break-inside: avoid;
+        margin-bottom: 10px;
+    }
+    
+    .section-title {
+        break-after: avoid;
+    }
+}
+
+@media (max-width: 400px) {
+    .pdf-stats-container {
+        max-width: 300px;
+        padding: 15px;
+    }
+    
+    .stat-card, .podium-card, .advanced-stat-card {
+        padding: 15px;
+    }
+    
+    .pdf-title h1 {
+        font-size: 1.3em;
+    }
+    
+    .pdf-title h2 {
+        font-size: 1.1em;
+    }
+}
+</style>
+{% endblock %} 

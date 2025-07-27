@@ -1,0 +1,345 @@
+{% extends "base.html" %}
+
+{% block head_extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/templates/tournament_creation.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="tournament-creation-container">
+    <div class="tournament-header">
+        <h1 class="tournament-title">{{ tournament.nome }} - Selezione Giocatori</h1>
+        <div class="tournament-info">
+            <div class="tournament-info-item">
+                <i class="fas fa-users"></i>
+                <span>Seleziona {{ config.num_coppie * 2 }} giocatori per formare {{ config.num_coppie }} coppie</span>
+            </div>
+            <div class="tournament-info-item">
+                <i class="fas fa-info-circle"></i>
+                <span>{{ config.num_coppie }} coppie partecipanti</span>
+            </div>
+        </div>
+    </div>
+    
+    <form method="POST" action="{{ url_for('tournaments.americana_setup', tournament_id=tournament.id) }}" class="tournament-form">
+        <div class="tournament-details">
+            <div class="tournament-detail-item">
+                <i class="fas fa-search"></i>
+                <div class="form-group">
+                    <label>Cerca Giocatori</label>
+                    <input type="text" id="searchInput" placeholder="Cerca per nome o cognome..." class="form-input">
+                </div>
+            </div>
+            
+            {% if config.tipo_torneo == 'semplice' %}
+            <div class="tournament-detail-item">
+                <i class="fas fa-clock"></i>
+                <div class="form-group">
+                    <label>Configurazione Torneo Semplice</label>
+                    <div class="tournament-config-row">
+                        <div class="config-item">
+                            <label for="num_turni_semplice">Numero di Turni:</label>
+                            <select name="num_turni_semplice" id="num_turni_semplice" class="form-input" required>
+                                <option value="">Seleziona...</option>
+                                <option value="3">3 turni</option>
+                                <option value="4">4 turni</option>
+                                <option value="5">5 turni</option>
+                                <option value="6">6 turni</option>
+                                <option value="7">7 turni</option>
+                                <option value="8">8 turni</option>
+                                <option value="9">9 turni</option>
+                                <option value="10">10 turni</option>
+                            </select>
+                        </div>
+                        <div class="config-item">
+                            <label>Numero di Campi:</label>
+                            <span class="config-value">{{ config.num_campi }} campi</span>
+                        </div>
+                    </div>
+                    <p class="config-description">
+                        <i class="fas fa-info-circle"></i>
+                        Il sistema genererà automaticamente le partite per bilanciare le coppie e minimizzare le ripetizioni.
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="tournament-detail-item">
+                <i class="fas fa-users"></i>
+                <div class="form-group">
+                    <div class="players-header">
+                        <label>Giocatori Disponibili</label>
+                        <div class="player-counter">
+                            <span id="selectedCount">0</span>/{{ config.num_coppie * 2 }} Giocatori Selezionati
+                            {% if config.metodo_formazione == 'teste_serie' %}
+                            <br><small style="color: #ffd700; font-size: 0.8em;">💡 Click sulla stella ★ per selezionare teste di serie</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="players-container">
+                        <div class="players-grid">
+                            {% for player in players %}
+                            <div class="player-row" data-player-id="{{ player.id }}">
+                                <span class="player-name">{{ player.nome }} {{ player.cognome }}</span>
+                                <button type="button" class="seed-toggle" data-player-id="{{ player.id }}" title="Testa di serie">★</button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <input type="hidden" id="selectedPlayers" name="selected_players" value="">
+                    </div>
+                </div>
+            </div>
+            
+            {% if config.metodo_formazione == 'teste_serie' %}
+            <input type="hidden" id="seededPlayers" name="seeded_players" value="">
+            {% endif %}
+        </div>
+        
+        <div class="tournament-actions">
+            <button type="submit" class="tournament-button primary" id="continueBtn" disabled>
+                <i class="fas fa-arrow-right"></i>
+                CREA TORNEO
+            </button>
+            
+            <a href="{{ url_for('tournaments.new_americana_day', tournament_id=tournament.id) }}" class="tournament-button secondary">
+                <i class="fas fa-arrow-left"></i>
+                INDIETRO
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+.players-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.players-header label {
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.player-counter {
+    color: #ffd700;
+    font-size: 1.2em;
+    font-weight: bold;
+    background: rgba(255, 215, 0, 0.1);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ffd700;
+}
+
+.players-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 10px;
+    background: #2a2a2a;
+}
+
+.players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.player-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #333;
+    border: 2px solid #444;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.player-row.selected {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: #fff;
+}
+
+.player-row.seeded {
+    background-color: #ffd700;
+    border-color: #ffd700;
+    color: #000;
+    font-weight: bold;
+}
+
+.player-row .player-name {
+    flex: 1;
+    text-align: left;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.seed-toggle {
+    background: #ffd700;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    color: #000;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 12px;
+    transition: all 0.2s;
+    z-index: 10;
+    outline: none;
+}
+
+.seed-toggle.selected {
+    background: #28a745;
+    color: #fff;
+}
+
+.seed-toggle:focus {
+    outline: 2px solid #333;
+}
+
+.tournament-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tournament-config-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+    margin-bottom: 15px;
+}
+
+.config-item {
+    flex: 1;
+}
+
+.config-item label {
+    display: block;
+    margin-bottom: 5px;
+    color: #ccc;
+    font-weight: 500;
+}
+
+.config-value {
+    display: inline-block;
+    padding: 8px 12px;
+    background: #444;
+    border: 1px solid #555;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: 500;
+}
+
+.config-description {
+    margin: 10px 0 0 0;
+    padding: 10px;
+    background: #2a2a2a;
+    border-left: 3px solid #28a745;
+    border-radius: 0 5px 5px 0;
+    color: #ccc;
+    font-size: 0.9em;
+}
+
+.config-description i {
+    color: #28a745;
+    margin-right: 5px;
+}
+
+@media (max-width: 768px) {
+    .players-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 8px;
+    }
+    
+    .player-row {
+        padding: 10px;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const playerRows = document.querySelectorAll('.player-row');
+    const seedToggles = document.querySelectorAll('.seed-toggle');
+    const selectedCount = document.getElementById('selectedCount');
+    const continueBtn = document.getElementById('continueBtn');
+    const requiredCount = {{ config.num_coppie * 2 }};
+    const searchInput = document.getElementById('searchInput');
+    const selectedPlayersInput = document.getElementById('selectedPlayers');
+    let selectedPlayers = [];
+    let seededPlayers = [];
+    const maxSeeds = {% if config.metodo_formazione == 'teste_serie' %}{{ config.num_coppie }}{% else %}0{% endif %};
+
+    function updateCount() {
+        selectedCount.textContent = selectedPlayers.length;
+        continueBtn.disabled = selectedPlayers.length !== requiredCount;
+        selectedPlayersInput.value = selectedPlayers.join(',');
+    }
+    function updateStyles() {
+        playerRows.forEach(row => {
+            const playerId = row.dataset.playerId;
+            row.classList.toggle('selected', selectedPlayers.includes(playerId));
+            row.classList.toggle('seeded', seededPlayers.includes(playerId));
+            const star = row.querySelector('.seed-toggle');
+            if (seededPlayers.includes(playerId)) {
+                star.classList.add('selected');
+            } else {
+                star.classList.remove('selected');
+            }
+        });
+    }
+    playerRows.forEach(row => {
+        row.addEventListener('click', function(e) {
+            if (e.target.classList.contains('seed-toggle')) return;
+            const playerId = this.dataset.playerId;
+            if (selectedPlayers.includes(playerId)) {
+                selectedPlayers = selectedPlayers.filter(id => id !== playerId);
+                seededPlayers = seededPlayers.filter(id => id !== playerId);
+            } else {
+                if (selectedPlayers.length < requiredCount) {
+                    selectedPlayers.push(playerId);
+                }
+            }
+            updateCount();
+            updateStyles();
+        });
+    });
+    seedToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const playerId = this.dataset.playerId;
+            if (!selectedPlayers.includes(playerId)) return;
+            if (seededPlayers.includes(playerId)) {
+                seededPlayers = seededPlayers.filter(id => id !== playerId);
+            } else if (seededPlayers.length < maxSeeds) {
+                seededPlayers.push(playerId);
+            }
+            updateStyles();
+        });
+    });
+    searchInput.addEventListener('input', function() {
+        const searchTerm = searchInput.value.toLowerCase();
+        playerRows.forEach(row => {
+            const name = row.querySelector('.player-name').textContent.toLowerCase();
+            row.style.display = name.includes(searchTerm) ? '' : 'none';
+        });
+    });
+    updateCount();
+    updateStyles();
+});
+</script>
+{% endblock %} 

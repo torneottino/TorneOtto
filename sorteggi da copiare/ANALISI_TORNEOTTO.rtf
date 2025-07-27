@@ -1,0 +1,324 @@
+{\rtf1\ansi\deff0 {\fonttbl {\f0 Times New Roman;}}
+\f0\fs24 
+{\b\fs32 TORNEOTTO - ANALISI COMPLETA APPLICAZIONE\par}
+{\fs20 Data Analisi: 19 Giugno 2025\par}
+{\fs20 Stato: SERVER ATTIVO su http://localhost:5001\par}
+\par
+
+{\b\fs28 1. PANORAMICA GENERALE\par}
+{\fs20 TorneOtto è un sistema completo per la gestione di tornei di padel sviluppato con Flask e PostgreSQL.\par}
+{\fs20 L'applicazione supporta 4 tipi di torneo con sistema ELO avanzato e interface responsive.\par}
+\par
+
+{\b\fs26 ARCHITETTURA:\par}
+{\fs20 - Backend: Flask + SQLAlchemy + PostgreSQL\par}
+{\fs20 - Frontend: Jinja2 Templates + CSS moderno\par}
+{\fs20 - Pattern: Blueprint MVC Architecture\par}
+{\fs20 - Database: 9 tabelle ottimizzate\par}
+\par
+
+{\b\fs28 2. TIPI DI TORNEO SUPPORTATI\par}
+{\fs20 1. TorneOtto 30' - Tornei veloci da 30 minuti\par}
+{\fs20 2. TorneOtto 45' - Tornei standard da 45 minuti\par}
+{\fs20 3. Gironi - Fase a gironi + eliminazione diretta\par}
+{\fs20 4. Eliminazione - Eliminazione diretta e doppia\par}
+\par
+
+{\b\fs28 3. STRUTTURA DATABASE\par}
+{\b\fs22 TABELLE PRINCIPALI:\par}
+{\fs20 \par}
+{\b PLAYERS:\par}
+{\fs18 - id (INTEGER, PK)\par}
+{\fs18 - nome, cognome (VARCHAR(50), NOT NULL)\par}
+{\fs18 - telefono (VARCHAR(20))\par}
+{\fs18 - posizione (VARCHAR(20)) - Destra/Sinistra/Indifferente\par}
+{\fs18 - elo_standard (FLOAT, DEFAULT 1500.00)\par}
+{\fs18 - created_at (DATETIME)\par}
+\par
+
+{\b TOURNAMENTS:\par}
+{\fs18 - id (INTEGER, PK)\par}
+{\fs18 - nome (VARCHAR(100), NOT NULL)\par}
+{\fs18 - tipo_torneo (VARCHAR(20)) - torneotto30/45/gironi/eliminazione\par}
+{\fs18 - circolo (VARCHAR(100))\par}
+{\fs18 - note (TEXT)\par}
+{\fs18 - data_inizio, data_fine (DATE, NOT NULL)\par}
+{\fs18 - stato (VARCHAR(20), DEFAULT "Pianificato")\par}
+{\fs18 - config_json (TEXT) - Configurazioni specifiche\par}
+{\fs18 - created_at (DATETIME)\par}
+\par
+
+{\b TOURNAMENT_DAY (Polymorphic):\par}
+{\fs18 - id (INTEGER, PK)\par}
+{\fs18 - tournament_id (INTEGER, FK)\par}
+{\fs18 - data (DATE, NOT NULL)\par}
+{\fs18 - stato (VARCHAR(100))\par}
+{\fs18 - config_json (TEXT)\par}
+{\fs18 - tipo_giornata (VARCHAR(100)) - Discriminator\par}
+{\fs18 - created_at (DATETIME)\par}
+\par
+
+{\b ELIMINATION_TOURNAMENTS:\par}
+{\fs18 - id (INTEGER, PK)\par}
+{\fs18 - tournament_id (INTEGER, FK tournaments.id)\par}
+{\fs18 - tipo_eliminazione (VARCHAR(20)) - single/double\par}
+{\fs18 - num_partecipanti, num_squadre (INTEGER)\par}
+{\fs18 - metodo_accoppiamento (VARCHAR(20)) - random/seeded/manual\par}
+{\fs18 - best_of_three (BOOLEAN, DEFAULT FALSE)\par}
+{\fs18 - data_inizio (DATE)\par}
+{\fs18 - stato (VARCHAR(20), DEFAULT "Setup")\par}
+{\fs18 - config_json (TEXT)\par}
+{\fs18 - created_at (DATETIME)\par}
+\par
+
+{\b ELIMINATION_TEAMS:\par}
+{\fs18 - id (INTEGER, PK)\par}
+{\fs18 - tournament_id (INTEGER, FK elimination_tournaments.id)\par}
+{\fs18 - posizione_seed (INTEGER)\par}
+{\fs18 - is_bye (BOOLEAN, DEFAULT FALSE)\par}
+{\fs18 - eliminata (BOOLEAN, DEFAULT FALSE)\par}
+{\fs18 - sconfitte (INTEGER, DEFAULT 0)\par}
+{\fs18 - players_json (TEXT) - Array giocatori JSON\par}
+{\fs18 - created_at (DATETIME)\par}
+\par
+
+{\b ELIMINATION_MATCHES:\par}
+{\fs18 - id (INTEGER, PK)\par}
+{\fs18 - tournament_id (INTEGER, FK elimination_tournaments.id)\par}
+{\fs18 - turno, posizione_turno (INTEGER)\par}
+{\fs18 - bracket_type (VARCHAR(10), DEFAULT 'winner') - winner/loser\par}
+{\fs18 - team1_id, team2_id (INTEGER, FK elimination_teams.id)\par}
+{\fs18 - team1_score, team2_score (INTEGER)\par}
+{\fs18 - winner_team_id (INTEGER, FK elimination_teams.id)\par}
+{\fs18 - stato (VARCHAR(20), DEFAULT "Pending")\par}
+{\fs18 - data_partita (DATETIME)\par}
+{\fs18 - set_scores_json (TEXT) - Best of 3\par}
+{\fs18 - created_at (DATETIME)\par}
+\par
+
+{\b PLAYER_ELO_SYSTEM:\par}
+{\fs18 - PLAYER_TOURNAMENT_ELO: id, player_id (FK), tournament_id (FK), elo_rating (FLOAT), updated_at\par}
+{\fs18 - PLAYER_ELO_HISTORY: id, player_id (FK), tournament_id (FK), tournament_day_id (FK), old_elo (FLOAT), new_elo (FLOAT), elo_change (FLOAT), created_at\par}
+\par
+
+{\b ELIMIN_DAYS:\par}
+{\fs18 - id (INTEGER, PK)\par}
+{\fs18 - tournament_id (INTEGER, FK tournaments.id)\par}
+{\fs18 - data (DATE, NOT NULL)\par}
+{\fs18 - stato (VARCHAR(100), DEFAULT "Pianificata")\par}
+{\fs18 - created_at (DATETIME)\par}
+\par
+
+{\b\fs28 4. ROUTE API VERIFICATE\par}
+{\b\fs22 ROUTE TORNEI (48+ endpoint):\par}
+{\fs20 \par}
+{\b Gestione Generale:\par}
+{\fs18 - GET /tornei - Lista tornei\par}
+{\fs18 - GET /tornei/attivi - Tornei attivi\par}
+{\fs18 - GET /tornei/nuovo - Selezione tipo torneo\par}
+{\fs18 - GET /tornei/<id> - Vista torneo\par}
+{\fs18 - POST /tornei/<id>/delete - Elimina torneo\par}
+{\fs18 - GET /tornei/<id>/classifica - Classifiche\par}
+\par
+
+{\b TorneOtto 30':\par}
+{\fs18 - GET/POST /tornei/nuovo/torneotto30 - Crea TorneOtto30\par}
+{\fs18 - GET/POST /tornei/torneotto30/new_day - Nuova giornata\par}
+{\fs18 - GET /tornei/torneotto30/choose_method - Metodo pairing\par}
+{\fs18 - POST /tornei/torneotto30/pairing/random - Pairing casuale\par}
+{\fs18 - POST /tornei/torneotto30/pairing/elo - Pairing ELO\par}
+{\fs18 - GET/POST /tornei/torneotto30/pairing/seeded - Pairing seeded\par}
+{\fs18 - GET/POST /tornei/torneotto30/pairing/manual - Pairing manuale\par}
+{\fs18 - POST /tornei/torneotto30/save_day - Salva giornata\par}
+\par
+
+{\b TorneOtto 45' (15 route specifiche)\par}
+{\b Gironi (18 route specifiche)\par}
+{\b Eliminazione (5 route specifiche)\par}
+\par
+
+{\b Utilities:\par}
+{\fs18 - GET /tornei/giornata/<id> - Vista giornata\par}
+{\fs18 - GET/POST /tornei/giornata/<id>/risultati - Inserisci risultati\par}
+{\fs18 - GET /tornei/giornata/<id>/pdf - Export PDF\par}
+{\fs18 - GET /api/tournaments/<id>/players/<id>/stats - Statistiche\par}
+\par
+
+{\b\fs22 ROUTE GIOCATORI (5 endpoint):\par}
+{\fs18 - GET /giocatori - Lista giocatori\par}
+{\fs18 - GET /giocatori/catalogo - Catalogo giocatori\par}
+{\fs18 - GET/POST /giocatori/nuovo - Crea giocatore\par}
+{\fs18 - GET/POST /giocatori/modifica/<id> - Modifica giocatore\par}
+{\fs18 - POST /giocatori/elimina/<id> - Elimina giocatore\par}
+\par
+
+{\b\fs22 ROUTE ELIMINAZIONE VERIFICATE:\par}
+{\fs18 - GET/POST /tornei/<id>/eliminazione/seleziona-giocatori\par}
+{\fs18 - GET/POST /tornei/<id>/eliminazione/crea-tabellone\par}
+{\fs18 - GET /tornei/<id>/eliminazione/tabellone\par}
+{\fs18 - GET/POST /tornei/<id>/eliminazione/inserisci-risultati\par}
+\par
+
+{\b\fs28 5. TEMPLATE HTML (50+ file)\par}
+{\b\fs22 TEMPLATE BASE:\par}
+{\fs18 - base.html (100 righe) - Layout principale responsive\par}
+{\fs18 - home.html (154 righe) - Homepage con dashboard\par}
+{\fs18 - classifiche.html (32 righe) - Classifiche generali\par}
+\par
+
+{\b\fs22 TEMPLATE TORNEI:\par}
+{\fs18 - tournaments/list.html (197 righe) - Lista tornei\par}
+{\fs18 - tournaments/new.html (37 righe) - Selezione tipo torneo\par}
+{\fs18 - tournaments/view.html (325 righe) - Vista dettaglio torneo\par}
+{\fs18 - tournaments/types/ (4 template per tipi torneo)\par}
+{\fs18 - tournaments/elimination/ (3 template eliminazione)\par}
+{\fs18 - tournaments/gironi/ (6 template gironi)\par}
+{\fs18 - tournaments/torneotto45/ (8 template)\par}
+{\fs18 - tournaments/pdf/ (6 template per export)\par}
+\par
+
+{\b\fs22 TEMPLATE GIOCATORI:\par}
+{\fs18 - players/list.html - Lista giocatori\par}
+{\fs18 - players/catalog.html - Catalogo giocatori\par}
+{\fs18 - players/new.html - Crea giocatore\par}
+{\fs18 - players/edit.html - Modifica giocatore\par}
+\par
+
+{\b\fs22 TEMPLATE ERRORI:\par}
+{\fs18 - errors/404.html - Pagina non trovata\par}
+{\fs18 - errors/500.html - Errore server (CREATO)\par}
+\par
+
+{\b\fs28 6. CSS DESIGN SYSTEM\par}
+{\b\fs22 CSS STRUTTURATI:\par}
+{\fs18 - static/css/style.css - Stili base globali\par}
+{\fs18 - static/css/mobile.css - Responsive mobile-first\par}
+{\fs18 - static/css/print.css - Stili per stampa\par}
+{\fs18 - static/css/templates/ (7 CSS specifici per tornei)\par}
+\par
+
+{\b\fs22 DESIGN SYSTEM VERIFICATO:\par}
+{\fs18 - Mobile-first responsive design\par}
+{\fs18 - Variabili CSS moderne (--space-*, --color-*, --radius-*)\par}
+{\fs18 - Gradient backgrounds e smooth transitions\par}
+{\fs18 - Grid layouts e modern buttons con hover effects\par}
+{\fs18 - Card-based design e consistent spacing\par}
+\par
+
+{\b\fs28 7. LOGGING & DEBUG SYSTEM\par}
+{\b\fs22 SISTEMA LOG CONFIGURATO:\par}
+{\fs18 - logs/app.log - Log principale (INFO+)\par}
+{\fs18 - logs/errors.log - Solo errori (ERROR+)\par}
+{\fs18 - logs/debug.log - Debug completo (DEBUG+)\par}
+\par
+
+{\b\fs22 FEATURES LOG IMPLEMENTATE:\par}
+{\fs18 - Rotating file handlers (10MB, 5 backup)\par}
+{\fs18 - Structured logging con timestamp\par}
+{\fs18 - Request/Response logging completo\par}
+{\fs18 - Exception tracking con stack trace\par}
+{\fs18 - IP + User Agent tracking\par}
+{\fs18 - Performance monitoring\par}
+\par
+
+{\b\fs22 ERROR HANDLERS:\par}
+{\fs18 - 404 - Pagina non trovata con log dettagliato\par}
+{\fs18 - 500 - Errore server con rollback DB\par}
+{\fs18 - Exception - Catch-all con logging completo\par}
+\par
+
+{\b\fs28 8. ALGORITMI PAIRING\par}
+{\b\fs22 QUATTRO ALGORITMI SUPPORTATI:\par}
+{\fs20 \par}
+{\b Random Pairing:\par}
+{\fs18 - Accoppiamento casuale dei giocatori\par}
+{\fs18 - Evita ripetizioni eccessive\par}
+{\fs18 - Bilanciamento posizioni (D/S)\par}
+\par
+
+{\b ELO-Based Pairing:\par}
+{\fs18 - Accoppiamento basato su rating ELO\par}
+{\fs18 - Partite equilibrate per livello\par}
+{\fs18 - Calcolo dinamico delle variazioni\par}
+\par
+
+{\b Seeded Pairing:\par}
+{\fs18 - Accoppiamento con giocatori "seed"\par}
+{\fs18 - Protezione dei top player\par}
+{\fs18 - Distribuzione equilibrata\par}
+\par
+
+{\b Manual Pairing:\par}
+{\fs18 - Controllo completo manuale\par}
+{\fs18 - Interface drag & drop\par}
+{\fs18 - Validazione automatica\par}
+\par
+
+{\b\fs28 9. SISTEMA ELO AVANZATO\par}
+{\b\fs22 CARATTERISTICHE:\par}
+{\fs18 - Base Rating: 1500 punti di partenza\par}
+{\fs18 - K-Factor: 32 (configurabile)\par}
+{\fs18 - Storico Completo: Tracking di ogni variazione\par}
+{\fs18 - Per Torneo: ELO specifico per ogni torneo\par}
+{\fs18 - Progressivo: Calcolo dinamico durante il torneo\par}
+\par
+
+{\b\fs22 FORMULA ELO:\par}
+{\fs18 expected_score = 1 / (1 + 10**((team2_elo - team1_elo) / 400))\par}
+{\fs18 actual_score = 1 if result == 'win' else 0\par}
+{\fs18 elo_change = k_factor * (actual_score - expected_score)\par}
+\par
+
+{\b\fs28 10. STATO SERVER ATTUALE\par}
+{\b\fs22 SERVER ATTIVO:\par}
+{\fs18 - RUNNING su http://localhost:5001\par}
+{\fs18 - HTTP/1.1 200 OK\par}
+{\fs18 - Database PostgreSQL connesso\par}
+{\fs18 - Tutte le dipendenze installate\par}
+{\fs18 - Logging attivo e funzionante\par}
+\par
+
+{\b\fs22 FEATURES OPERATIVE:\par}
+{\fs18 - Gestione Giocatori completa\par}
+{\fs18 - 4 Tipi Torneo (TorneOtto30/45, Gironi, Eliminazione)\par}
+{\fs18 - Sistema ELO avanzato con storico\par}
+{\fs18 - Pairing algorithms (Random, ELO, Seeded, Manual)\par}
+{\fs18 - Export PDF con ReportLab\par}
+{\fs18 - Eliminazione Diretta/Doppia con bracket view\par}
+{\fs18 - Responsive UI mobile-friendly\par}
+{\fs18 - Sistema Log professionale\par}
+\par
+
+{\b\fs28 11. CONCLUSIONI\par}
+{\b\fs22 APPLICAZIONE COMPLETAMENTE FUNZIONALE:\par}
+{\fs20 \par}
+{\fs18 - Struttura: Robusta e scalabile\par}
+{\fs18 - Database: PostgreSQL con 9 tabelle ottimizzate\par}
+{\fs18 - Route: 53+ endpoint tutti verificati\par}
+{\fs18 - Templates: 50+ file HTML responsive\par}
+{\fs18 - CSS: Design system moderno\par}
+{\fs18 - Logging: Sistema debug avanzato\par}
+{\fs18 - Server: Attivo su porta 5001\par}
+\par
+
+{\b\fs22 MANUTENZIONE SUGGERITA:\par}
+{\fs18 1. Aggiornare pip a versione più recente\par}
+{\fs18 2. Monitorare logs per ottimizzazioni\par}
+{\fs18 3. Backup database periodici\par}
+{\fs18 4. Test delle nuove features eliminazione\par}
+\par
+
+{\b\fs22 PRONTO PER L'USO:\par}
+{\fs18 L'applicazione TorneOtto è completamente operativa e pronta per gestire tornei di padel con:\par}
+{\fs18 - Gestione completa giocatori\par}
+{\fs18 - 4 modalità di torneo\par}
+{\fs18 - Sistema ELO professionale\par}
+{\fs18 - Interface utente moderna\par}
+{\fs18 - Logging e debug avanzati\par}
+\par
+
+{\b\fs24 ACCESSO: http://localhost:5001\par}
+\par
+
+{\b\fs28 FINE ANALISI - TorneOtto è pronto per l'uso!\par}
+} 

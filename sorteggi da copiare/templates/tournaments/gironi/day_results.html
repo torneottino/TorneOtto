@@ -1,0 +1,823 @@
+{% extends "base.html" %}
+
+{% block head_extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/templates/torneotto_mobile_dark_css.css') }}">
+    <style>
+        .round-robin-container {
+            margin-bottom: var(--space-xl);
+        }
+
+        .girone-card {
+            background: #313236;
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .girone-header {
+            color: #ffd700;
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+            text-align: center;
+            padding-bottom: var(--space-xs);
+            border-bottom: 1px solid #444;
+        }
+
+        .match-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-sm);
+            margin-bottom: var(--space-xs);
+            border-radius: var(--radius-md);
+            background: #2c2c2c;
+        }
+
+        .match-teams {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--text-primary);
+        }
+
+        .team-name {
+            font-size: var(--font-size-sm);
+            min-width: 120px;
+        }
+
+        .vs-text {
+            color: #ffd700;
+            font-weight: 600;
+            margin: 0 var(--space-xs);
+        }
+
+        .score-inputs {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .score-input {
+            width: 60px;
+            padding: var(--space-xs);
+            border: 1px solid #444;
+            border-radius: var(--radius-md);
+            background: #2c2c2c;
+            color: var(--text-primary);
+            text-align: center;
+            font-size: var(--font-size-sm);
+        }
+
+        .score-separator {
+            color: #ffd700;
+            font-weight: 600;
+        }
+
+        .semifinals-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: var(--space-xl);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .semifinale-card {
+            background: #313236;
+            border-radius: var(--radius-lg);
+            padding: var(--space-sm);
+            box-shadow: var(--shadow-md);
+            border: 2px solid #444;
+            min-width: 350px;
+            max-width: 600px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 13px;
+            margin-bottom: var(--space-xl);
+        }
+
+        .semifinale-header {
+            color: #ffd700;
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+            text-align: center;
+        }
+
+        .finale-primo-posto {
+            color: #1f6feb;
+            font-size: calc(var(--font-size-lg) + 3px);
+            font-weight: 700;
+            margin-bottom: var(--space-xs);
+            text-align: center;
+            padding: var(--space-xs) var(--space-sm);
+            border: 2px solid #1f6feb;
+            border-radius: var(--radius-md);
+            background: rgba(31, 111, 235, 0.1);
+        }
+
+        .finale-terzo-posto {
+            color: #28a745;
+            font-size: calc(var(--font-size-lg) + 3px);
+            font-weight: 700;
+            margin-bottom: var(--space-xs);
+            text-align: center;
+            padding: var(--space-xs) var(--space-sm);
+            border: 2px solid #28a745;
+            border-radius: var(--radius-md);
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        .match-result {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .team-row {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-xs);
+            border-radius: var(--radius-md);
+        }
+
+        .team-players {
+            flex: 1;
+            color: var(--text-primary);
+            font-size: calc(var(--font-size-sm) + 3px);
+            text-align: center;
+            padding: var(--space-xs) 0;
+        }
+
+        .vs-row {
+            color: #ffd700;
+            font-weight: 600;
+            text-align: center;
+            margin: var(--space-xs) 0;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+            align-items: center;
+            margin-top: var(--space-xl);
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .button-group {
+                flex-direction: row;
+                gap: var(--space-lg);
+            }
+        }
+
+        .action-button, .action-button.primary, .action-button.secondary {
+            font-size: 13px;
+            padding: 12px 20px;
+            color: #fff;
+            margin: 10px;
+        }
+
+        .action-button.tertiary {
+            background: #444444;
+            border-color: #444444;
+        }
+
+        .action-button.tertiary:hover {
+            background: #555555;
+            border-color: #555555;
+        }
+
+        .action-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .phase-title {
+            color: #ffd700;
+            font-size: 1.1em;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0.5em;
+            padding-bottom: var(--space-xs);
+            border-bottom: 2px solid #ffd700;
+        }
+
+        .group-standings {
+            background: #313236;
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        .standing-header {
+            color: #ffd700;
+            font-size: var(--font-size-md);
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+            text-align: center;
+        }
+
+        .standing-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .standing-table th,
+        .standing-table td {
+            padding: var(--space-xs);
+            text-align: center;
+            border-bottom: 1px solid #444;
+        }
+
+        .standing-table th {
+            color: #ffd700;
+            font-weight: 600;
+        }
+
+        .standing-table td {
+            color: var(--text-primary);
+        }
+
+        .qualified-team {
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 3px solid #ffd700;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .ranking-container {
+            background: #313236;
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
+            margin-top: var(--space-xl);
+            box-shadow: var(--shadow-md);
+        }
+
+        .ranking-title {
+            color: #ffd700;
+            font-size: 1.1em;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0.5em;
+            padding-bottom: var(--space-xs);
+            border-bottom: 1px solid #444;
+        }
+
+        .ranking-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: var(--space-sm);
+            margin-bottom: var(--space-xs);
+            border-radius: var(--radius-md);
+            background: #2c2c2c;
+        }
+
+        .ranking-position {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            margin-right: var(--space-md);
+            width: 30px;
+            text-align: center;
+        }
+
+        .ranking-position.first {
+            color: #ffd700;
+        }
+
+        .ranking-position.second {
+            color: #c0c0c0;
+        }
+
+        .ranking-position.third {
+            color: #cd7f32;
+        }
+
+        .ranking-players {
+            color: var(--text-primary);
+            font-size: var(--font-size-sm);
+        }
+
+        /* Stili per l'accessibilità */
+        .score-input:focus-visible {
+            outline: 2px solid var(--accent-secondary);
+            outline-offset: 2px;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* Stili per il riepilogo classifiche gironi */
+        .group-standings-summary {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .summary-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .gironi-summary-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .girone-summary-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .girone-summary-header {
+            background: var(--accent-primary);
+            color: white;
+            padding: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .standing-list {
+            padding: 1rem;
+        }
+
+        .standing-row {
+            display: grid;
+            grid-template-columns: 30px 1fr 60px 50px auto;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.85rem;
+        }
+
+        .standing-row:last-child {
+            border-bottom: none;
+        }
+
+        .standing-row.qualified {
+            background: linear-gradient(90deg, rgba(83, 165, 81, 0.1) 0%, transparent 100%);
+            border-left: 3px solid var(--accent-secondary);
+            padding-left: 0.75rem;
+        }
+
+        .standing-position {
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .standing-team {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .standing-points {
+            font-weight: 600;
+            color: var(--accent-primary);
+            text-align: center;
+        }
+
+        .standing-diff {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .qualified-badge {
+            font-size: 0.7rem;
+            background: var(--accent-secondary);
+            color: white;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .gironi-summary-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .standing-row {
+                grid-template-columns: 25px 1fr 45px 40px auto;
+                gap: 0.3rem;
+                font-size: 0.8rem;
+            }
+            
+                         .qualified-badge {
+                 font-size: 0.65rem;
+                 padding: 0.15rem 0.3rem;
+             }
+         }
+
+        /* Stili per il riepilogo qualificazioni */
+        .qualifications-recap {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .recap-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            text-align: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .positions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .position-group {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .position-header {
+            font-weight: 600;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .position-teams {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .position-teams small {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .positions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <h1 class="page-title">{{ tournament.nome }} - Giornata {{ day.data.strftime('%d/%m/%Y') }}</h1>
+    
+    <!-- Fase Round Robin -->
+    {% if day.stato == "inserire risultati" %}
+    <div class="phase-title">Fase Round Robin - Inserimento Risultati</div>
+    
+    <form id="round-robin-form" method="POST" action="{{ url_for('tournaments.save_gironi_round_robin', tournament_id=tournament.id, day_id=day.id) }}">
+        <div class="round-robin-container">
+            {% for girone_num in range(1, (gironi|length) + 1) %}
+            <div class="girone-card">
+                <div class="girone-header">Girone {{ girone_num }}</div>
+                
+                {% for match in matches %}
+                    {% if match['girone'] == girone_num %}
+                    <div class="match-row">
+                        <div class="match-teams">
+                            <span class="team-name">{{ players_by_id[match['team1'][0]].cognome }}/{{ players_by_id[match['team1'][1]].cognome }}</span>
+                            <span class="vs-text">vs</span>
+                            <span class="team-name">{{ players_by_id[match['team2'][0]].cognome }}/{{ players_by_id[match['team2'][1]].cognome }}</span>
+                        </div>
+                        <div class="score-inputs">
+                            <input type="number" name="score_{{ match['id'] }}_a" class="score-input" min="0" max="10" 
+                                   value="{{ results.get(match['id']|string, {}).get('squadra_a', '') }}" required>
+                            <span class="score-separator">-</span>
+                            <input type="number" name="score_{{ match['id'] }}_b" class="score-input" min="0" max="10" 
+                                   value="{{ results.get(match['id']|string, {}).get('squadra_b', '') }}" required>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="button-container">
+            <div class="button-group">
+                <button type="submit" class="action-button primary">AVANTI - CALCOLA QUALIFICATI</button>
+                <a href="{{ url_for('tournaments.view_tournament', tournament_id=tournament.id) }}" class="action-button tertiary">TORNA AL TORNEO</a>
+            </div>
+        </div>
+    </form>
+    
+    <!-- Fase Semifinali -->
+    {% elif day.stato == "semifinali" %}
+    <div class="phase-title">Semifinali</div>
+    
+    <!-- Riepilogo Classifiche Gironi -->
+    {% set classifiche_gironi = day.get_group_standings() %}
+    {% if classifiche_gironi %}
+    <div class="group-standings-summary">
+        <div class="summary-title">Classifiche Gironi - Qualificazioni</div>
+        <div class="gironi-summary-container">
+            {% for classifica_girone in classifiche_gironi %}
+            <div class="girone-summary-card">
+                <div class="girone-summary-header">CLASSIFICA GIRONE {{ loop.index }}</div>
+                <div class="standing-list">
+                    {% for team_stats in classifica_girone %}
+                    {% set is_qualified = false %}
+                    {% if gironi|length == 2 and loop.index <= 2 %}
+                        {% set is_qualified = true %}
+                    {% elif gironi|length == 3 and loop.index == 1 %}
+                        {% set is_qualified = true %}
+                    {% elif gironi|length == 4 and loop.index == 1 %}
+                        {% set is_qualified = true %}
+                    {% endif %}
+                    
+                    <div class="standing-row {% if is_qualified %}qualified{% endif %}">
+                        <div class="standing-position">{{ loop.index }}°</div>
+                        <div class="standing-team">{{ players_by_id[team_stats['team'][0]].cognome }}/{{ players_by_id[team_stats['team'][1]].cognome }}</div>
+                        <div class="standing-points">{{ team_stats['punti'] }} pt</div>
+                        <div class="standing-diff">{{ '+' if team_stats['differenza_games'] > 0 else '' }}{{ team_stats['differenza_games'] }}</div>
+                        {% if is_qualified %}
+                        <div class="qualified-badge">QUALIFICATI</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    {% set semifinali = day.get_semifinals() %}
+    {% if semifinali %}
+    <form id="semifinals-form" method="POST" action="{{ url_for('tournaments.save_gironi_semifinals', tournament_id=tournament.id, day_id=day.id) }}">
+        <div class="semifinals-container">
+            {% for semifinale in semifinali %}
+            <div class="semifinale-card">
+                <div class="semifinale-header">Semifinale {{ loop.index }}</div>
+                <div class="match-result">
+                    <div class="team-row">
+                        <div class="team-players">{{ players_by_id[semifinale['squadra_a'][0]].nome }} {{ players_by_id[semifinale['squadra_a'][0]].cognome }}<br>{{ players_by_id[semifinale['squadra_a'][1]].nome }} {{ players_by_id[semifinale['squadra_a'][1]].cognome }}</div>
+                        <div class="score-inputs">
+                            <input type="number" name="risultato_semifinale_{{ loop.index }}_a" class="score-input" min="0" max="10" 
+                                   value="{{ semifinale['risultato']['squadra_a'] if semifinale['risultato'] else '' }}" required>
+                        </div>
+                    </div>
+                    <div class="vs-row">VS</div>
+                    <div class="team-row">
+                        <div class="team-players">{{ players_by_id[semifinale['squadra_b'][0]].nome }} {{ players_by_id[semifinale['squadra_b'][0]].cognome }}<br>{{ players_by_id[semifinale['squadra_b'][1]].nome }} {{ players_by_id[semifinale['squadra_b'][1]].cognome }}</div>
+                        <div class="score-inputs">
+                            <input type="number" name="risultato_semifinale_{{ loop.index }}_b" class="score-input" min="0" max="10" 
+                                   value="{{ semifinale['risultato']['squadra_b'] if semifinale['risultato'] else '' }}" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    
+        <div class="button-container">
+            <div class="button-group">
+                <button type="submit" class="action-button primary">AVANTI - ALLE FINALI</button>
+                <a href="{{ url_for('tournaments.view_tournament', tournament_id=tournament.id) }}" class="action-button tertiary">TORNA AL TORNEO</a>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+    
+    <!-- Fase Finali -->
+    {% elif day.stato == "finali" %}
+    <div class="phase-title">Finali</div>
+    
+    <!-- Riepilogo Qualificazioni -->
+    {% set classifiche_gironi = day.get_group_standings() %}
+    {% if classifiche_gironi %}
+    <div class="qualifications-recap">
+        <div class="recap-title">Riepilogo Qualificazioni</div>
+        <div class="positions-grid">
+            <div class="position-group">
+                <div class="position-header">🏆 FINALE 1° POSTO</div>
+                <div class="position-teams">Vincitori Semifinali</div>
+            </div>
+            <div class="position-group">
+                <div class="position-header">🥉 FINALE 3° POSTO</div>
+                <div class="position-teams">Perdenti Semifinali</div>
+            </div>
+            <div class="position-group">
+                <div class="position-header">📊 5°-6° POSTO</div>
+                <div class="position-teams">Non qualificati alle semifinali<br><small>(Ordinati per differenza games)</small></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% set finali = day.get_finals() %}
+    {% if finali %}
+    <form id="finals-form" method="POST" action="{{ url_for('tournaments.save_gironi_finals', tournament_id=tournament.id, day_id=day.id) }}">
+        <div class="semifinals-container">
+            <!-- Finale 1° Posto -->
+            <div class="semifinale-card">
+                <div class="finale-primo-posto">FINALE 1° POSTO</div>
+                <div class="match-result">
+                    <div class="team-row">
+                        <div class="team-players">
+                            {{ players_by_id[finali['primo_posto']['squadra_a'][0]].nome }} {{ players_by_id[finali['primo_posto']['squadra_a'][0]].cognome }}<br>{{ players_by_id[finali['primo_posto']['squadra_a'][1]].nome }} {{ players_by_id[finali['primo_posto']['squadra_a'][1]].cognome }}
+                        </div>
+                        <input type="number" name="risultato_finale_1_a" class="score-input" min="0" max="10" value="{{ finali['primo_posto']['risultato']['squadra_a'] if finali['primo_posto']['risultato'] else '' }}" required>
+                    </div>
+                    <div class="vs-row">VS</div>
+                    <div class="team-row">
+                        <div class="team-players">
+                            {{ players_by_id[finali['primo_posto']['squadra_b'][0]].nome }} {{ players_by_id[finali['primo_posto']['squadra_b'][0]].cognome }}<br>{{ players_by_id[finali['primo_posto']['squadra_b'][1]].nome }} {{ players_by_id[finali['primo_posto']['squadra_b'][1]].cognome }}
+                        </div>
+                        <input type="number" name="risultato_finale_1_b" class="score-input" min="0" max="10" value="{{ finali['primo_posto']['risultato']['squadra_b'] if finali['primo_posto']['risultato'] else '' }}" required>
+                    </div>
+                </div>
+            </div>
+            <!-- Finale 3° Posto -->
+            <div class="semifinale-card">
+                <div class="finale-terzo-posto">FINALE 3° POSTO</div>
+                <div class="match-result">
+                    <div class="team-row">
+                        <div class="team-players">
+                            {{ players_by_id[finali['terzo_posto']['squadra_a'][0]].nome }} {{ players_by_id[finali['terzo_posto']['squadra_a'][0]].cognome }}<br>{{ players_by_id[finali['terzo_posto']['squadra_a'][1]].nome }} {{ players_by_id[finali['terzo_posto']['squadra_a'][1]].cognome }}
+                        </div>
+                        <input type="number" name="risultato_finale_3_a" class="score-input" min="0" max="10" value="{{ finali['terzo_posto']['risultato']['squadra_a'] if finali['terzo_posto']['risultato'] else '' }}" required>
+                    </div>
+                    <div class="vs-row">VS</div>
+                    <div class="team-row">
+                        <div class="team-players">
+                            {{ players_by_id[finali['terzo_posto']['squadra_b'][0]].nome }} {{ players_by_id[finali['terzo_posto']['squadra_b'][0]].cognome }}<br>{{ players_by_id[finali['terzo_posto']['squadra_b'][1]].nome }} {{ players_by_id[finali['terzo_posto']['squadra_b'][1]].cognome }}
+                        </div>
+                        <input type="number" name="risultato_finale_3_b" class="score-input" min="0" max="10" value="{{ finali['terzo_posto']['risultato']['squadra_b'] if finali['terzo_posto']['risultato'] else '' }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="button-container">
+            <div class="button-group">
+                <button type="submit" class="action-button primary">CONFERMA E CHIUDI GIORNATA</button>
+                <a href="{{ url_for('tournaments.view_tournament', tournament_id=tournament.id) }}" class="action-button tertiary">TORNA AL TORNEO</a>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+    
+    <!-- Giornata Completata -->
+    {% elif day.stato == "Completata" %}
+    <div class="phase-title">Giornata Completata</div>
+    
+    {% set classifica = day.get_ranking() %}
+    {% if classifica %}
+    <div class="ranking-container">
+        <div class="ranking-title">Classifica Finale</div>
+        <ol class="ranking-list">
+            {% for position in classifica %}
+            <li class="ranking-item">
+                <div class="ranking-position {% if loop.index == 1 %}first{% elif loop.index == 2 %}second{% elif loop.index == 3 %}third{% endif %}">{{ loop.index }}°</div>
+                <div class="ranking-players">{{ players_by_id[position[0]].nome }} {{ players_by_id[position[0]].cognome }} - {{ players_by_id[position[1]].nome }} {{ players_by_id[position[1]].cognome }}</div>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+    {% endif %}
+    
+    <!-- Elenco partite giocate -->
+    {% set matches = day.get_matches() %}
+    {% set results = day.get_results() %}
+    {% set semifinali = day.get_semifinals() %}
+    {% set finali = day.get_finals() %}
+    
+    <div class="matches-summary">
+        <div class="ranking-title" style="margin-top: 30px;">Partite Giocate</div>
+        
+        <!-- Round Robin -->
+        {% if matches %}
+        <div class="match-section">
+            <h4 style="color: #ffd700; margin: 20px 0 10px 0;">Round Robin</h4>
+            {% for match in matches %}
+            <div style="display: flex; justify-content: space-between; padding: 5px 10px; margin: 5px 0; background: #2c2c2c; border-radius: 5px; font-size: 14px;">
+                <span><strong>Girone {{ match['girone'] }}</strong>: {{ players_by_id[match['team1'][0]].cognome }}/{{ players_by_id[match['team1'][1]].cognome }} vs {{ players_by_id[match['team2'][0]].cognome }}/{{ players_by_id[match['team2'][1]].cognome }}</span>
+                <span style="color: #53a551; font-weight: bold;">
+                    {% if match['id']|string in results %}
+                    {{ results[match['id']|string]['squadra_a'] }} - {{ results[match['id']|string]['squadra_b'] }}
+                    {% else %}
+                    - - -
+                    {% endif %}
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="match-section">
+            <h4 style="color: #ffd700; margin: 20px 0 10px 0;">Round Robin</h4>
+            <div style="padding: 10px; text-align: center; color: #888;">
+                Nessuna partita round robin trovata
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Semifinali -->
+        {% if semifinali %}
+        <div class="match-section">
+            <h4 style="color: #ffd700; margin: 20px 0 10px 0;">Semifinali</h4>
+            {% for semifinale in semifinali %}
+            <div style="display: flex; justify-content: space-between; padding: 5px 10px; margin: 5px 0; background: #2c2c2c; border-radius: 5px; font-size: 14px;">
+                <span>{{ players_by_id[semifinale['squadra_a'][0]].cognome }}/{{ players_by_id[semifinale['squadra_a'][1]].cognome }} vs {{ players_by_id[semifinale['squadra_b'][0]].cognome }}/{{ players_by_id[semifinale['squadra_b'][1]].cognome }}</span>
+                <span style="color: #53a551; font-weight: bold;">
+                    {% if semifinale['risultato'] %}
+                    {{ semifinale['risultato']['squadra_a'] }} - {{ semifinale['risultato']['squadra_b'] }}
+                    {% else %}
+                    - - -
+                    {% endif %}
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- Finali -->
+        {% if finali %}
+        <div class="match-section">
+            <h4 style="color: #ffd700; margin: 20px 0 10px 0;">Finali</h4>
+            <div style="display: flex; justify-content: space-between; padding: 5px 10px; margin: 5px 0; background: #2c2c2c; border-radius: 5px; font-size: 14px;">
+                <span>🏆 1° posto: {{ players_by_id[finali['primo_posto']['squadra_a'][0]].cognome }}/{{ players_by_id[finali['primo_posto']['squadra_a'][1]].cognome }} vs {{ players_by_id[finali['primo_posto']['squadra_b'][0]].cognome }}/{{ players_by_id[finali['primo_posto']['squadra_b'][1]].cognome }}</span>
+                <span style="color: #53a551; font-weight: bold;">
+                    {% if finali['primo_posto']['risultato'] %}
+                    {{ finali['primo_posto']['risultato']['squadra_a'] }} - {{ finali['primo_posto']['risultato']['squadra_b'] }}
+                    {% else %}
+                    - - -
+                    {% endif %}
+                </span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 5px 10px; margin: 5px 0; background: #2c2c2c; border-radius: 5px; font-size: 14px;">
+                <span>🥉 3° posto: {{ players_by_id[finali['terzo_posto']['squadra_a'][0]].cognome }}/{{ players_by_id[finali['terzo_posto']['squadra_a'][1]].cognome }} vs {{ players_by_id[finali['terzo_posto']['squadra_b'][0]].cognome }}/{{ players_by_id[finali['terzo_posto']['squadra_b'][1]].cognome }}</span>
+                <span style="color: #53a551; font-weight: bold;">
+                    {% if finali['terzo_posto']['risultato'] %}
+                    {{ finali['terzo_posto']['risultato']['squadra_a'] }} - {{ finali['terzo_posto']['risultato']['squadra_b'] }}
+                    {% else %}
+                    - - -
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="button-container">
+        <div class="button-group">
+            <a href="{{ url_for('tournaments.export_gironi_results_pdf', tournament_id=tournament.id, day_id=day.id) }}" class="action-button secondary">ESPORTA PDF</a>
+            <a href="{{ url_for('tournaments.view_tournament', tournament_id=tournament.id) }}" class="action-button tertiary">TORNA AL TORNEO</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

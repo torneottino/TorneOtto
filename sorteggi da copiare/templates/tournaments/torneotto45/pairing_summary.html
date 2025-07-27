@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container" style="margin-top: 100px;">
+    <h1 class="page-title">Riepilogo Semifinali</h1>
+    {# <h2 class="subtitle">{{ tournament.nome }} - {{ tournament.circolo }}</h2> #}
+    
+    <div class="tournament-info">
+        {# <div class="tournament-name">{{ tournament.nome }}</div> #}
+        <div class="tournament-date">Giornata del {{ date }}</div>
+    </div>
+    
+    <div class="semifinals-container" style="margin-top: 0;">
+        {# <h3 class="section-title">Semifinali</h3> #}
+        <div class="semifinale-row">
+            <div class="semifinale-title">Semifinale 1</div>
+            <div class="semifinale-card-unique center-semifinale">
+                <div class="semifinale-pair-row">{{ teams[0][0].cognome }} {{ teams[0][0].nome }} / {{ teams[0][1].cognome }} {{ teams[0][1].nome }}</div>
+                <div class="semifinale-vs-centered">vs</div>
+                <div class="semifinale-pair-row">{{ teams[1][0].cognome }} {{ teams[1][0].nome }} / {{ teams[1][1].cognome }} {{ teams[1][1].nome }}</div>
+            </div>
+        </div>
+        <div class="semifinale-row">
+            <div class="semifinale-title">Semifinale 2</div>
+            <div class="semifinale-card-unique center-semifinale">
+                <div class="semifinale-pair-row">{{ teams[2][0].cognome }} {{ teams[2][0].nome }} / {{ teams[2][1].cognome }} {{ teams[2][1].nome }}</div>
+                <div class="semifinale-vs-centered">vs</div>
+                <div class="semifinale-pair-row">{{ teams[3][0].cognome }} {{ teams[3][0].nome }} / {{ teams[3][1].cognome }} {{ teams[3][1].nome }}</div>
+            </div>
+        </div>
+    </div>
+    
+    <form action="{{ url_for('tournaments.save_torneotto45_day_from_pairing', tournament_id=tournament.id) }}" method="post" class="confirmation-form">
+        <input type="hidden" name="date" value="{{ date }}">
+        <input type="hidden" name="teams_json" value="{{ teams_json }}">
+        <input type="hidden" name="tournament_id" value="{{ tournament.id }}">
+        
+        <div class="button-container">
+            <button type="submit" class="action-button">
+                <i class="fas fa-save"></i>
+                SALVA GIORNATA
+            </button>
+            <a href="{{ url_for('tournaments.new_torneotto45_day', tournament_id=tournament.id) }}" class="back-button">
+                <i class="fas fa-times"></i>
+                ANNULLA
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+.main-container {
+    padding: 0 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    color: white;
+}
+
+.page-title {
+    font-size: calc(1.5em - 2px);
+    color: #ffd700;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 1.2em;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.tournament-info {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.tournament-name {
+    font-size: calc(1.1em + 3px);
+    color: #ffd700;
+    font-weight: 600;
+    margin-bottom: 1px;
+}
+
+.tournament-date {
+    font-size: calc(1em + 2px);
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.section-title {
+    font-size: 1.2em;
+    color: #ffd700;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #444;
+    padding-bottom: 5px;
+}
+
+.semifinals-container {
+    margin-bottom: 10px;
+}
+
+.semifinale-row {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.semifinale-title {
+    color: #ffd700;
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 7px;
+    text-align: center;
+}
+
+.center-semifinale {
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.semifinale-card-unique {
+    background: #232323;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    padding: 18px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 350px;
+    max-width: 100%;
+}
+
+.semifinale-pair-row {
+    font-size: 1.08em;
+    color: #fff;
+    font-weight: 500;
+    text-align: center;
+}
+
+.semifinale-vs-centered {
+    color: #ffd700;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: center;
+    margin: 4px 0;
+}
+
+@media (max-width: 400px) {
+    .semifinale-card-unique {
+        min-width: 0;
+        width: 100%;
+        padding: 12px 2px;
+    }
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 0px;
+    margin-bottom: 100px;
+}
+
+.action-button, .back-button {
+    border-radius: 10px;
+    padding: 12px 0;
+    width: 250px;
+    min-width: 250px;
+    max-width: 250px;
+    justify-content: center;
+    text-align: center;
+}
+
+.action-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.action-button:hover {
+    background-color: #218838;
+}
+
+.back-button {
+    background-color: #444;
+    color: white;
+    border: none;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background-color: #555;
+}
+</style>
+{% endblock %} 

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+    <h1>Modifica Torneo</h1>
+    <form method="POST">
+        <div class="form-group">
+            <label for="nome">Nome Torneo *</label>
+            <input type="text" id="nome" name="nome" class="form-input" value="{{ torneo.nome }}" required>
+        </div>
+        <div class="form-group">
+            <label for="circolo">Circolo</label>
+            <input type="text" id="circolo" name="circolo" class="form-input" value="{{ torneo.circolo }}">
+        </div>
+        <div class="form-group">
+            <label for="note">Note</label>
+            <textarea id="note" name="note" class="form-input" rows="3">{{ torneo.note }}</textarea>
+        </div>
+        <div class="button-group">
+            <button type="submit" class="action-button">Salva Modifiche</button>
+            <a href="{{ url_for('tournaments.view_tournament', tournament_id=torneo.id) }}" class="action-button secondary">Annulla</a>
+        </div>
+    </form>
+</div>
+{% endblock %} 

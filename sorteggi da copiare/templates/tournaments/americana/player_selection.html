@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block head_extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/templates/tournament_creation.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="tournament-creation-container">
+    <div class="tournament-header">
+        <h1 class="tournament-title">{{ tournament.nome }} - All'Americana</h1>
+        <div class="tournament-info">
+            <div class="tournament-info-item">
+                <i class="fas fa-flag-usa"></i>
+                <span>{{ config.num_coppie }} coppie - {{ config.num_coppie * 2 }} giocatori</span>
+            </div>
+            <div class="tournament-info-item">
+                <i class="fas fa-volleyball-ball"></i>
+                <span>{{ config.num_campi }} campi disponibili</span>
+            </div>
+            <div class="tournament-info-item">
+                <i class="fas fa-trophy"></i>
+                <span>Tipo: {{ 'Semplice' if config.tipo_torneo == 'semplice' else 'Round Robin Completo' }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <form method="POST" action="{{ url_for('tournaments.americana_players', tournament_id=tournament.id) }}" class="tournament-form">
+        <div class="tournament-details">
+            <div class="tournament-detail-item">
+                <i class="fas fa-users"></i>
+                <div class="form-group">
+                    <label>Selezione Giocatori</label>
+                    <p style="margin-bottom: 20px; color: #ccc;">
+                        Scegli come selezionare i giocatori per il torneo.
+                    </p>
+                    
+                    {% if config.origine_giocatori == 'caricati' %}
+                        <div class="selection-option">
+                            <i class="fas fa-database"></i>
+                            <div>
+                                <h3>Giocatori già Caricati</h3>
+                                <p>Seleziona i giocatori dal database esistente</p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="selection-option">
+                            <i class="fas fa-edit"></i>
+                            <div>
+                                <h3>Inserimento Manuale</h3>
+                                <p>Inserisci manualmente i nomi dei giocatori</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="tournament-actions">
+            <button type="submit" class="tournament-button primary">
+                <i class="fas fa-arrow-right"></i>
+                CONTINUA
+            </button>
+            
+            <a href="{{ url_for('tournaments.view_tournament', tournament_id=tournament.id) }}" class="tournament-button secondary">
+                <i class="fas fa-times"></i>
+                ANNULLA
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+.selection-option {
+    display: flex;
+    align-items: center;
+    background: #2a2a2a;
+    border: 2px solid #444;
+    border-radius: 10px;
+    padding: 20px;
+    gap: 15px;
+}
+
+.selection-option i {
+    font-size: 2em;
+    color: #28a745;
+}
+
+.selection-option h3 {
+    margin: 0 0 5px 0;
+    color: #fff;
+}
+
+.selection-option p {
+    margin: 0;
+    color: #ccc;
+    font-size: 0.9em;
+}
+</style>
+{% endblock %} 

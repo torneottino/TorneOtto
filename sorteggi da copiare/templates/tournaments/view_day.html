@@ -1,0 +1,444 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+    <h1 class="page-title">Dettagli Giornata</h1>
+    <h2 class="subtitle">{{ tournament.nome }}</h2>
+    <h3 class="tournament-date">Giornata del {{ day.data.strftime('%d/%m/%Y') }}</h3>
+    
+    <div class="status-badge" data-status="{{ day.stato }}">
+        Stato: <span class="status-text">{{ day.stato }}</span>
+    </div>
+
+    {% if day.stato == 'Completata' %}
+        <div class="standings-section" style="width: 100%; max-width: 600px; min-width: 280px; margin: 0 auto 20px auto;">
+            <h2 class="section-title">Classifica</h2>
+            <table class="standings-table">
+                <thead>
+                    <tr>
+                        <th>Squadra</th>
+                        <th>Punti</th>
+                        <th title="Differenza Games">DG</th>
+                        <th title="Vittorie">V</th>
+                        <th title="Pareggi">P</th>
+                        <th title="Sconfitte">S</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set standings_with_teams = [] %}
+                    {% for s in standings %}
+                        {% set team_data = { 'team': teams[loop.index0], 'stats': s } %}
+                        {% set _ = standings_with_teams.append(team_data) %}
+                    {% endfor %}
+                    {% set standings_sorted = standings_with_teams|sort(attribute='stats.points', reverse=True)|sort(attribute='stats.diff', reverse=True)|sort(attribute='stats.points', reverse=True) %}
+                    {% for item in standings_sorted %}
+                        <tr>
+                            <td class="team-name">{{ item.team[0].nome }} / {{ item.team[1].nome }}</td>
+                            <td class="points">{{ item.stats.points }}</td>
+                            <td class="stats">{{ item.stats.diff }}</td>
+                            <td class="stats">{{ item.stats.win }}</td>
+                            <td class="stats">{{ item.stats.draw }}</td>
+                            <td class="stats">{{ item.stats.lose }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <hr class="standings-separator">
+        <div class="matches-section simple-list">
+            <h2 class="section-title">Risultati Partite</h2>
+            {% for round in schedule %}
+            <div class="round-card simple-round">
+                <div class="round-header"><span class="yellow">Turno {{ loop.index }}</span></div>
+                <ul class="matches-list">
+                    {% for match in round %}
+                    {% set match_key = (match[0], match[1])|join('-') %}
+                    <li>
+                        {{ teams[match[0]-1][0].nome }} {{ teams[match[0]-1][0].cognome[0] }}. / 
+                        {{ teams[match[0]-1][1].nome }} {{ teams[match[0]-1][1].cognome[0] }}. 
+                        <span class="yellow">vs</span> 
+                        {{ teams[match[1]-1][0].nome }} {{ teams[match[1]-1][0].cognome[0] }}. / 
+                        {{ teams[match[1]-1][1].nome }} {{ teams[match[1]-1][1].cognome[0] }}.
+                        <div class="match-result">
+                            <span class="result">{{ results[match_key].replace('-', ' - ') }}</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="button-container" style="margin-bottom: 100px;">
+            <a href="{{ url_for('tournaments.enter_results', day_id=day.id) }}" class="action-button">MODIFICA RISULTATI</a>
+            <div class="export-buttons">
+                <a href="{{ url_for('tournaments.export_day_pdf', day_id=day.id) }}" class="action-button" style="background-color: #1976d2; border-color: #1976d2; color: white;" target="_blank">
+                    <i class="fas fa-file-pdf"></i> Stampa Giornata
+                </a>
+            </div>
+            <a href="{{ url_for('tournaments.view_tournament', tournament_id=tournament.id) }}" class="back-button">TORNA AL TORNEO</a>
+        </div>
+    {% else %}
+        <div class="teams-section simple-list">
+            <h2 class="section-title" style="text-align:center;">Squadre</h2>
+            <ul class="teams-list">
+                {% for i in range(4) %}
+                <li>
+                    <strong class="team-label">Squadra {{ i+1 }}:</strong> {{ teams[i][0].nome }} {{ teams[i][0].cognome }}, {{ teams[i][1].nome }} {{ teams[i][1].cognome }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <hr class="standings-separator">
+        <div class="matches-section simple-list">
+            <h2 class="section-title">Tabellone Partite</h2>
+            {% for round in schedule %}
+            <div class="round-card simple-round">
+                <div class="round-header"><span class="yellow">Turno {{ loop.index }}</span></div>
+                <ul class="matches-list">
+                    {% for match in round %}
+                    <li>
+                        {{ teams[match[0]-1][0].nome }} {{ teams[match[0]-1][0].cognome[0] }}. / 
+                        {{ teams[match[0]-1][1].nome }} {{ teams[match[0]-1][1].cognome[0] }}. 
+                        <span class="yellow">vs</span> 
+                        {{ teams[match[1]-1][0].nome }} {{ teams[match[1]-1][0].cognome[0] }}. / 
+                        {{ teams[match[1]-1][1].nome }} {{ teams[match[1]-1][1].cognome[0] }}.
+                        {% set match_key = (match[0], match[1])|join('-') %}
+                        {% if match_key in results %}
+                        <div class="match-result">
+                            <span class="result">{{ results[match_key].replace('-', ' - ') }}</span>
+                        </div>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="button-container" style="margin-bottom: 100px;">
+            <a href="{{ url_for('tournaments.enter_results', day_id=day.id) }}" class="action-button">INSERISCI RISULTATI</a>
+            <div class="export-buttons">
+                <a href="{{ url_for('tournaments.export_day_pdf', day_id=day.id) }}" class="action-button" style="background-color: #1976d2; border-color: #1976d2; color: white;" target="_blank">
+                    <i class="fas fa-file-pdf"></i> Stampa Giornata
+                </a>
+            </div>
+            <a href="{{ url_for('tournaments.view_tournament', tournament_id=tournament.id) }}" class="back-button">TORNA AL TORNEO</a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.main-container {
+    padding: 20px;
+    color: white;
+    padding-bottom: 180px; /* Spazio per il footer */
+}
+
+.page-title {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 1.2em;
+    color: #888;
+    margin-bottom: 5px;
+}
+
+.tournament-date {
+    font-size: 1.2em;
+    color: #ffd700;
+    margin-bottom: 8px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 8px 15px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.status-badge[data-status="Aperta"] {
+    background-color: #28a745;
+}
+
+.status-badge[data-status="Risultati da inserire"] {
+    background-color: #ffc107;
+}
+
+.status-badge[data-status="Completata"] {
+    background-color: #007bff;
+}
+
+.section-title {
+    font-size: 1.3em;
+    color: #28a745;
+    margin-bottom: 10px;
+    margin-top: 8px;
+    text-align: center;
+}
+
+.teams-section.simple-list, .matches-section.simple-list {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin-bottom: 20px;
+}
+.teams-list, .matches-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.teams-list li, .matches-list li {
+    font-size: 0.95em;
+    color: #fff;
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+}
+.teams-list li:last-child, .matches-list li:last-child {
+    border-bottom: none;
+}
+.round-card.simple-round {
+    background: #232323;
+    border-radius: 10px;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 1px solid #333;
+    width: 100%;
+    max-width: 600px;
+    min-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.round-header {
+    font-size: 1.1em;
+    color: #28a745;
+    font-weight: bold;
+    margin-bottom: 8px;
+    text-align: left;
+    border-bottom: 1px dashed #444;
+    padding-bottom: 4px;
+}
+@media (max-width: 768px) {
+    .standings-section, .round-card.simple-round {
+        max-width: 100%;
+        margin: 0 10px 20px 10px;
+    }
+}
+@media (min-width: 769px) and (max-width: 1024px) {
+    .standings-section, .round-card.simple-round {
+        max-width: 500px;
+    }
+}
+@media (min-width: 1025px) {
+    .standings-section, .round-card.simple-round {
+        max-width: 600px;
+    }
+}
+.team-label {
+    color: #ffd700;
+    font-size: calc(1em - 3px);
+    font-weight: bold;
+    margin-right: 4px;
+}
+.yellow {
+    color: #ffd700;
+}
+.matches-list {
+    text-align: center;
+}
+.match-result {
+    margin-top: 5px;
+    font-size: calc(0.9em + 1px);
+}
+.result {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background-color: #28a745;
+    color: white;
+}
+.result.pending {
+    background-color: #6c757d;
+}
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px; /* Ridotto da 100px a 20px perché il padding-bottom del container gestisce lo spazio */
+    position: relative; /* Assicura che i pulsanti rimangano sopra il footer */
+    z-index: 1; /* Assicura che i pulsanti rimangano sopra il footer */
+}
+.back-button {
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 30px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    width: 300px;
+    max-width: 100%;
+    text-align: center;
+}
+.back-button:hover {
+    background-color: #555;
+}
+.action-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 30px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    width: 300px;
+    max-width: 100%;
+    text-align: center;
+}
+.action-button:hover {
+    background-color: #218838;
+}
+/* --- CLASSIFICA --- */
+.standings-section {
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
+    margin: 0 auto 20px auto;
+}
+
+.standings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    margin: 0 auto;
+    background: #232323;
+    border-radius: 10px;
+    overflow-x: auto;
+    display: block;
+}
+
+.standings-table thead {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.standings-table tbody {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.standings-table th, .standings-table td {
+    padding: 12px 8px;
+    text-align: center;
+    border-bottom: 1px solid #333;
+}
+
+/* Definizione larghezze colonne */
+.standings-table th:nth-child(1),
+.standings-table td:nth-child(1) {
+    width: 53%;
+}
+
+.standings-table th:nth-child(2),
+.standings-table td:nth-child(2) {
+    width: 15%;
+}
+
+.standings-table th:nth-child(3),
+.standings-table td:nth-child(3),
+.standings-table th:nth-child(4),
+.standings-table td:nth-child(4),
+.standings-table th:nth-child(5),
+.standings-table td:nth-child(5),
+.standings-table th:nth-child(6),
+.standings-table td:nth-child(6) {
+    width: 8%;
+}
+
+.standings-table th {
+    font-size: 0.95em;
+    color: #888;
+    font-weight: bold;
+    background: #1a1a1a;
+}
+
+.standings-table .team-name {
+    text-align: left;
+    font-weight: normal;
+    padding-left: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 1.1em;
+    width: 53%;
+}
+
+.standings-table .points {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 1.1em;
+    width: 15%;
+}
+
+.standings-table .stats {
+    font-size: 0.9em;
+    color: #888;
+    width: 8%;
+}
+
+@media (min-width: 768px) {
+    .standings-section {
+        max-width: 600px;
+        padding: 0 15px;
+    }
+    
+    .standings-table {
+        font-size: 1em;
+    }
+    
+    .standings-table th, .standings-table td {
+        padding: 12px 10px;
+    }
+    
+    .standings-table .team-name {
+        font-size: 1.2em;
+    }
+}
+
+@media (min-width: 1024px) {
+    .standings-section {
+        max-width: 700px;
+    }
+}
+.standings-separator {
+    border: none;
+    border-top: 2px solid #ffd700;
+    margin: 0;
+}
+.pdf-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 30px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    width: 300px;
+    max-width: 100%;
+    text-align: center;
+    font-weight: bold;
+}
+.pdf-button:hover {
+    background-color: #0056b3;
+}
+</style>
+{% endblock %} 

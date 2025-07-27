@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+    <h1 class="page-title">
+        <i class="fas fa-file-pdf"></i>
+        Seleziona Torneo per Export PDF
+    </h1>
+    
+    {% if tournaments %}
+    <div class="tournament-select-container">
+        {% for tournament in tournaments %}
+        <a href="/export-pdf/torneo/{{ tournament.id }}" class="tournament-select-card">
+            <div class="tournament-select-header">
+                <h3>{{ tournament.nome }}</h3>
+                <span class="tournament-type-badge {{ tournament.tipo_torneo }}">
+                    {{ tournament.tipo_torneo|title }}
+                </span>
+            </div>
+            <div class="tournament-select-details">
+                <div class="detail-item">
+                    <i class="fas fa-calendar"></i>
+                    {% if tournament.data_inizio %}
+                        {{ tournament.data_inizio.strftime('%d/%m/%Y') }}
+                    {% else %}
+                        Data non disponibile
+                    {% endif %}
+                </div>
+                {% if tournament.circolo %}
+                <div class="detail-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    {{ tournament.circolo }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="select-arrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-data">
+        <i class="fas fa-exclamation-circle"></i>
+        <p>Nessun torneo disponibile per l'export PDF.</p>
+        <a href="/tornei" class="action-button">
+            <i class="fas fa-plus"></i>
+            Crea il tuo primo torneo
+        </a>
+    </div>
+    {% endif %}
+    
+    <div class="button-container">
+        <a href="{{ url_for('home') }}" class="action-button secondary">
+            <i class="fas fa-arrow-left"></i>
+            Torna alla Home
+        </a>
+    </div>
+</div>
+
+<style>
+.tournament-select-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 330px;
+    margin: 0 auto;
+}
+
+.tournament-select-card {
+    background-color: #2c2d32;
+    border-radius: 15px;
+    padding: 20px;
+    color: var(--text-color);
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    position: relative;
+    font-size: 1em;
+}
+
+.tournament-select-card:hover {
+    background-color: #353640;
+    border-color: var(--primary-green);
+}
+
+.tournament-select-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tournament-select-header h3 {
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.tournament-select-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9em;
+    color: #ccc;
+}
+
+.detail-item i {
+    width: 16px;
+    text-align: center;
+    color: var(--primary-green);
+}
+
+.select-arrow {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-green);
+    font-size: 1.2em;
+}
+
+.tournament-type-badge {
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    font-weight: 500;
+    text-transform: uppercase;
+    align-self: flex-start;
+}
+
+.tournament-type-badge.torneotto30 {
+    background-color: var(--primary-green);
+    color: #000;
+}
+
+.tournament-type-badge.torneotto45 {
+    background-color: var(--primary-yellow);
+    color: #000;
+}
+
+.tournament-type-badge.gironi {
+    background-color: #007AFF;
+    color: #fff;
+}
+
+.tournament-type-badge.eliminazione {
+    background-color: #FF3B30;
+    color: #fff;
+}
+
+.page-title {
+    text-align: center;
+    color: var(--text-color);
+    font-size: 1.5em;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.page-title i {
+    color: var(--primary-green);
+}
+
+.button-container {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.action-button.secondary {
+    background-color: #444;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.action-button.secondary:hover {
+    background-color: #555;
+}
+
+.no-data {
+    text-align: center;
+    padding: 40px 20px;
+    color: #ccc;
+}
+
+.no-data i {
+    font-size: 3em;
+    color: var(--primary-green);
+    margin-bottom: 20px;
+}
+
+.no-data p {
+    font-size: 1.1em;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 400px) {
+    .tournament-select-container {
+        max-width: 300px;
+    }
+    
+    .tournament-select-card {
+        padding: 15px;
+        margin: 0 10px;
+    }
+    
+    .page-title {
+        font-size: 1.3em;
+        margin-bottom: 20px;
+    }
+}
+</style>
+{% endblock %} 

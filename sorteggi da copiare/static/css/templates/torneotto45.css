@@ -1,0 +1,209 @@
+/* Stili specifici per TorneOtto45 */
+
+/* Container principale */
+#torneotto45-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: var(--space-md);
+}
+
+/* Header del torneo */
+.torneotto45-header {
+    background: var(--gradient-primary);
+    color: var(--text-primary);
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.torneotto45-title {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--space-md);
+}
+
+.torneotto45-info {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+}
+
+.torneotto45-info-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--text-primary);
+}
+
+.torneotto45-info-item i {
+    font-size: var(--font-size-lg);
+}
+
+/* Statistiche del torneo */
+.torneotto45-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-md);
+    background: var(--bg-secondary);
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.stat-card {
+    background: var(--bg-card);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-value {
+    font-size: var(--font-size-2xl);
+    font-weight: 600;
+    color: var(--accent-primary);
+    margin-bottom: var(--space-sm);
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+/* Form del torneo */
+.torneotto45-form {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.form-group {
+    margin-bottom: var(--space-lg);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--space-sm);
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: var(--space-md);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.form-input:focus {
+    border-color: var(--accent-primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(35, 134, 54, 0.1);
+}
+
+textarea.form-input {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Bottoni azione */
+.torneotto45-actions {
+    display: flex;
+    gap: var(--space-md);
+    margin-top: var(--space-xl);
+}
+
+.tournament-button {
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    transition: all 0.2s ease;
+}
+
+.tournament-button.primary {
+    background: var(--accent-primary);
+    color: var(--text-primary);
+}
+
+.tournament-button.primary:hover {
+    background: var(--accent-success);
+}
+
+.tournament-button.secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+.tournament-button.secondary:hover {
+    background: var(--hover-bg);
+}
+
+/* Responsive design */
+@media (min-width: 640px) {
+    #torneotto45-container {
+        max-width: 640px;
+        padding: var(--space-lg);
+    }
+    
+    .torneotto45-info {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 768px) {
+    #torneotto45-container {
+        max-width: 768px;
+        padding: var(--space-xl);
+    }
+    
+    .torneotto45-info {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .torneotto45-actions {
+        flex-direction: row;
+    }
+}
+
+@media (min-width: 1024px) {
+    #torneotto45-container {
+        max-width: 1024px;
+    }
+    
+    .torneotto45-info {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Animazioni */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.torneotto45-container > * {
+    animation: slideIn 0.3s ease-out forwards;
+} 

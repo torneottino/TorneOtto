@@ -1,0 +1,346 @@
+{% extends "base.html" %}
+
+{% block title %}{{ torneo.nome }} - Eliminazione{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <!-- Header copiato da torneotto -->
+    <h1 class="page-title">{{ torneo.nome }}</h1>
+    
+    <div class="tournament-details-box">
+        <div class="tournament-detail-row">
+            <span class="detail-label"><i class="fas fa-sitemap"></i> Tipo:</span>
+            <span class="detail-value">Eliminazione Diretta</span>
+        </div>
+        <div class="tournament-detail-row">
+            <span class="detail-label"><i class="fas fa-calendar"></i> Data:</span>
+            <span class="detail-value">{{ torneo.data_inizio.strftime('%d/%m/%Y') }}</span>
+        </div>
+        {% if torneo.circolo %}
+        <div class="tournament-detail-row">
+            <span class="detail-label"><i class="fas fa-map-marker-alt"></i> Circolo:</span>
+            <span class="detail-value">{{ torneo.circolo }}</span>
+        </div>
+        {% endif %}
+        {% if torneo.note %}
+        <div class="tournament-detail-row">
+            <span class="detail-label"><i class="fas fa-sticky-note"></i> Note:</span>
+            <span class="detail-value">{{ torneo.note }}</span>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if teams and teams|length > 0 %}
+        {% set power_of_2 = 2 %}
+        {% if teams|length > 2 %}
+            {% set power_of_2 = 4 %}
+        {% endif %}
+        {% if teams|length > 4 %}
+            {% set power_of_2 = 8 %}
+        {% endif %}
+        {% if teams|length > 8 %}
+            {% set power_of_2 = 16 %}
+        {% endif %}
+        {% if teams|length > 16 %}
+            {% set power_of_2 = 32 %}
+        {% endif %}
+        {% if teams|length > 32 %}
+            {% set power_of_2 = 64 %}
+        {% endif %}
+        
+        {% set byes_needed = power_of_2 - teams|length %}
+        {% set playing_teams = teams|length - byes_needed %}
+        {% set matches_first_round = playing_teams // 2 %}
+        
+        <!-- Statistiche del torneo -->
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">{{ teams|length }}</div>
+                <div class="stat-label">Squadre</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ matches_first_round }}</div>
+                <div class="stat-label">Partite 1° Turno</div>
+            </div>
+            {% if byes_needed > 0 %}
+            <div class="stat-item">
+                <div class="stat-number">{{ byes_needed }}</div>
+                <div class="stat-label">Bye</div>
+            </div>
+            {% endif %}
+            <div class="stat-item">
+                <div class="stat-number">{{ power_of_2 // 2 }}</div>
+                <div class="stat-label">Qualificati 2° Turno</div>
+            </div>
+        </div>
+        
+        <!-- Sezione Primo Turno -->
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-trophy"></i> Primo Turno</h2>
+        </div>
+        
+        {% if matches_first_round > 0 %}
+        <div class="team-names-grid">
+            {% set match_counter = namespace(value=0) %}
+            {% set team_index = namespace(value=0) %}
+            
+            {% for i in range(matches_first_round) %}
+                {% set match_counter.value = match_counter.value + 1 %}
+                <div class="match-card">
+                    <div class="match-header">
+                        <span class="match-number">Partita {{ match_counter.value }}</span>
+                    </div>
+                    <div class="match-content">
+                        {% if team_index.value < teams|length %}
+                            <div class="team{% if teams[team_index.value].seed %} seeded{% endif %}">
+                                {% if teams[team_index.value].seed %}<i class="fas fa-star"></i>{% endif %}
+                                {{ teams[team_index.value].name }}
+                            </div>
+                            {% set team_index.value = team_index.value + 1 %}
+                        {% endif %}
+                        
+                        {% if team_index.value < teams|length %}
+                            <div class="team{% if teams[team_index.value].seed %} seeded{% endif %}">
+                                {% if teams[team_index.value].seed %}<i class="fas fa-star"></i>{% endif %}
+                                {{ teams[team_index.value].name }}
+                            </div>
+                            {% set team_index.value = team_index.value + 1 %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- Bye -->
+        {% if byes_needed > 0 %}
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-forward"></i> Qualificati Direttamente (Bye)</h2>
+        </div>
+        <div class="bye-container">
+            {% set bye_assigned = 0 %}
+            {% set teams_in_matches = matches_first_round * 2 %}
+            
+            {% for i in range(teams_in_matches, teams|length) %}
+                {% if bye_assigned < byes_needed %}
+                    {% set bye_assigned = bye_assigned + 1 %}
+                    <div class="bye-card">
+                        <div class="team{% if teams[i].seed %} seeded{% endif %}">
+                            {% if teams[i].seed %}<i class="fas fa-star"></i>{% endif %}
+                            {{ teams[i].name }}
+                            <span class="bye-badge">BYE</span>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-info-circle"></i>
+            <h3>Nessuna squadra configurata</h3>
+            <p>Il tabellone verrà mostrato dopo aver configurato le squadre per questo torneo.</p>
+        </div>
+    {% endif %}
+
+    <!-- Pulsanti azione -->
+    <div class="button-group">
+        {% if teams and teams|length > 0 %}
+        <a href="{{ url_for('tournaments.elimination_enter_results', tournament_id=torneo.id) }}" class="action-button">
+            <i class="fas fa-edit"></i> INSERISCI RISULTATI
+        </a>
+        <a href="{{ url_for('tournaments.export_elimination_pdf', tournament_id=torneo.id) }}" class="action-button" target="_blank">
+            <i class="fas fa-file-pdf"></i> ESPORTA PDF
+        </a>
+        {% endif %}
+        <a href="{{ url_for('tournaments.tournaments_list') }}" class="action-button secondary">
+            <i class="fas fa-arrow-left"></i> TORNA AI TORNEI
+        </a>
+    </div>
+</div>
+
+<style>
+/* Statistiche scure */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 5px;
+    background: #232323;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 5px;
+    margin: 5px 0;
+}
+
+.stat-item {
+    background: #1a1b1f;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 6px;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #28a745;
+    margin: 0;
+}
+
+.stat-label {
+    color: #ccc;
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+/* Contenitori con margini corretti */
+.team-names-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 10px;
+    margin: 10px 5px;
+}
+
+.team-input-card, .match-card, .bye-card {
+    min-width: 330px;
+    max-width: 600px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.matches-container, .bye-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px 5px;
+    align-items: center;
+}
+
+.match-header {
+    text-align: center;
+    margin: 0 0 3px 0;
+}
+
+.match-number {
+    color: #28a745;
+    font-weight: 600;
+    font-size: 0.9rem;
+    /* NIENTE BACKGROUND! Solo testo verde */
+}
+
+.match-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.team {
+    background: #1a1b1f;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 6px 8px;
+    color: #ffffff;
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.9rem;
+}
+
+.team.seeded {
+    background: #332b00;
+    border-color: #ffd700;
+    color: #ffd700;
+}
+
+.team i.fa-star {
+    color: #ffd700;
+}
+
+.bye-badge {
+    background: rgba(40, 167, 69, 0.3);
+    padding: 2px 5px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    margin-left: auto;
+    font-weight: bold;
+    color: #28a745;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 30px 10px;
+    color: #999;
+    background: #232323;
+    border-radius: 10px;
+    border: 1px solid #333;
+    margin: 5px 0;
+}
+
+.empty-state i {
+    font-size: 2.5em;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+.empty-state h3 {
+    margin-bottom: 5px;
+    color: #ccc;
+}
+
+/* Sezioni con margini ridotti */
+.section-header {
+    margin: 15px 0 8px 0;
+}
+
+.section-title {
+    margin: 0;
+    padding: 8px;
+    background: #1a1b1f;
+    border: 1px solid #444;
+    border-radius: 8px;
+    color: #28a745;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+/* Stili bottoni */
+.action-button {
+    border: none !important;
+}
+
+.action-button.secondary {
+    background-color: #444444 !important;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .team-names-grid,
+    .matches-container,
+    .bye-container {
+        gap: 8px;
+        margin: 8px 5px; /* Ridotto anche su mobile */
+    }
+    
+    .team-input-card, .match-card, .bye-card {
+        min-width: 300px; /* Leggermente ridotto su mobile */
+    }
+    
+    .stats-container {
+        grid-template-columns: 1fr 1fr;
+        padding: 3px;
+    }
+    
+    .stat-item {
+        padding: 4px;
+    }
+    
+    .stat-number {
+        font-size: 1.3rem;
+    }
+}
+</style>
+{% endblock %} 

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1a1b1f">
+    <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+    <title>Risultati Sorteggio - TorneOtto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1b1f;
+            color: white;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: #2a2b2f;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .results-section {
+            background: linear-gradient(135deg, #2a2b2f 0%, #1a1b1f 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #333;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .results-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4a9eff;
+            margin-bottom: 10px;
+        }
+
+        .results-subtitle {
+            font-size: 16px;
+            color: #888;
+        }
+
+        .pairs-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 30px;
+            align-items: center;
+        }
+
+        .pair-row {
+            font-size: 16px;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .pair-name {
+            font-size: 16px;
+            color: white;
+            font-weight: normal;
+            margin: 0 2px;
+            padding: 0;
+            display: inline;
+        }
+
+        .vs-separator {
+            font-size: 13px;
+            color: #aaa;
+            font-weight: bold;
+            margin: 0 6px;
+            padding: 0;
+            display: inline;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 100px;
+        }
+
+        .btn {
+            width: 250px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4a9eff 0%, #3a8bef 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 158, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #666 0%, #555 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 102, 102, 0.4);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .main-container {
+                padding: 15px;
+            }
+            
+            .results-section {
+                padding: 20px;
+            }
+            
+            .pairs-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .pair-card {
+                padding: 15px;
+            }
+            
+            .btn {
+                width: 200px;
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-button" onclick="history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>RISULTATI SORTEGGIO</h1>
+    </div>
+
+    <div class="main-container">
+        <div class="results-section">
+            <div class="results-header">
+                <div class="results-title" id="resultsTitle">COPPIE FORMATE</div>
+                <div class="results-subtitle" id="resultsSubtitle">Sorteggio completato con successo</div>
+            </div>
+
+            <div class="loading" id="loading">
+                Caricamento risultati...
+            </div>
+
+            <div class="pairs-grid" id="pairsGrid" style="display: none;">
+                <!-- Pairs will be populated here -->
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="btn btn-primary" onclick="nuovoSorteggio()">
+                NUOVO SORTEGGIO
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='/'">
+                TORNA ALLA HOME
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Get data from sessionStorage
+        const pairs = JSON.parse(sessionStorage.getItem('sorteggioPairs') || '[]');
+        const sorteggioType = sessionStorage.getItem('sorteggioType') || 'casuale';
+        const numCoppie = sessionStorage.getItem('numCoppie') || '0';
+
+        // Player data mapping (in a real app, this would come from the server)
+        const playerData = {};
+        
+        // Fetch player names from the server
+        async function loadPlayerNames() {
+            try {
+                const response = await fetch('/api/players');
+                const players = await response.json();
+                players.forEach(player => {
+                    playerData[player.id] = { nome: player.nome, cognome: player.cognome };
+                });
+                displayResults();
+            } catch (error) {
+                console.error('Error loading player names:', error);
+                // Fallback: use IDs if API fails
+                displayResults();
+            }
+        }
+
+        function displayResults() {
+            const loading = document.getElementById('loading');
+            const pairsGrid = document.getElementById('pairsGrid');
+            const resultsTitle = document.getElementById('resultsTitle');
+            const resultsSubtitle = document.getElementById('resultsSubtitle');
+            const manualPlayers = JSON.parse(sessionStorage.getItem('manualPlayers') || '[]');
+
+            // Update title based on type
+            if (sorteggioType === 'casuale') {
+                resultsTitle.textContent = 'SORTEGGIO CASUALE COMPLETATO';
+                resultsSubtitle.textContent = `${numCoppie} coppie formate casualmente`;
+            } else {
+                resultsTitle.textContent = 'SORTEGGIO TESTE DI SERIE COMPLETATO';
+                resultsSubtitle.textContent = `${numCoppie} coppie formate con teste di serie`;
+            }
+
+            // Hide loading, show results
+            loading.style.display = 'none';
+            pairsGrid.style.display = 'flex';
+
+            // Populate pairs
+            pairs.forEach((pair, index) => {
+                const row = document.createElement('div');
+                row.className = 'pair-row';
+                
+                // Check if it's manual input or database
+                if (manualPlayers.length > 0) {
+                    // Manual input - use the names directly
+                    row.innerHTML = `
+                        <span class="pair-name">${pair[0]}</span>
+                        <span class="vs-separator">~</span>
+                        <span class="pair-name">${pair[1]}</span>
+                    `;
+                } else {
+                    // Database - use player data
+                    const p1 = playerData[pair[0]];
+                    const p2 = playerData[pair[1]];
+                    row.innerHTML = `
+                        <span class="pair-name">${p1 ? p1.nome + ' ' + p1.cognome : pair[0]}</span>
+                        <span class="vs-separator">~</span>
+                        <span class="pair-name">${p2 ? p2.nome + ' ' + p2.cognome : pair[1]}</span>
+                    `;
+                }
+                pairsGrid.appendChild(row);
+            });
+        }
+
+        function nuovoSorteggio() {
+            // Clear sessionStorage and go back to sorteggio page
+            sessionStorage.removeItem('sorteggioPairs');
+            sessionStorage.removeItem('sorteggioType');
+            sessionStorage.removeItem('numCoppie');
+            window.location.href = '/sorteggio-coppie';
+        }
+
+        // Load player names and display results
+        loadPlayerNames();
+    </script>
+</body>
+</html> 

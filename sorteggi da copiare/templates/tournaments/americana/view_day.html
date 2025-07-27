@@ -1,0 +1,590 @@
+{% extends "base.html" %}
+
+{% block head_extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .americana-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .americana-header {
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #444;
+        }
+        
+        .americana-title {
+            color: #28a745;
+            text-align: center;
+            margin: 0 0 15px 0;
+            font-size: 2em;
+        }
+        
+        .americana-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            text-align: center;
+        }
+        
+        .info-card {
+            background: #333;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #555;
+        }
+        
+        .info-label {
+            color: #ccc;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .section-tabs {
+            display: flex;
+            background: #2a2a2a;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-right: 1px solid #444;
+        }
+        
+        .tab-button:last-child {
+            border-right: none;
+        }
+        
+        .tab-button.active {
+            background: #28a745;
+            color: white;
+        }
+        
+        .tab-button:hover:not(.active) {
+            background: #444;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .match-card {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #444;
+        }
+        
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .match-number {
+            background: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .match-court {
+            color: #ffd700;
+            font-size: 0.9em;
+        }
+        
+        .match-teams {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+        
+        .team {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .team-name {
+            color: #fff;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .vs {
+            color: #28a745;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+        
+        .match-result {
+            text-align: center;
+            padding: 10px;
+            background: #333;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .result-completed {
+            background: #28a745;
+            color: white;
+        }
+        
+        .result-pending {
+            background: #666;
+            color: #ccc;
+        }
+        
+        .result-score {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .ranking-table {
+            background: #2a2a2a;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .ranking-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .ranking-table th {
+            background: #28a745;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .ranking-table td {
+            padding: 12px;
+            border-bottom: 1px solid #444;
+            color: #fff;
+        }
+        
+        .ranking-table tr:nth-child(even) {
+            background: #333;
+        }
+        
+        .position {
+            background: #ffd700;
+            color: #000;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 100px;
+        }
+        
+        .btn-action {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            transition: all 0.3s;
+            width: 250px;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .progress-bar {
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .progress-fill {
+            background: #28a745;
+            height: 20px;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .americana-container {
+                padding: 10px;
+            }
+            
+            .americana-title {
+                font-size: 1.5em;
+            }
+            
+            .americana-info {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .info-card {
+                padding: 10px;
+            }
+            
+            .matches-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .match-card {
+                padding: 10px;
+            }
+            
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-action {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .section-tabs {
+                flex-direction: column;
+            }
+            
+            .tab-button {
+                border-right: none;
+                border-bottom: 1px solid #444;
+            }
+            
+            .tab-button:last-child {
+                border-bottom: none;
+            }
+        }
+        
+        .position-badge {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        .ranking-table th, .ranking-table td {
+            color: #fff;
+            background: none;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="americana-container">
+    <div class="americana-header">
+        <h1 class="americana-title">{{ tournament.nome }} - All'Americana</h1>
+        <div class="americana-info">
+            <div class="info-card">
+                <div class="info-label">Tipo Torneo</div>
+                <div class="info-value">{{ 'Semplice' if config.tipo_torneo == 'semplice' else 'Round Robin' }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Tipo Coppie</div>
+                <div class="info-value">{{ 'Fisse' if config.tipo_coppie == 'fisse' else 'A Girare' }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Coppie</div>
+                <div class="info-value">{{ teams|length if teams else config.num_coppie }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Partite</div>
+                <div class="info-value">{{ matches|length if matches else 0 }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-tabs">
+        <button class="tab-button active" onclick="showTab('matches')">
+            <i class="fas fa-volleyball-ball"></i> Partite
+        </button>
+        {% if ranking %}
+        <button class="tab-button" onclick="showTab('ranking')">
+            <i class="fas fa-trophy"></i> Classifica
+        </button>
+        {% endif %}
+        {% if statistics %}
+        <button class="tab-button" onclick="showTab('statistics')">
+            <i class="fas fa-chart-bar"></i> Statistiche
+        </button>
+        {% endif %}
+    </div>
+
+    <!-- TAB PARTITE -->
+    <div id="matches-tab" class="tab-content active">
+        {% if matches %}
+        <div class="matches-grid">
+            {% for match in matches %}
+            <div class="match-card">
+                <div class="match-header">
+                    <span class="match-number">Partita {{ match.id }}</span>
+                    {% if match.court %}
+                    <span class="match-court">Campo {{ match.court }}</span>
+                    {% endif %}
+                    {% if match.round %}
+                    <span class="match-court">Turno {{ match.round }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="match-teams">
+                    <div class="team">
+                        <div class="team-name">
+                            {% if match.team1.player1_name %}
+                                {{ match.team1.player1_name }}
+                                {% if match.team1.player2_name %}
+                                    <br>{{ match.team1.player2_name }}
+                                {% endif %}
+                            {% else %}
+                                Squadra {{ match.team1.id }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="vs">VS</div>
+                    <div class="team">
+                        <div class="team-name">
+                            {% if match.team2.player1_name %}
+                                {{ match.team2.player1_name }}
+                                {% if match.team2.player2_name %}
+                                    <br>{{ match.team2.player2_name }}
+                                {% endif %}
+                            {% else %}
+                                Squadra {{ match.team2.id }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="match-result {% if results[match.id|string] %}result-completed{% else %}result-pending{% endif %}">
+                    {% if results[match.id|string] %}
+                        {% set result = results[match.id|string] %}
+                        <div class="result-score">{{ result.team1_games }} - {{ result.team2_games }}</div>
+                    {% else %}
+                        <span style="color: #ccc;">Da giocare</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 40px; color: #ccc;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 3em; margin-bottom: 20px;"></i>
+            <h3>Nessuna partita generata</h3>
+            <p>Il setup del torneo non è ancora completato.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- TAB CLASSIFICA -->
+    {% if ranking %}
+    <div id="ranking-tab" class="tab-content">
+        <div class="ranking-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pos</th>
+                        {% if ranking[0]['team'] is defined %}
+                            <th>Squadra</th>
+                        {% else %}
+                            <th>Giocatore</th>
+                        {% endif %}
+                        <th>Partite</th>
+                        <th>Vinte</th>
+                        <th>Perse</th>
+                        <th>Set</th>
+                        <th>Games</th>
+                        <th>DG</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for team_stats in ranking %}
+                    <tr>
+                        <td>
+                            <span class="position-badge">
+                                {% if loop.index == 1 %}🥇{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}{{ loop.index }}{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <strong>
+                                {% if team_stats['team'] is defined %}
+                                    {% if team_stats['team']['player1_name'] %}
+                                        {{ team_stats['team']['player1_name'] }}
+                                        {% if team_stats['team']['player2_name'] %}
+                                            / {{ team_stats['team']['player2_name'] }}
+                                        {% endif %}
+                                    {% else %}
+                                        Squadra {{ team_stats['team']['id'] }}
+                                    {% endif %}
+                                {% else %}
+                                    {% if team_stats['player_name'] %}
+                                        {{ team_stats['player_name'] }}
+                                    {% else %}
+                                        Giocatore {{ team_stats['player_id'] }}
+                                    {% endif %}
+                                {% endif %}
+                            </strong>
+                        </td>
+                        <td>{{ team_stats['matches_played'] }}</td>
+                        <td style="color: #34c759;">{{ team_stats['matches_won'] }}</td>
+                        <td style="color: #ff3b30;">{{ team_stats['matches_lost'] }}</td>
+                        <td>{{ team_stats['sets_won'] }}-{{ team_stats['sets_lost'] }}</td>
+                        <td>{{ team_stats['games_won'] }}-{{ team_stats['games_lost'] }}</td>
+                        <td><strong style="color: #ffd700;">{{ team_stats['points'] }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- TAB STATISTICHE -->
+    {% if statistics %}
+    <div id="statistics-tab" class="tab-content">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div class="info-card">
+                <div class="info-label">Partite Completate</div>
+                <div class="info-value">{{ statistics.completed_matches }}/{{ statistics.total_matches }}</div>
+            </div>
+            
+            {% if statistics.highest_game_difference %}
+            <div class="info-card">
+                <div class="info-label">Maggiore Differenza</div>
+                <div class="info-value">{{ statistics.highest_game_difference.difference }} games</div>
+                <div style="font-size: 0.8em; color: #ccc; margin-top: 5px;">
+                    {{ statistics.highest_game_difference.score }}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if statistics.most_frequent_pair %}
+            <div class="info-card">
+                <div class="info-label">Coppia Più Frequente</div>
+                <div class="info-value">{{ statistics.most_frequent_pair.frequency }} volte</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="button-container">
+        <a href="{{ url_for('tournaments.americana_enter_results', tournament_id=tournament.id, day_id=day.id) }}" class="btn-action btn-primary">
+            <i class="fas fa-edit"></i> Modifica Risultati
+        </a>
+        
+        {% if ranking %}
+        <a href="{{ url_for('tournaments.americana_ranking', tournament_id=tournament.id, day_id=day.id) }}" class="btn-action btn-info">
+            <i class="fas fa-trophy"></i> Classifica Dettagliata
+        </a>
+        {% endif %}
+        
+        {% if statistics %}
+        <a href="{{ url_for('tournaments.americana_statistics', tournament_id=tournament.id, day_id=day.id) }}" class="btn-action btn-secondary">
+            <i class="fas fa-chart-bar"></i> Statistiche Complete
+        </a>
+        {% endif %}
+        
+        <a href="{{ url_for('tournaments.view_tournament', tournament_id=tournament.id) }}" class="btn-action btn-secondary">
+            <i class="fas fa-arrow-left"></i> Torna al Torneo
+        </a>
+    </div>
+
+    {% if day.stato not in ['Aperta', 'Completata', 'Confermata'] %}
+    <div class="button-container">
+        <form method="POST" action="{{ url_for('tournaments.confirm_americana_day', tournament_id=tournament.id, day_id=day.id) }}">
+            <button type="submit" class="btn-action btn-primary">
+                <i class="fas fa-check"></i> CONFERMA GIORNATA
+            </button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function showTab(tabName) {
+    // Nascondi tutti i contenuti dei tab
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Rimuovi la classe active da tutti i bottoni
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+    });
+    
+    // Mostra il contenuto del tab selezionato
+    document.getElementById(tabName + '-tab').classList.add('active');
+    
+    // Aggiungi la classe active al bottone selezionato
+    event.target.classList.add('active');
+}
+</script>
+{% endblock %} 

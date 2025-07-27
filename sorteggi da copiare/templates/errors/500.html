@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Errore del Server - TorneOtto{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="error-content">
+        <div class="error-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h1>Errore del Server</h1>
+        <p class="error-message">Si è verificato un errore interno del server. Ci scusiamo per l'inconveniente.</p>
+        <div class="error-details">
+            <p>Codice errore: <strong>500</strong></p>
+            <p>Cosa puoi fare:</p>
+            <ul>
+                <li>Riprova tra qualche minuto</li>
+                <li>Torna alla <a href="{{ url_for('home') }}">homepage</a></li>
+                <li>Contatta il supporto se il problema persiste</li>
+            </ul>
+        </div>
+        <div class="error-actions">
+            <a href="{{ url_for('home') }}" class="btn btn-primary">
+                <i class="fas fa-home"></i>
+                Torna alla Home
+            </a>
+            <a href="javascript:history.back()" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Indietro
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: 2rem;
+}
+
+.error-content {
+    text-align: center;
+    max-width: 500px;
+    background: white;
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.error-icon {
+    font-size: 4rem;
+    color: #dc3545;
+    margin-bottom: 1.5rem;
+}
+
+.error-content h1 {
+    color: #dc3545;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+.error-message {
+    color: #6c757d;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.error-details {
+    text-align: left;
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.error-details ul {
+    margin-left: 1rem;
+    color: #495057;
+}
+
+.error-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .error-content {
+        padding: 2rem;
+        margin: 1rem;
+    }
+    
+    .error-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %} 
